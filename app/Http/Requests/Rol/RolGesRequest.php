@@ -33,7 +33,6 @@ class RolGesRequest extends FormRequest
             'nombre_rol' => ['required', 'string', 'max:100'],
             'slug_rol' => ['required', 'string', 'max:120', "unique:rol,slug_rol,{$rolId},id_rol", 'regex:/^[a-z0-9._-]+$/'],
             'descripcion_rol' => ['nullable', 'string', 'max:255'],
-            'status' => ['required', 'integer', 'in:1,2'],
         ];
     }
 
@@ -46,8 +45,6 @@ class RolGesRequest extends FormRequest
             'slug_rol.unique' => 'El slug ya se encuentra registrado.',
             'slug_rol.regex' => 'El slug solo puede contener letras minúsculas, números, puntos, guiones y guiones bajos.',
             'descripcion_rol.max' => 'La descripción no debe exceder 255 caracteres.',
-            'status.required' => 'El estado es obligatorio.',
-            'status.in' => 'El estado debe ser activo (1) o inactivo (2).',
         ];
     }
 }

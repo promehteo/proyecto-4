@@ -55,7 +55,6 @@ class CategoriaGesRequest extends FormRequest
                     }
                 },
             ],
-            'status' => ['required', 'integer', 'in:1,2'],
         ];
     }
 
@@ -67,8 +66,6 @@ class CategoriaGesRequest extends FormRequest
             'nombre_categoria.max' => 'El nombre de la categoría no debe exceder 120 caracteres.',
             'descripcion_categoria.max' => 'La descripción no debe exceder 255 caracteres.',
             'id_categoria_padre_categoria.exists' => 'La categoría padre seleccionada no existe.',
-            'status.required' => 'El estado es obligatorio.',
-            'status.in' => 'El estado debe ser activo (1) o inactivo (2).',
         ];
     }
 }

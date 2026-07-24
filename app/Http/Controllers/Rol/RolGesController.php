@@ -23,6 +23,7 @@ class RolGesController extends Controller
     public function store(RolGesRequest $request): RedirectResponse
     {
         $data = $request->validated();
+        $data['status'] = 1; // Todos los registros se crean activos por defecto
         $rol = Rol::create($data);
 
         BitacoraService::registrar(

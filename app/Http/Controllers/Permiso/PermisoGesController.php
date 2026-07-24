@@ -25,6 +25,7 @@ class PermisoGesController extends Controller
     public function store(PermisoGesRequest $request): RedirectResponse
     {
         $data = $request->validated();
+        $data['status'] = 1; // Todos los registros se crean activos por defecto
         $permiso = Permiso::create($data);
 
         BitacoraService::registrar(

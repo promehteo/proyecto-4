@@ -25,6 +25,7 @@ class UserGesController extends Controller
     {
         $data = $request->validated();
         $data['password'] = Hash::make($data['password']);
+        $data['status'] = 1; // Todos los registros se crean activos por defecto
 
         $usuario = User::create($data);
 

@@ -25,6 +25,7 @@ class CategoriaGesController extends Controller
     public function store(CategoriaGesRequest $request): RedirectResponse
     {
         $data = $request->validated();
+        $data['status'] = 1; // Todos los registros se crean activos por defecto
         $categoria = Categoria::create($data);
 
         BitacoraService::registrar(

@@ -35,7 +35,6 @@ class UserGesRequest extends FormRequest
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'email', 'max:255', "unique:users,email,{$userId},id"],
             'password' => $passwordRule,
-            'status' => ['required', 'integer', 'in:1,2'],
         ];
     }
 
@@ -49,8 +48,6 @@ class UserGesRequest extends FormRequest
             'password.required' => 'La contraseña es obligatoria.',
             'password.min' => 'La contraseña debe tener al menos 8 caracteres.',
             'password.confirmed' => 'La confirmación de la contraseña no coincide.',
-            'status.required' => 'El estado es obligatorio.',
-            'status.in' => 'El estado debe ser activo (1) o inactivo (2).',
         ];
     }
 }
