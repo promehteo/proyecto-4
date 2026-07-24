@@ -15,8 +15,9 @@
         @vite(['resources/css/app.css', 'resources/js/app.js'])
     </head>
     <body class="font-sans antialiased">
-        <div class="min-h-screen bg-gray-100 dark:bg-gray-900">
-            @include('layouts.navigation')
+        <div class="min-h-screen bg-gray-100 dark:bg-gray-900" x-data="{ sidebarCollapsed: false }" @sidebar-collapse.window="sidebarCollapsed = $event.detail">
+            <!-- Sidebar -->
+            @include('components.sidebar')
 
             <!-- Page Heading -->
             @isset($header)
@@ -28,7 +29,11 @@
             @endisset
 
             <!-- Page Content -->
-            <main>
+            <main 
+                class="transition-all duration-300 ease-in-out"
+                :class="sidebarCollapsed ? 'lg:pl-20' : 'lg:pl-64'"
+                x-init="$nextTick(() => { sidebarCollapsed = localStorage.getItem('sidebar-collapsed') === 'true' })"
+            >
                 {{ $slot }}
             </main>
         </div>
