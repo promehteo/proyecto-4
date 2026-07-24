@@ -6,7 +6,7 @@ namespace App\Http\Requests\Bitacora;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class IndexBitacoraRequest extends FormRequest
+class BitacoraIndexRequest extends FormRequest
 {
     public function authorize(): bool
     {

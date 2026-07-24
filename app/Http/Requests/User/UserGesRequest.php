@@ -4,21 +4,37 @@ declare(strict_types=1);
 
 namespace App\Http\Requests\User;
 
+use App\Models\User;
 use Illuminate\Foundation\Http\FormRequest;
 
-class StoreUserRequest extends FormRequest
+class UserGesRequest extends FormRequest
 {
     public function authorize(): bool
     {
-        return $this->user()?->hasPermissionTo('usuarios.crear') ?? false;
+        $user = $this->user();
+        if (!$user) {
+            return false;
+        }
+
+        if ($this->isMethod('PUT') || $this->isMethod('PATCH')) {
+            return $user->hasPermissionTo('usuarios.editar');
+        }
+
+        return $user->hasPermissionTo('usuarios.crear');
     }
 
     public function rules(): array
     {
+        /** @var User|null $usuario */
+        $usuario = $this->route('usuario');
+        $userId = $usuario ? $usuario->id : null;
+
+        $passwordRule = $userId ? ['nullable', 'string', 'min:8', 'confirmed'] : ['required', 'string', 'min:8', 'confirmed'];
+
         return [
             'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'email', 'max:255', 'unique:users,email'],
-            'password' => ['required', 'string', 'min:8', 'confirmed'],
+            'email' => ['required', 'email', 'max:255', "unique:users,email,{$userId},id"],
+            'password' => $passwordRule,
             'status' => ['required', 'integer', 'in:1,2'],
         ];
     }

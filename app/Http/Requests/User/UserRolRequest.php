@@ -8,7 +8,7 @@ use App\Models\Rol;
 use App\Models\User;
 use Illuminate\Foundation\Http\FormRequest;
 
-class UpdateUserRolesRequest extends FormRequest
+class UserRolRequest extends FormRequest
 {
     public function authorize(): bool
     {
@@ -44,7 +44,6 @@ class UpdateUserRolesRequest extends FormRequest
                     $adminRol = Rol::where('slug_rol', 'admin')->first();
                     $adminRolId = $adminRol?->id_rol;
 
-                    // Si el usuario era admin activo y se le está retirando el rol admin:
                     if ($targetUser->hasRole('admin') && (!is_array($rolesEnviados) || !in_array($adminRolId, array_map('intval', $rolesEnviados), true))) {
                         $otrosAdminsActivos = User::where('status', 1)
                             ->where('id', '!=', $targetUser->id)

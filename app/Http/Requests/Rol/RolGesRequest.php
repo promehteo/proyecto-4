@@ -4,20 +4,34 @@ declare(strict_types=1);
 
 namespace App\Http\Requests\Rol;
 
+use App\Models\Rol;
 use Illuminate\Foundation\Http\FormRequest;
 
-class StoreRolRequest extends FormRequest
+class RolGesRequest extends FormRequest
 {
     public function authorize(): bool
     {
-        return $this->user()?->hasPermissionTo('roles.crear') ?? false;
+        $user = $this->user();
+        if (!$user) {
+            return false;
+        }
+
+        if ($this->isMethod('PUT') || $this->isMethod('PATCH')) {
+            return $user->hasPermissionTo('roles.editar');
+        }
+
+        return $user->hasPermissionTo('roles.crear');
     }
 
     public function rules(): array
     {
+        /** @var Rol|null $rol */
+        $rol = $this->route('rol');
+        $rolId = $rol ? $rol->id_rol : null;
+
         return [
             'nombre_rol' => ['required', 'string', 'max:100'],
-            'slug_rol' => ['required', 'string', 'max:120', 'unique:rol,slug_rol', 'regex:/^[a-z0-9._-]+$/'],
+            'slug_rol' => ['required', 'string', 'max:120', "unique:rol,slug_rol,{$rolId},id_rol", 'regex:/^[a-z0-9._-]+$/'],
             'descripcion_rol' => ['nullable', 'string', 'max:255'],
             'status' => ['required', 'integer', 'in:1,2'],
         ];

@@ -2,15 +2,15 @@
 
 declare(strict_types=1);
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Bitacora;
 
+use App\Http\Controllers\Controller;
 use App\Http\Requests\Bitacora\IndexBitacoraRequest;
-use App\Http\Requests\Bitacora\ShowBitacoraRequest;
 use App\Models\Bitacora;
 use App\Models\User;
 use Illuminate\View\View;
 
-class BitacoraController extends Controller
+class BitacoraIndexController extends Controller
 {
     public function index(IndexBitacoraRequest $request): View
     {
@@ -54,12 +54,5 @@ class BitacoraController extends Controller
             'fechaHasta',
             'ip'
         ));
-    }
-
-    public function show(ShowBitacoraRequest $request, Bitacora $bitacora): View
-    {
-        $this->authorize('view', $bitacora);
-
-        return view('bitacora.show', compact('bitacora'));
     }
 }

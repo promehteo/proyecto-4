@@ -7,11 +7,20 @@ namespace App\Http\Requests\Permiso;
 use App\Models\Permiso;
 use Illuminate\Foundation\Http\FormRequest;
 
-class UpdatePermisoRequest extends FormRequest
+class PermisoGesRequest extends FormRequest
 {
     public function authorize(): bool
     {
-        return $this->user()?->hasPermissionTo('permisos.editar') ?? false;
+        $user = $this->user();
+        if (!$user) {
+            return false;
+        }
+
+        if ($this->isMethod('PUT') || $this->isMethod('PATCH')) {
+            return $user->hasPermissionTo('permisos.editar');
+        }
+
+        return $user->hasPermissionTo('permisos.crear');
     }
 
     public function rules(): array

@@ -8,7 +8,7 @@ use App\Models\Permiso;
 use App\Models\Rol;
 use Illuminate\Foundation\Http\FormRequest;
 
-class UpdateRolPermisosRequest extends FormRequest
+class RolPermisoRequest extends FormRequest
 {
     public function authorize(): bool
     {

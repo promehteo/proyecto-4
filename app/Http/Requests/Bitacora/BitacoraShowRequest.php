@@ -7,7 +7,7 @@ namespace App\Http\Requests\Bitacora;
 use App\Models\Bitacora;
 use Illuminate\Foundation\Http\FormRequest;
 
-class ShowBitacoraRequest extends FormRequest
+class BitacoraShowRequest extends FormRequest
 {
     public function authorize(): bool
     {
