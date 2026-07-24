@@ -7,13 +7,18 @@ namespace App\Http\Controllers\User;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\User\UserGesRequest;
 use App\Models\User;
+use App\Repositories\User\UserFormRepository;
 use App\Services\BitacoraService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\View\View;
 
-class UserGesController extends Controller
+class UserFormController extends Controller
 {
+    public function __construct(
+        protected UserFormRepository $formRepository
+    ) {}
+
     public function create(): View
     {
         $this->authorize('create', User::class);
@@ -26,7 +31,7 @@ class UserGesController extends Controller
         $data = $request->validated();
         $data['password'] = Hash::make($data['password']);
 
-        $usuario = User::create($data);
+        $usuario = $this->formRepository->create($data);
 
         BitacoraService::registrar(
             auditable: $usuario,
@@ -60,17 +65,17 @@ class UserGesController extends Controller
             unset($data['password']);
         }
 
-        $usuario->update($data);
+        $usuarioActualizado = $this->formRepository->update($usuario, $data);
 
         BitacoraService::registrar(
-            auditable: $usuario,
+            auditable: $usuarioActualizado,
             accion: $cambioPassword ? 'cambio de contraseña' : 'edición de usuario',
             valoresAnteriores: $valoresAnteriores,
-            valoresNuevos: $usuario->fresh()->toArray(),
-            descripcion: "Usuario '{$usuario->name}' actualizado exitosamente."
+            valoresNuevos: $usuarioActualizado->toArray(),
+            descripcion: "Usuario '{$usuarioActualizado->name}' actualizado exitosamente."
         );
 
         return redirect()->route('usuarios.index')
-            ->with('success', "El usuario '{$usuario->name}' ha sido actualizado correctamente.");
+            ->with('success', "El usuario '{$usuarioActualizado->name}' ha sido actualizado correctamente.");
     }
 }

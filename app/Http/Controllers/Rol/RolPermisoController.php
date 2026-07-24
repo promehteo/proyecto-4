@@ -6,29 +6,24 @@ namespace App\Http\Controllers\Rol;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Rol\RolPermisoRequest;
-use App\Models\Permiso;
-use App\Models\PermisoRol;
 use App\Models\Rol;
+use App\Repositories\Rol\RolFormRepository;
 use App\Services\BitacoraService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\View\View;
 
 class RolPermisoController extends Controller
 {
+    public function __construct(
+        protected RolFormRepository $formRepository
+    ) {}
+
     public function editPermisos(Rol $rol): View
     {
         $this->authorize('assignPermissions', $rol);
 
-        $permisosAgrupados = Permiso::active()
-            ->orderBy('modulo_permiso')
-            ->orderBy('nombre_permiso')
-            ->get()
-            ->groupBy('modulo_permiso');
-
-        $permisosAsignadosIds = PermisoRol::where('id_rol_permiso_rol', $rol->id_rol)
-            ->where('status', 1)
-            ->pluck('id_permiso_permiso_rol')
-            ->toArray();
+        $permisosAgrupados = $this->formRepository->getActivePermisosGroupedByModulo();
+        $permisosAsignadosIds = $this->formRepository->getAssignedPermisoIds($rol->id_rol);
 
         return view('roles.permisos', compact('rol', 'permisosAgrupados', 'permisosAsignadosIds'));
     }
@@ -37,29 +32,8 @@ class RolPermisoController extends Controller
     {
         $permisosEnviados = array_map('intval', $request->input('permisos', []));
 
-        $anterioresPivote = PermisoRol::where('id_rol_permiso_rol', $rol->id_rol)
-            ->get()
-            ->toArray();
-
-        PermisoRol::where('id_rol_permiso_rol', $rol->id_rol)
-            ->whereNotIn('id_permiso_permiso_rol', $permisosEnviados)
-            ->update(['status' => 2]);
-
-        foreach ($permisosEnviados as $permisoId) {
-            PermisoRol::updateOrCreate(
-                [
-                    'id_rol_permiso_rol' => $rol->id_rol,
-                    'id_permiso_permiso_rol' => $permisoId,
-                ],
-                [
-                    'status' => 1,
-                ]
-            );
-        }
-
-        $nuevosPivote = PermisoRol::where('id_rol_permiso_rol', $rol->id_rol)
-            ->get()
-            ->toArray();
+        $anterioresPivote = $this->formRepository->getPivotState($rol->id_rol);
+        $nuevosPivote = $this->formRepository->syncPermisos($rol, $permisosEnviados);
 
         BitacoraService::registrar(
             auditable: $rol,

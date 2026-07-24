@@ -7,17 +7,24 @@ namespace App\Http\Controllers\Permiso;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Permiso\PermisoGesRequest;
 use App\Models\Permiso;
+use App\Repositories\Permiso\PermisoFormRepository;
+use App\Repositories\Permiso\PermisoListRepository;
 use App\Services\BitacoraService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\View\View;
 
-class PermisoGesController extends Controller
+class PermisoFormController extends Controller
 {
+    public function __construct(
+        protected PermisoListRepository $listRepository,
+        protected PermisoFormRepository $formRepository
+    ) {}
+
     public function create(): View
     {
         $this->authorize('create', Permiso::class);
 
-        $modulosExistentes = Permiso::distinct()->pluck('modulo_permiso')->filter()->values();
+        $modulosExistentes = $this->listRepository->getDistinctModulos();
 
         return view('permisos.create', compact('modulosExistentes'));
     }
@@ -25,7 +32,7 @@ class PermisoGesController extends Controller
     public function store(PermisoGesRequest $request): RedirectResponse
     {
         $data = $request->validated();
-        $permiso = Permiso::create($data);
+        $permiso = $this->formRepository->create($data);
 
         BitacoraService::registrar(
             auditable: $permiso,
@@ -43,7 +50,7 @@ class PermisoGesController extends Controller
     {
         $this->authorize('update', $permiso);
 
-        $modulosExistentes = Permiso::distinct()->pluck('modulo_permiso')->filter()->values();
+        $modulosExistentes = $this->listRepository->getDistinctModulos();
 
         return view('permisos.edit', compact('permiso', 'modulosExistentes'));
     }
@@ -53,17 +60,17 @@ class PermisoGesController extends Controller
         $valoresAnteriores = $permiso->toArray();
         $data = $request->validated();
 
-        $permiso->update($data);
+        $permisoActualizado = $this->formRepository->update($permiso, $data);
 
         BitacoraService::registrar(
-            auditable: $permiso,
+            auditable: $permisoActualizado,
             accion: 'edición de permiso',
             valoresAnteriores: $valoresAnteriores,
-            valoresNuevos: $permiso->fresh()->toArray(),
-            descripcion: "Permiso '{$permiso->nombre_permiso}' actualizado exitosamente."
+            valoresNuevos: $permisoActualizado->toArray(),
+            descripcion: "Permiso '{$permisoActualizado->nombre_permiso}' actualizado exitosamente."
         );
 
         return redirect()->route('permisos.index')
-            ->with('success', "El permiso '{$permiso->nombre_permiso}' ha sido actualizado correctamente.");
+            ->with('success', "El permiso '{$permisoActualizado->nombre_permiso}' ha sido actualizado correctamente.");
     }
 }

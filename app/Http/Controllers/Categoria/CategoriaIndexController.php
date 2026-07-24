@@ -7,12 +7,19 @@ namespace App\Http\Controllers\Categoria;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Categoria\CategoriaIndexRequest;
 use App\Models\Categoria;
+use App\Repositories\Categoria\CategoriaFormRepository;
+use App\Repositories\Categoria\CategoriaListRepository;
 use App\Services\BitacoraService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\View\View;
 
 class CategoriaIndexController extends Controller
 {
+    public function __construct(
+        protected CategoriaListRepository $listRepository,
+        protected CategoriaFormRepository $formRepository
+    ) {}
+
     public function index(CategoriaIndexRequest $request): View
     {
         $this->authorize('viewAny', Categoria::class);
@@ -20,12 +27,10 @@ class CategoriaIndexController extends Controller
         $search = $request->input('search');
         $status = $request->input('status');
 
-        $categorias = Categoria::with('padre')
-            ->search($search)
-            ->byStatus($status ? (int) $status : null)
-            ->orderBy('nombre_categoria')
-            ->paginate(15)
-            ->withQueryString();
+        $categorias = $this->listRepository->paginate([
+            'search' => $search,
+            'status' => $status,
+        ]);
 
         return view('categorias.index', compact('categorias', 'search', 'status'));
     }
@@ -33,34 +38,34 @@ class CategoriaIndexController extends Controller
     public function inactivar(CategoriaIndexRequest $request, Categoria $categoria): RedirectResponse
     {
         $valoresAnteriores = $categoria->toArray();
-        $categoria->update(['status' => 2]);
+        $categoriaInactivada = $this->formRepository->deactivate($categoria);
 
         BitacoraService::registrar(
-            auditable: $categoria,
+            auditable: $categoriaInactivada,
             accion: 'inactivación de categoría',
             valoresAnteriores: $valoresAnteriores,
-            valoresNuevos: $categoria->fresh()->toArray(),
-            descripcion: "Categoría '{$categoria->nombre_categoria}' inactivada."
+            valoresNuevos: $categoriaInactivada->toArray(),
+            descripcion: "Categoría '{$categoriaInactivada->nombre_categoria}' inactivada."
         );
 
         return redirect()->route('categorias.index')
-            ->with('success', "La categoría '{$categoria->nombre_categoria}' ha sido inactivada.");
+            ->with('success', "La categoría '{$categoriaInactivada->nombre_categoria}' ha sido inactivada.");
     }
 
     public function activar(CategoriaIndexRequest $request, Categoria $categoria): RedirectResponse
     {
         $valoresAnteriores = $categoria->toArray();
-        $categoria->update(['status' => 1]);
+        $categoriaActivada = $this->formRepository->activate($categoria);
 
         BitacoraService::registrar(
-            auditable: $categoria,
+            auditable: $categoriaActivada,
             accion: 'activación de categoría',
             valoresAnteriores: $valoresAnteriores,
-            valoresNuevos: $categoria->fresh()->toArray(),
-            descripcion: "Categoría '{$categoria->nombre_categoria}' activada."
+            valoresNuevos: $categoriaActivada->toArray(),
+            descripcion: "Categoría '{$categoriaActivada->nombre_categoria}' activada."
         );
 
         return redirect()->route('categorias.index')
-            ->with('success', "La categoría '{$categoria->nombre_categoria}' ha sido activada.");
+            ->with('success', "La categoría '{$categoriaActivada->nombre_categoria}' ha sido activada.");
     }
 }

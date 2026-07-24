@@ -7,12 +7,19 @@ namespace App\Http\Controllers\User;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\User\UserIndexRequest;
 use App\Models\User;
+use App\Repositories\User\UserFormRepository;
+use App\Repositories\User\UserListRepository;
 use App\Services\BitacoraService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\View\View;
 
 class UserIndexController extends Controller
 {
+    public function __construct(
+        protected UserListRepository $listRepository,
+        protected UserFormRepository $formRepository
+    ) {}
+
     public function index(UserIndexRequest $request): View
     {
         $this->authorize('viewAny', User::class);
@@ -20,14 +27,10 @@ class UserIndexController extends Controller
         $search = $request->input('search');
         $status = $request->input('status');
 
-        $usuarios = User::with(['roles' => function ($q) {
-                $q->where('rol.status', 1)->where('rol_usuario.status', 1);
-            }])
-            ->search($search)
-            ->when($status, fn($q) => $q->where('status', (int) $status))
-            ->orderBy('name')
-            ->paginate(15)
-            ->withQueryString();
+        $usuarios = $this->listRepository->paginate([
+            'search' => $search,
+            'status' => $status,
+        ]);
 
         return view('usuarios.index', compact('usuarios', 'search', 'status'));
     }
@@ -35,34 +38,34 @@ class UserIndexController extends Controller
     public function inactivar(UserIndexRequest $request, User $usuario): RedirectResponse
     {
         $valoresAnteriores = $usuario->toArray();
-        $usuario->update(['status' => 2]);
+        $usuarioInactivado = $this->formRepository->deactivate($usuario);
 
         BitacoraService::registrar(
-            auditable: $usuario,
+            auditable: $usuarioInactivado,
             accion: 'inactivación de usuario',
             valoresAnteriores: $valoresAnteriores,
-            valoresNuevos: $usuario->fresh()->toArray(),
-            descripcion: "Usuario '{$usuario->name}' inactivado."
+            valoresNuevos: $usuarioInactivado->toArray(),
+            descripcion: "Usuario '{$usuarioInactivado->name}' inactivado."
         );
 
         return redirect()->route('usuarios.index')
-            ->with('success', "El usuario '{$usuario->name}' ha sido inactivado.");
+            ->with('success', "El usuario '{$usuarioInactivado->name}' ha sido inactivado.");
     }
 
     public function activar(UserIndexRequest $request, User $usuario): RedirectResponse
     {
         $valoresAnteriores = $usuario->toArray();
-        $usuario->update(['status' => 1]);
+        $usuarioActivado = $this->formRepository->activate($usuario);
 
         BitacoraService::registrar(
-            auditable: $usuario,
+            auditable: $usuarioActivado,
             accion: 'activación de usuario',
             valoresAnteriores: $valoresAnteriores,
-            valoresNuevos: $usuario->fresh()->toArray(),
-            descripcion: "Usuario '{$usuario->name}' activado."
+            valoresNuevos: $usuarioActivado->toArray(),
+            descripcion: "Usuario '{$usuarioActivado->name}' activado."
         );
 
         return redirect()->route('usuarios.index')
-            ->with('success', "El usuario '{$usuario->name}' ha sido activado.");
+            ->with('success', "El usuario '{$usuarioActivado->name}' ha sido activado.");
     }
 }

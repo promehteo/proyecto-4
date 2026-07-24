@@ -7,12 +7,17 @@ namespace App\Http\Controllers\Rol;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Rol\RolGesRequest;
 use App\Models\Rol;
+use App\Repositories\Rol\RolFormRepository;
 use App\Services\BitacoraService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\View\View;
 
-class RolGesController extends Controller
+class RolFormController extends Controller
 {
+    public function __construct(
+        protected RolFormRepository $formRepository
+    ) {}
+
     public function create(): View
     {
         $this->authorize('create', Rol::class);
@@ -23,7 +28,7 @@ class RolGesController extends Controller
     public function store(RolGesRequest $request): RedirectResponse
     {
         $data = $request->validated();
-        $rol = Rol::create($data);
+        $rol = $this->formRepository->create($data);
 
         BitacoraService::registrar(
             auditable: $rol,
@@ -49,17 +54,17 @@ class RolGesController extends Controller
         $valoresAnteriores = $rol->toArray();
         $data = $request->validated();
 
-        $rol->update($data);
+        $rolActualizado = $this->formRepository->update($rol, $data);
 
         BitacoraService::registrar(
-            auditable: $rol,
+            auditable: $rolActualizado,
             accion: 'edición de rol',
             valoresAnteriores: $valoresAnteriores,
-            valoresNuevos: $rol->fresh()->toArray(),
-            descripcion: "Rol '{$rol->nombre_rol}' actualizado exitosamente."
+            valoresNuevos: $rolActualizado->toArray(),
+            descripcion: "Rol '{$rolActualizado->nombre_rol}' actualizado exitosamente."
         );
 
         return redirect()->route('roles.index')
-            ->with('success', "El rol '{$rol->nombre_rol}' ha sido actualizado correctamente.");
+            ->with('success', "El rol '{$rolActualizado->nombre_rol}' ha sido actualizado correctamente.");
     }
 }

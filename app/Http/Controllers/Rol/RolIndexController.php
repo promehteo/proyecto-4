@@ -7,12 +7,19 @@ namespace App\Http\Controllers\Rol;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Rol\RolIndexRequest;
 use App\Models\Rol;
+use App\Repositories\Rol\RolFormRepository;
+use App\Repositories\Rol\RolListRepository;
 use App\Services\BitacoraService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\View\View;
 
 class RolIndexController extends Controller
 {
+    public function __construct(
+        protected RolListRepository $listRepository,
+        protected RolFormRepository $formRepository
+    ) {}
+
     public function index(RolIndexRequest $request): View
     {
         $this->authorize('viewAny', Rol::class);
@@ -20,14 +27,10 @@ class RolIndexController extends Controller
         $search = $request->input('search');
         $status = $request->input('status');
 
-        $roles = Rol::withCount(['permisos' => function ($q) {
-                $q->where('permiso.status', 1)->where('permiso_rol.status', 1);
-            }])
-            ->search($search)
-            ->byStatus($status ? (int) $status : null)
-            ->orderBy('nombre_rol')
-            ->paginate(15)
-            ->withQueryString();
+        $roles = $this->listRepository->paginate([
+            'search' => $search,
+            'status' => $status,
+        ]);
 
         return view('roles.index', compact('roles', 'search', 'status'));
     }
@@ -35,34 +38,34 @@ class RolIndexController extends Controller
     public function inactivar(RolIndexRequest $request, Rol $rol): RedirectResponse
     {
         $valoresAnteriores = $rol->toArray();
-        $rol->update(['status' => 2]);
+        $rolInactivado = $this->formRepository->deactivate($rol);
 
         BitacoraService::registrar(
-            auditable: $rol,
+            auditable: $rolInactivado,
             accion: 'inactivación de rol',
             valoresAnteriores: $valoresAnteriores,
-            valoresNuevos: $rol->fresh()->toArray(),
-            descripcion: "Rol '{$rol->nombre_rol}' inactivado."
+            valoresNuevos: $rolInactivado->toArray(),
+            descripcion: "Rol '{$rolInactivado->nombre_rol}' inactivado."
         );
 
         return redirect()->route('roles.index')
-            ->with('success', "El rol '{$rol->nombre_rol}' ha sido inactivado.");
+            ->with('success', "El rol '{$rolInactivado->nombre_rol}' ha sido inactivado.");
     }
 
     public function activar(RolIndexRequest $request, Rol $rol): RedirectResponse
     {
         $valoresAnteriores = $rol->toArray();
-        $rol->update(['status' => 1]);
+        $rolActivado = $this->formRepository->activate($rol);
 
         BitacoraService::registrar(
-            auditable: $rol,
+            auditable: $rolActivado,
             accion: 'activación de rol',
             valoresAnteriores: $valoresAnteriores,
-            valoresNuevos: $rol->fresh()->toArray(),
-            descripcion: "Rol '{$rol->nombre_rol}' activado."
+            valoresNuevos: $rolActivado->toArray(),
+            descripcion: "Rol '{$rolActivado->nombre_rol}' activado."
         );
 
         return redirect()->route('roles.index')
-            ->with('success', "El rol '{$rol->nombre_rol}' ha sido activado.");
+            ->with('success', "El rol '{$rolActivado->nombre_rol}' ha sido activado.");
     }
 }

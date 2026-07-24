@@ -5,14 +5,18 @@ declare(strict_types=1);
 namespace App\Http\Controllers\Bitacora;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Bitacora\IndexBitacoraRequest;
+use App\Http\Requests\Bitacora\BitacoraIndexRequest;
 use App\Models\Bitacora;
-use App\Models\User;
+use App\Repositories\Bitacora\BitacoraListRepository;
 use Illuminate\View\View;
 
 class BitacoraIndexController extends Controller
 {
-    public function index(IndexBitacoraRequest $request): View
+    public function __construct(
+        protected BitacoraListRepository $listRepository
+    ) {}
+
+    public function index(BitacoraIndexRequest $request): View
     {
         $this->authorize('viewAny', Bitacora::class);
 
@@ -25,21 +29,19 @@ class BitacoraIndexController extends Controller
         $fechaHasta = $request->input('fecha_hasta');
         $ip = $request->input('ip');
 
-        $bitacoras = Bitacora::with('usuario')
-            ->search($search)
-            ->byUsuario($usuarioId ? (int) $usuarioId : null)
-            ->byAccion($accion)
-            ->byAuditableTipo($auditableTipo)
-            ->byAuditableId($auditableId ? (int) $auditableId : null)
-            ->byFechaDesde($fechaDesde)
-            ->byFechaHasta($fechaHasta)
-            ->byIp($ip)
-            ->orderByDesc('fecha_bitacora')
-            ->paginate(20)
-            ->withQueryString();
+        $bitacoras = $this->listRepository->paginate([
+            'search' => $search,
+            'usuario_id' => $usuarioId,
+            'accion' => $accion,
+            'auditable_tipo' => $auditableTipo,
+            'auditable_id' => $auditableId,
+            'fecha_desde' => $fechaDesde,
+            'fecha_hasta' => $fechaHasta,
+            'ip' => $ip,
+        ]);
 
-        $usuarios = User::orderBy('name')->get();
-        $acciones = Bitacora::distinct()->pluck('accion_bitacora')->filter()->values();
+        $usuarios = $this->listRepository->getUsersForFilter();
+        $acciones = $this->listRepository->getDistinctAcciones();
 
         return view('bitacora.index', compact(
             'bitacoras',

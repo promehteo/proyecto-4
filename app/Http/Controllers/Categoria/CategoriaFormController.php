@@ -7,17 +7,24 @@ namespace App\Http\Controllers\Categoria;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Categoria\CategoriaGesRequest;
 use App\Models\Categoria;
+use App\Repositories\Categoria\CategoriaFormRepository;
+use App\Repositories\Categoria\CategoriaListRepository;
 use App\Services\BitacoraService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\View\View;
 
-class CategoriaGesController extends Controller
+class CategoriaFormController extends Controller
 {
+    public function __construct(
+        protected CategoriaListRepository $listRepository,
+        protected CategoriaFormRepository $formRepository
+    ) {}
+
     public function create(): View
     {
         $this->authorize('create', Categoria::class);
 
-        $categoriasPadre = Categoria::active()->orderBy('nombre_categoria')->get();
+        $categoriasPadre = $this->listRepository->getActiveForSelect();
 
         return view('categorias.create', compact('categoriasPadre'));
     }
@@ -25,7 +32,7 @@ class CategoriaGesController extends Controller
     public function store(CategoriaGesRequest $request): RedirectResponse
     {
         $data = $request->validated();
-        $categoria = Categoria::create($data);
+        $categoria = $this->formRepository->create($data);
 
         BitacoraService::registrar(
             auditable: $categoria,
@@ -43,10 +50,7 @@ class CategoriaGesController extends Controller
     {
         $this->authorize('update', $categoria);
 
-        $categoriasPadre = Categoria::active()
-            ->where('id_categoria', '!=', $categoria->id_categoria)
-            ->orderBy('nombre_categoria')
-            ->get();
+        $categoriasPadre = $this->listRepository->getActiveForSelect($categoria->id_categoria);
 
         return view('categorias.edit', compact('categoria', 'categoriasPadre'));
     }
@@ -56,17 +60,17 @@ class CategoriaGesController extends Controller
         $valoresAnteriores = $categoria->toArray();
         $data = $request->validated();
 
-        $categoria->update($data);
+        $categoriaActualizada = $this->formRepository->update($categoria, $data);
 
         BitacoraService::registrar(
-            auditable: $categoria,
+            auditable: $categoriaActualizada,
             accion: 'edición de categoría',
             valoresAnteriores: $valoresAnteriores,
-            valoresNuevos: $categoria->fresh()->toArray(),
-            descripcion: "Categoría '{$categoria->nombre_categoria}' actualizada exitosamente."
+            valoresNuevos: $categoriaActualizada->toArray(),
+            descripcion: "Categoría '{$categoriaActualizada->nombre_categoria}' actualizada exitosamente."
         );
 
         return redirect()->route('categorias.index')
-            ->with('success', "La categoría '{$categoria->nombre_categoria}' ha sido actualizada correctamente.");
+            ->with('success', "La categoría '{$categoriaActualizada->nombre_categoria}' ha sido actualizada correctamente.");
     }
 }

@@ -7,14 +7,21 @@ namespace App\Http\Controllers\Bitacora;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Bitacora\BitacoraShowRequest;
 use App\Models\Bitacora;
+use App\Repositories\Bitacora\BitacoraDetailRepository;
 use Illuminate\View\View;
 
 class BitacoraShowController extends Controller
 {
+    public function __construct(
+        protected BitacoraDetailRepository $detailRepository
+    ) {}
+
     public function show(BitacoraShowRequest $request, Bitacora $bitacora): View
     {
         $this->authorize('view', $bitacora);
 
-        return view('bitacora.show', compact('bitacora'));
+        $bitacoraDetail = $this->detailRepository->findDetailById($bitacora->id_bitacora) ?? $bitacora;
+
+        return view('bitacora.show', ['bitacora' => $bitacoraDetail]);
     }
 }

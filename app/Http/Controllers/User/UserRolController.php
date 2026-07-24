@@ -6,24 +6,24 @@ namespace App\Http\Controllers\User;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\User\UserRolRequest;
-use App\Models\Rol;
-use App\Models\RolUsuario;
 use App\Models\User;
+use App\Repositories\User\UserFormRepository;
 use App\Services\BitacoraService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\View\View;
 
 class UserRolController extends Controller
 {
+    public function __construct(
+        protected UserFormRepository $formRepository
+    ) {}
+
     public function editRoles(User $usuario): View
     {
         $this->authorize('assignRoles', $usuario);
 
-        $rolesActivos = Rol::active()->orderBy('nombre_rol')->get();
-        $rolesAsignadosIds = RolUsuario::where('id_usuario_rol_usuario', $usuario->id)
-            ->where('status', 1)
-            ->pluck('id_rol_rol_usuario')
-            ->toArray();
+        $rolesActivos = $this->formRepository->getActiveRolesForSelect();
+        $rolesAsignadosIds = $this->formRepository->getAssignedRoleIds($usuario->id);
 
         return view('usuarios.roles', compact('usuario', 'rolesActivos', 'rolesAsignadosIds'));
     }
@@ -32,29 +32,8 @@ class UserRolController extends Controller
     {
         $rolesEnviados = array_map('intval', $request->input('roles', []));
 
-        $anterioresPivote = RolUsuario::where('id_usuario_rol_usuario', $usuario->id)
-            ->get()
-            ->toArray();
-
-        RolUsuario::where('id_usuario_rol_usuario', $usuario->id)
-            ->whereNotIn('id_rol_rol_usuario', $rolesEnviados)
-            ->update(['status' => 2]);
-
-        foreach ($rolesEnviados as $rolId) {
-            RolUsuario::updateOrCreate(
-                [
-                    'id_usuario_rol_usuario' => $usuario->id,
-                    'id_rol_rol_usuario' => $rolId,
-                ],
-                [
-                    'status' => 1,
-                ]
-            );
-        }
-
-        $nuevosPivote = RolUsuario::where('id_usuario_rol_usuario', $usuario->id)
-            ->get()
-            ->toArray();
+        $anterioresPivote = $this->formRepository->getPivotState($usuario->id);
+        $nuevosPivote = $this->formRepository->syncRoles($usuario, $rolesEnviados);
 
         BitacoraService::registrar(
             auditable: $usuario,
