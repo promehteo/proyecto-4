@@ -1,0 +1,162 @@
+===============================================================================
+RESUMEN DE ARCHIVOS CREADOS Y MODIFICADOS - LA CASA EL RAPIDITO
+===============================================================================
+Proyecto: Sistema de Inventario "La Casa El Rapidito"
+Framework: Laravel 12 / PHP 8.2 / Blade + Alpine.js / Pest
+Fecha: 2026-07-24
+
+-------------------------------------------------------------------------------
+1. SERVICIOS Y AUDITORÍA
+-------------------------------------------------------------------------------
+[CREADO] app/Services/BitacoraService.php
+- Servicio encargado de registrar eventos de auditoría en la tabla `bitacora`.
+- Captura automáticamente snapshot del usuario autenticado, IP, User Agent, URL y método HTTP.
+- Sanitiza y excluye campos sensibles (contraseñas, tokens) antes de persistir los JSON de valores anteriores y nuevos.
+
+-------------------------------------------------------------------------------
+2. MODELOS ELOQUENT
+-------------------------------------------------------------------------------
+[CREADO] app/Models/Bitacora.php
+- Modelo de auditoría de solo lectura ($timestamps = false, primaryKey = id_bitacora).
+- Relación con User y scopes para filtrado avanzado por usuario, acción, entidad, fechas e IP.
+
+[CREADO] app/Models/Categoria.php
+- Modelo de categorías de inventario ($timestamps = false, primaryKey = id_categoria).
+- Relaciones padre/hijas/productos, scopes (active, inactive, search, byStatus) y método helper `generaJerarquiaCircular()`.
+
+[CREADO] app/Models/Producto.php
+- Modelo auxiliar para validación de categorías asociadas ($timestamps = false, primaryKey = id_producto).
+
+[CREADO] app/Models/Rol.php
+- Modelo de roles ($timestamps = false, primaryKey = id_rol).
+- Relaciones pivote con Permiso y User, scopes (active, inactive, search, byStatus).
+
+[CREADO] app/Models/Permiso.php
+- Modelo de permisos ($timestamps = false, primaryKey = id_permiso).
+- Relación pivote con Rol, scopes (active, inactive, search, byStatus, byModulo).
+
+[CREADO] app/Models/RolUsuario.php
+- Modelo de la tabla pivote `rol_usuario` ($timestamps = false, primaryKey = id_rol_usuario).
+
+[CREADO] app/Models/PermisoRol.php
+- Modelo de la tabla pivote `permiso_rol` ($timestamps = false, primaryKey = id_permiso_rol).
+
+[MODIFICADO] app/Models/User.php
+- Extensión del modelo User con campo status (1=activo, 2=inactivo), relación con roles y métodos RBAC (`hasRole`, `hasPermissionTo`).
+
+-------------------------------------------------------------------------------
+3. FORM REQUESTS (VALIDACIONES BACKEND)
+-------------------------------------------------------------------------------
+Categorías:
+[CREADO] app/Http/Requests/Categoria/StoreCategoriaRequest.php
+[CREADO] app/Http/Requests/Categoria/UpdateCategoriaRequest.php
+[CREADO] app/Http/Requests/Categoria/InactivarCategoriaRequest.php
+[CREADO] app/Http/Requests/Categoria/ActivarCategoriaRequest.php
+- Validaciones en español contra autorreferencia, jerarquías circulares recursivas e inactivación condicionada a no tener productos ni hijas activas.
+
+Bitácora:
+[CREADO] app/Http/Requests/Bitacora/IndexBitacoraRequest.php
+[CREADO] app/Http/Requests/Bitacora/ShowBitacoraRequest.php
+- Validaciones de parámetros de filtrado y visualización de detalle de bitácora.
+
+Roles:
+[CREADO] app/Http/Requests/Rol/StoreRolRequest.php
+[CREADO] app/Http/Requests/Rol/UpdateRolRequest.php
+[CREADO] app/Http/Requests/Rol/InactivarRolRequest.php
+[CREADO] app/Http/Requests/Rol/ActivarRolRequest.php
+[CREADO] app/Http/Requests/Rol/UpdateRolPermisosRequest.php
+- Validaciones de formato slug, verificación de usuarios activos asociados y protección de rol administrador.
+
+Permisos:
+[CREADO] app/Http/Requests/Permiso/StorePermisoRequest.php
+[CREADO] app/Http/Requests/Permiso/UpdatePermisoRequest.php
+[CREADO] app/Http/Requests/Permiso/InactivarPermisoRequest.php
+[CREADO] app/Http/Requests/Permiso/ActivarPermisoRequest.php
+- Validaciones de formato slug e impedimento de inactivación si el permiso está asignado a roles activos.
+
+Usuarios:
+[CREADO] app/Http/Requests/User/StoreUserRequest.php
+[CREADO] app/Http/Requests/User/UpdateUserRequest.php
+[CREADO] app/Http/Requests/User/InactivarUserRequest.php
+[CREADO] app/Http/Requests/User/ActivarUserRequest.php
+[CREADO] app/Http/Requests/User/UpdateUserRolesRequest.php
+- Validaciones de contraseña, correo único, prohibición de autoinactivación y preservación del único administrador activo.
+
+-------------------------------------------------------------------------------
+4. POLICIES (CONTROL DE ACCESO Y AUTORIZACIÓN)
+-------------------------------------------------------------------------------
+[CREADO] app/Policies/CategoriaPolicy.php
+[CREADO] app/Policies/BitacoraPolicy.php
+[CREADO] app/Policies/RolPolicy.php
+[CREADO] app/Policies/PermisoPolicy.php
+[CREADO] app/Policies/UserPolicy.php
+- Políticas sin métodos de eliminación física (delete/forceDelete), orientadas a viewAny, create, update, activate y deactivate.
+
+-------------------------------------------------------------------------------
+5. CONTROLADORES
+-------------------------------------------------------------------------------
+[MODIFICADO] app/Http/Controllers/Controller.php
+- Incorporación del trait `AuthorizesRequests` para habilitar `$this->authorize()` en Laravel 12.
+
+[CREADO] app/Http/Controllers/CategoriaController.php
+- CRUD completo de categorías con inactivación lógica (`status = 2`) y registro automático en Bitácora.
+
+[CREADO] app/Http/Controllers/BitacoraController.php
+- Controlador de solo lectura para listar con filtros y mostrar detalle JSON de auditoría.
+
+[CREADO] app/Http/Controllers/RolController.php
+- Gestión de roles e interfaz de asignación de permisos pivote (`permiso_rol`) mediante actualización de status (1/2) sin borrado físico.
+
+[CREADO] app/Http/Controllers/PermisoController.php
+- CRUD de permisos con inactivación lógica y registro en Bitácora.
+
+[CREADO] app/Http/Controllers/UserController.php
+- Gestión de usuarios y asignación de roles pivote (`rol_usuario`) actualizando status a 1 o 2.
+
+-------------------------------------------------------------------------------
+6. RUTAS Y VISTAS BLADE + ALPINE.JS
+-------------------------------------------------------------------------------
+[MODIFICADO] routes/web.php
+- Definición de rutas protegidas sin métodos destroy físicos.
+
+[MODIFICADO] resources/views/layouts/navigation.blade.php
+- Menú de navegación dinámico con comprobación `@can` para cada módulo.
+
+Categorías:
+[CREADO] resources/views/categorias/index.blade.php
+[CREADO] resources/views/categorias/create.blade.php
+[CREADO] resources/views/categorias/edit.blade.php
+
+Bitácora:
+[CREADO] resources/views/bitacora/index.blade.php
+[CREADO] resources/views/bitacora/show.blade.php
+
+Roles y Permisos:
+[CREADO] resources/views/roles/index.blade.php
+[CREADO] resources/views/roles/create.blade.php
+[CREADO] resources/views/roles/edit.blade.php
+[CREADO] resources/views/roles/permisos.blade.php (Matriz de checkboxes Alpine.js agrupada por módulo)
+
+Permisos:
+[CREADO] resources/views/permisos/index.blade.php
+[CREADO] resources/views/permisos/create.blade.php
+[CREADO] resources/views/permisos/edit.blade.php
+
+Usuarios:
+[CREADO] resources/views/usuarios/index.blade.php
+[CREADO] resources/views/usuarios/create.blade.php
+[CREADO] resources/views/usuarios/edit.blade.php
+[CREADO] resources/views/usuarios/roles.blade.php (Checkboxes Alpine.js para asignación de roles)
+
+-------------------------------------------------------------------------------
+7. SEEDERS Y PRUEBAS PEST
+-------------------------------------------------------------------------------
+[MODIFICADO] database/seeders/DatabaseSeeder.php
+- Seeder idempotente que crea roles, permisos base, usuario admin inicial y categorías de alimentos/bebidas mediante `updateOrCreate` (sin delete/truncate).
+
+[CREADO] tests/Feature/ModulosInventarioTest.php
+- Suite completa de pruebas en Pest que valida autorización, denegación de acceso, reglas de negocio e inactivación lógica (`status = 2`).
+
+[MODIFICADO] tests/Feature/ExampleTest.php
+- Ajuste de aserción para la redirección inicial del sistema a `/login`.
+===============================================================================
