@@ -16,16 +16,20 @@ build/
 .venv/
 venv/
 node_modules/
-.mypy_cache/
-.pytest_cache/
 target/
 .gradle/
+.mypy_cache/
+.pytest_cache/
+julia-*/
+zig*/
 
 # Logs and temp files
 *.log
 *.tmp
 *.swp
 *.swo
+*.bak
+*.~*
 
 # Environment
 .env
@@ -38,7 +42,7 @@ target/
 *.swp
 *.swo
 
-# System files
+# System
 .DS_Store
 Thumbs.db
 
