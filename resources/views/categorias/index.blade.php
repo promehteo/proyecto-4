@@ -31,7 +31,7 @@
                 </div>
             @endif
 
-            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg p-6">
+            <div class="bg-white dark:bg-slate-900 overflow-hidden shadow-sm sm:rounded-lg p-6 border border-slate-200 dark:border-slate-800">
                 <div class="flex flex-col md:flex-row justify-between items-center mb-6 gap-4">
                     <form method="GET" action="{{ route('categorias.index') }}" class="flex flex-wrap items-center gap-3 w-full md:w-auto">
                         <input type="text" name="search" value="{{ $search }}" placeholder="Buscar por nombre..." class="rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 text-sm">
@@ -54,25 +54,25 @@
 
                 <div class="overflow-x-auto">
                     <table class="min-w-full divide-y divide-gray-200">
-                        <thead class="bg-gray-50">
+                        <thead class="bg-slate-50 dark:bg-slate-800">
                             <tr>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">ID</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nombre</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Categoría Padre</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Descripción</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Estado</th>
-                                <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Acciones</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wider">ID</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wider">Nombre</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wider">Categoría Padre</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wider">Descripción</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wider">Estado</th>
+                                <th class="px-6 py-3 text-right text-xs font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wider">Acciones</th>
                             </tr>
                         </thead>
-                        <tbody class="bg-white divide-y divide-gray-200">
+                        <tbody class="bg-white dark:bg-slate-900 divide-y divide-slate-200 dark:divide-slate-800">
                             @forelse($categorias as $cat)
                                 <tr>
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">#{{ $cat->id_categoria }}</td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{{ $cat->nombre_categoria }}</td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-500 dark:text-slate-400">#{{ $cat->id_categoria }}</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-slate-900 dark:text-slate-100">{{ $cat->nombre_categoria }}</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-500 dark:text-slate-400">
                                         {{ $cat->padre ? $cat->padre->nombre_categoria : '— Sin padre —' }}
                                     </td>
-                                    <td class="px-6 py-4 text-sm text-gray-500">{{ $cat->descripcion_categoria ?? 'N/A' }}</td>
+                                    <td class="px-6 py-4 text-sm text-slate-500 dark:text-slate-400">{{ $cat->descripcion_categoria ?? 'N/A' }}</td>
                                     <td class="px-6 py-4 whitespace-nowrap text-sm">
                                         @if($cat->status === 1)
                                             <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">Activo</span>
@@ -83,12 +83,12 @@
                                     <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                                         <div class="flex justify-end gap-2">
                                             @can('update', $cat)
-                                                <a href="{{ route('categorias.edit', $cat) }}" class="text-indigo-600 hover:text-indigo-900">Editar</a>
+                                                <a href="{{ route('categorias.edit', $cat) }}" class="text-indigo-600 hover:text-indigo-900 dark:text-indigo-400 dark:hover:text-indigo-300">Editar</a>
                                             @endcan
 
                                             @if($cat->status === 1)
                                                 @can('deactivate', $cat)
-                                                    <button type="button" @click="abrirConfirmacion('{{ route('categorias.inactivar', $cat) }}', '{{ $cat->nombre_categoria }}')" class="text-red-600 hover:text-red-900">
+                                                    <button type="button" @click="abrirConfirmacion('{{ route('categorias.inactivar', $cat) }}', '{{ $cat->nombre_categoria }}')" class="text-red-600 hover:text-red-900 dark:text-red-400 dark:hover:text-red-300">
                                                         Inactivar
                                                     </button>
                                                 @endcan
@@ -97,7 +97,7 @@
                                                     <form method="POST" action="{{ route('categorias.activar', $cat) }}" class="inline">
                                                         @csrf
                                                         @method('PATCH')
-                                                        <button type="submit" class="text-green-600 hover:text-green-900">Activar</button>
+                                                        <button type="submit" class="text-green-600 hover:text-green-900 dark:text-green-400 dark:hover:text-green-300">Activar</button>
                                                     </form>
                                                 @endcan
                                             @endif
@@ -106,7 +106,7 @@
                                 </tr>
                             @empty
                                 <tr>
-                                    <td colspan="6" class="px-6 py-4 text-center text-sm text-gray-500">No se encontraron categorías.</td>
+                                    <td colspan="6" class="px-6 py-4 text-center text-sm text-slate-500 dark:text-slate-400">No se encontraron categorías.</td>
                                 </tr>
                             @endforelse
                         </tbody>
@@ -122,14 +122,14 @@
         <!-- Modal de Confirmación para Inactivar -->
         <div x-show="confirmModal" class="fixed inset-0 z-50 overflow-y-auto" style="display: none;">
             <div class="flex items-center justify-center min-h-screen px-4">
-                <div class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity"></div>
-                <div class="bg-white rounded-lg overflow-hidden shadow-xl transform transition-all sm:max-w-lg sm:w-full p-6 z-10">
-                    <h3 class="text-lg font-medium text-gray-900 mb-4">Confirmar Inactivación</h3>
-                    <p class="text-sm text-gray-500 mb-6">
+                <div class="fixed inset-0 bg-slate-900/60 transition-opacity"></div>
+                <div class="bg-white dark:bg-slate-900 rounded-lg overflow-hidden shadow-xl transform transition-all sm:max-w-lg sm:w-full p-6 z-10 border border-slate-200 dark:border-slate-800">
+                    <h3 class="text-lg font-medium text-slate-900 dark:text-slate-100 mb-4">Confirmar Inactivación</h3>
+                    <p class="text-sm text-slate-500 dark:text-slate-400 mb-6">
                         ¿Está seguro que desea inactivar la categoría <strong x-text="nombreCategoria"></strong>? Ningún registro se eliminará físicamente.
                     </p>
                     <div class="flex justify-end gap-3">
-                        <button type="button" @click="confirmModal = false" class="px-4 py-2 bg-gray-200 text-gray-800 text-xs font-semibold uppercase rounded-md hover:bg-gray-300">
+                        <button type="button" @click="confirmModal = false" class="px-4 py-2 bg-slate-200 dark:bg-slate-700 text-slate-800 dark:text-slate-200 text-xs font-semibold uppercase rounded-md hover:bg-slate-300 dark:hover:bg-slate-600">
                             Cancelar
                         </button>
                         <form :action="inactivarUrl" method="POST">
