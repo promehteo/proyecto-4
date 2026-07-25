@@ -27,10 +27,7 @@
                 </header>
             @endisset
 
-            <!-- Page Content -->
-            <main>
-                {{ $slot }}
-            </main>
+            <!-- Page Content is now inside navigation.blade.php -->
         </div>
     </body>
 </html>
