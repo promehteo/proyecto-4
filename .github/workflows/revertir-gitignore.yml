@@ -1,24 +1,66 @@
-name: Proteger gitignore (guard)
+name: Proteger gitignore (limpieza sin desincronizar)
 
 on:
   pull_request:
     types: [opened, synchronize, reopened]
 
+permissions:
+  contents: write
+  pull-requests: write
+
 jobs:
-  guard:
+  limpiar:
+    if: github.event.pull_request.head.repo.full_name == github.repository
     runs-on: ubuntu-latest
+
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout de la rama del PR (solo lectura; NO se empuja aqui)
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0
+          ref: ${{ github.event.pull_request.head.ref }}
+          persist-credentials: true
 
-      - name: Falla si el PR modifica .gitignore
+      - name: Detectar si el PR toca .gitignore
+        id: detect
         env:
           BASE: ${{ github.event.pull_request.base.sha }}
         run: |
-          if git diff --name-only "$BASE" "$GITHUB_SHA" | grep -qx '\.gitignore$'; then
-            echo "::error::Este PR modifica .gitignore, lo cual esta prohibido."
-            echo "Quita .gitignore de los cambios del PR y vuelve a publicar."
-            exit 1
+          if git diff --name-only "$BASE" HEAD | grep -qx '\.gitignore$'; then
+            echo "toca=yes" >> "$GITHUB_OUTPUT"
+          else
+            echo "toca=no" >> "$GITHUB_OUTPUT"
           fi
-          echo "OK: el PR no modifica .gitignore."
+
+      - name: Restaurar .gitignore en el working tree (rama paralela, no la de Qwen)
+        if: steps.detect.outputs.toca == 'yes'
+        env:
+          BASE: ${{ github.event.pull_request.base.sha }}
+        run: git checkout "$BASE" -- .gitignore
+
+      - name: Crear/actualizar PR limpio desde rama clean-pr-N
+        if: steps.detect.outputs.toca == 'yes'
+        id: cpr
+        uses: peter-evans/create-pull-request@v6
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          commit-message: "chore: version limpia sin .gitignore (de #${{ github.event.pull_request.number }})"
+          title: "Limpio: cambios de #${{ github.event.pull_request.number }} sin .gitignore"
+          body: |
+            Copia limpia de #${{ github.event.pull_request.number }}.
+            El original modificaba `.gitignore` (prohibido); aqui se restauro
+            a la rama base. **Mergea este PR**; el original queda cerrado.
+            Generado automaticamente.
+          branch: clean-pr-${{ github.event.pull_request.number }}
+          base: ${{ github.event.pull_request.base.ref }}
+          delete-branch: true
+          labels: auto-clean
+
+      - name: Cerrar el PR original con nota
+        if: steps.detect.outputs.toca == 'yes'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PR: ${{ github.event.pull_request.number }}
+          LIMPIO: ${{ steps.cpr.outputs.pull-request-url }}
+        run: |
+          gh pr close "$PR" --comment "Cerrado automaticamente: este PR modificaba \`.gitignore\` (prohibido). Version limpia en ${LIMPIO:-la rama clean-pr-${PR}}. Mergea esa en su lugar." || true
