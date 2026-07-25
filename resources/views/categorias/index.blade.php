@@ -31,7 +31,7 @@
                 </div>
             @endif
 
-            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg p-6">
+            <div class="bg-white dark:bg-slate-900 overflow-hidden shadow-sm sm:rounded-lg p-6 border border-slate-200 dark:border-slate-800">
                 <div class="flex flex-col md:flex-row justify-between items-center mb-6 gap-4">
                     <form method="GET" action="{{ route('categorias.index') }}" class="flex flex-wrap items-center gap-3 w-full md:w-auto">
                         <input type="text" name="search" value="{{ $search }}" placeholder="Buscar por nombre..." class="rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 text-sm">
