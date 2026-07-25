@@ -12,55 +12,61 @@ jobs:
   limpiar:
     if: github.event.pull_request.head.repo.full_name == github.repository
     runs-on: ubuntu-latest
-
+    env:
+      BASE_SHA: ${{ github.event.pull_request.base.sha }}
+      HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+      BASE_REF: ${{ github.event.pull_request.base.ref }}
+      PR: ${{ github.event.pull_request.number }}
     steps:
-      - name: Checkout de la rama del PR (solo lectura; NO se empuja aqui)
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
         with:
           fetch-depth: 0
-          ref: ${{ github.event.pull_request.head.ref }}
+          ref: ${{ github.event.pull_request.base.ref }}
           persist-credentials: true
 
       - name: Detectar si el PR toca .gitignore
         id: detect
-        env:
-          BASE: ${{ github.event.pull_request.base.sha }}
         run: |
-          if git diff --name-only "$BASE" HEAD | grep -qx '\.gitignore$'; then
+          if git diff --name-only "$BASE_SHA" "$HEAD_SHA" | grep -qx '\.gitignore$'; then
             echo "toca=yes" >> "$GITHUB_OUTPUT"
           else
             echo "toca=no" >> "$GITHUB_OUTPUT"
           fi
 
-      - name: Restaurar .gitignore en el working tree (rama paralela, no la de Qwen)
+      - name: Construir rama limpia clean-pr-N (git puro)
         if: steps.detect.outputs.toca == 'yes'
-        env:
-          BASE: ${{ github.event.pull_request.base.sha }}
-        run: git checkout "$BASE" -- .gitignore
+        run: |
+          git config user.name  "gitignore-guard[bot]"
+          git config user.email "gitignore-guard[bot]@users.noreply.github.com"
+          BR="clean-pr-$PR"
+          git checkout -B "$BR" "$BASE_SHA"
+          git checkout "$HEAD_SHA" -- .          # trae TODO el PR al indice
+          git checkout "$BASE_SHA" -- .gitignore # quita .gitignore del cambio
+          if git diff --cached --quiet; then echo "Nada limpio que commitear."; exit 0; fi
+          git commit -m "Cambios de #$PR sin .gitignore (limpieza automatica)"
+          git push -f origin "$BR"               # SOLO a clean-pr-N, nunca a la rama de Qwen
 
-      - name: Crear/actualizar PR limpio desde rama clean-pr-N
+      - name: Abrir o actualizar PR limpio
         if: steps.detect.outputs.toca == 'yes'
         id: cpr
-        uses: peter-evans/create-pull-request@v6
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          commit-message: "chore: version limpia sin .gitignore (de #${{ github.event.pull_request.number }})"
-          title: "Limpio: cambios de #${{ github.event.pull_request.number }} sin .gitignore"
-          body: |
-            Copia limpia de #${{ github.event.pull_request.number }}.
-            El original modificaba `.gitignore` (prohibido); aqui se restauro
-            a la rama base. **Mergea este PR**; el original queda cerrado.
-            Generado automaticamente.
-          branch: clean-pr-${{ github.event.pull_request.number }}
-          base: ${{ github.event.pull_request.base.ref }}
-          delete-branch: true
-          labels: auto-clean
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          BR="clean-pr-$PR"
+          EXISTE=$(gh pr list --head "$BR" --state open --json number -q '.[0].number')
+          if [ -n "$EXISTE" ]; then echo "num=$EXISTE" >> "$GITHUB_OUTPUT"; echo "PR limpio ya abierto: #$EXISTE";
+          else
+            URL=$(gh pr create --base "$BASE_REF" --head "$BR" \
+              --title "Limpio: cambios de #$PR sin .gitignore" \
+              --body "Copia automatica de #$PR con \`.gitignore\` restaurado. **Mergea este**; el original se cierra solo." \
+              --label auto-clean 2>&1) || true
+            echo "$URL"; echo "num=$(echo "$URL" | grep -oE '[0-9]+$' | tail -1)" >> "$GITHUB_OUTPUT"
+          fi
 
-      - name: Cerrar el PR original con nota
+      - name: Cerrar el PR original
         if: steps.detect.outputs.toca == 'yes'
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          PR: ${{ github.event.pull_request.number }}
-          LIMPIO: ${{ steps.cpr.outputs.pull-request-url }}
         run: |
-          gh pr close "$PR" --comment "Cerrado automaticamente: este PR modificaba \`.gitignore\` (prohibido). Version limpia en ${LIMPIO:-la rama clean-pr-${PR}}. Mergea esa en su lugar." || true
+          LIMPIO="${{ steps.cpr.outputs.num }}"
+          gh pr close "$PR" --comment "Cerrado automaticamente: modificaba \`.gitignore\`. Version limpia en #${LIMPIO:-clean-pr-$PR}. Mergea esa." || true
