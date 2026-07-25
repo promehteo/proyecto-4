@@ -1,0 +1,48 @@
+name: Revertir cambios en .gitignore del PR
+
+on:
+    pull_request:
+        types: [opened, synchronize, reopened]
+
+permissions:
+    contents: write
+
+jobs:
+    limpiar-gitignore:
+        if: github.event.pull_request.head.repo.full_name == github.repository
+        runs-on: ubuntu-latest
+
+        steps:
+            - name: Checkout de la rama del PR
+              uses: actions/checkout@v4
+              with:
+                  fetch-depth: 0
+                  ref: ${{ github.event.pull_request.head.ref }}
+                  persist-credentials: true
+
+            - name: Si .gitignore cambio, devolverlo a la version base y commitear
+              env:
+                  BASE: ${{ github.event.pull_request.base.sha }}
+                  HEAD_REF: ${{ github.event.pull_request.head.ref }}
+              run: |
+                  git config user.name  "gitignore-guard[bot]"
+                  git config user.email "gitignore-guard[bot]@users.noreply.github.com"
+
+                  if ! git diff --name-only "$BASE" HEAD | grep -qx '\.gitignore$'; then
+                    echo "OK: el PR no toca .gitignore. No hago nada."
+                    exit 0
+                  fi
+
+                  echo "Detectado cambio en .gitignore -> revirtiendo SOLO ese archivo."
+
+                  git checkout "$BASE" -- .gitignore
+
+                  if git diff --cached --quiet; then
+                    echo "El .gitignore ya coincide con la base; nada que commitear."
+                    exit 0
+                  fi
+
+                  git commit -m "chore: revierte cambios no autorizados en .gitignore"
+                  git push origin "HEAD:refs/heads/$HEAD_REF"
+
+                  echo "Listo: .gitignore revertido en el PR; el resto del diff queda intacto."
