@@ -4,6 +4,7 @@
          collapsed: window.sidebarCollapsed 
        }"
        x-init="$watch('collapsed', value => localStorage.setItem('sidebar-collapsed', value))"
+       @sidebar-toggle.window="mobileOpen = true"
        :class="collapsed ? 'w-20' : 'w-64'"
        class="fixed inset-y-0 left-0 z-30 flex flex-col bg-white dark:bg-slate-900 border-r border-slate-200 dark:border-slate-800 transition-all duration-200 lg:translate-x-0"
        :style="window.innerWidth < 1024 ? { transform: mobileOpen ? 'translateX(0)' : 'translateX(-100%)' } : {}"
@@ -181,16 +182,3 @@
      class="fixed inset-0 bg-slate-600 bg-opacity-75 z-20 lg:hidden"
      style="display: none;"
      aria-hidden="true"></div>
-
-<!-- Botón hamburguesa móvil (visible solo en móvil) -->
-<div class="lg:hidden fixed top-0 left-0 z-10 p-4">
-    <button @click="mobileOpen = true" 
-            class="p-2 rounded-md bg-white dark:bg-slate-900 text-slate-400 hover:text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-800 focus:outline-none focus:ring-2 focus:ring-indigo-500"
-            aria-label="Abrir menú"
-            aria-expanded="false"
-            aria-controls="sidebar-nav">
-        <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
-        </svg>
-    </button>
-</div>
