@@ -13,14 +13,14 @@
                     @csrf
 
                     <div class="mb-4">
-                        <label class="block font-medium text-sm text-gray-700">Nombre de la Categoría *</label>
-                        <input type="text" name="nombre_categoria" value="{{ old('nombre_categoria') }}" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
-                        @error('nombre_categoria') <span class="text-red-600 text-sm">{{ $message }}</span> @enderror
+                        <x-input-label for="nombre_categoria" :value="__('Nombre de la Categoría')" />
+                        <x-text-input id="nombre_categoria" name="nombre_categoria" type="text" class="mt-1 block w-full" :value="old('nombre_categoria')" required autofocus />
+                        <x-input-error class="mt-2" :messages="$errors->get('nombre_categoria')" />
                     </div>
 
                     <div class="mb-4">
-                        <label class="block font-medium text-sm text-gray-700">Categoría Padre (Opcional)</label>
-                        <select name="id_categoria_padre_categoria" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+                        <x-input-label for="id_categoria_padre_categoria" :value="__('Categoría Padre (Opcional)')" />
+                        <select id="id_categoria_padre_categoria" name="id_categoria_padre_categoria" class="mt-1 block w-full border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 focus:border-indigo-500 dark:focus:border-indigo-600 focus:ring-indigo-500 dark:focus:ring-indigo-600 rounded-md shadow-sm">
                             <option value="">— Ninguna (Categoría Principal) —</option>
                             @foreach($categoriasPadre as $padre)
                                 <option value="{{ $padre->id_categoria }}" {{ old('id_categoria_padre_categoria') == $padre->id_categoria ? 'selected' : '' }}>
@@ -28,27 +28,27 @@
                                 </option>
                             @endforeach
                         </select>
-                        @error('id_categoria_padre_categoria') <span class="text-red-600 text-sm">{{ $message }}</span> @enderror
+                        <x-input-error class="mt-2" :messages="$errors->get('id_categoria_padre_categoria')" />
                     </div>
 
                     <div class="mb-4">
-                        <label class="block font-medium text-sm text-gray-700">Descripción</label>
-                        <textarea name="descripcion_categoria" rows="3" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">{{ old('descripcion_categoria') }}</textarea>
-                        @error('descripcion_categoria') <span class="text-red-600 text-sm">{{ $message }}</span> @enderror
+                        <x-input-label for="descripcion_categoria" :value="__('Descripción')" />
+                        <textarea id="descripcion_categoria" name="descripcion_categoria" rows="3" class="mt-1 block w-full border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 focus:border-indigo-500 dark:focus:border-indigo-600 focus:ring-indigo-500 dark:focus:ring-indigo-600 rounded-md shadow-sm">{{ old('descripcion_categoria') }}</textarea>
+                        <x-input-error class="mt-2" :messages="$errors->get('descripcion_categoria')" />
                     </div>
 
                     <div class="mb-4">
-                        <label class="block font-medium text-sm text-gray-700">Estado *</label>
-                        <select name="status" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+                        <x-input-label for="status" :value="__('Estado')" />
+                        <select id="status" name="status" required class="mt-1 block w-full border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 focus:border-indigo-500 dark:focus:border-indigo-600 focus:ring-indigo-500 dark:focus:ring-indigo-600 rounded-md shadow-sm">
                             <option value="1" {{ old('status', '1') == '1' ? 'selected' : '' }}>Activo</option>
                             <option value="2" {{ old('status') == '2' ? 'selected' : '' }}>Inactivo</option>
                         </select>
-                        @error('status') <span class="text-red-600 text-sm">{{ $message }}</span> @enderror
+                        <x-input-error class="mt-2" :messages="$errors->get('status')" />
                     </div>
 
                     <div class="flex justify-end gap-3">
-                        <a href="{{ route('categorias.index') }}" class="px-4 py-2 bg-gray-200 text-gray-800 rounded-md text-xs font-semibold uppercase">Cancelar</a>
-                        <button type="submit" class="px-4 py-2 bg-indigo-600 text-white rounded-md text-xs font-semibold uppercase hover:bg-indigo-700">Guardar</button>
+                        <a href="{{ route('categorias.index') }}" class="inline-flex items-center px-4 py-2 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-500 rounded-md font-semibold text-xs text-gray-700 dark:text-gray-300 uppercase tracking-widest shadow-sm hover:bg-gray-50 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 dark:focus:ring-offset-gray-800 disabled:opacity-25 transition ease-in-out duration-150">Cancelar</a>
+                        <x-primary-button class="ms-3">Guardar</x-primary-button>
                     </div>
                 </form>
                 </div>
