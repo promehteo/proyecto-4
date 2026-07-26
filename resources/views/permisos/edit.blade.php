@@ -14,46 +14,46 @@
                     @method('PUT')
 
                     <div class="mb-4">
-                        <label class="block font-medium text-sm text-gray-700">Nombre del Permiso *</label>
-                        <input type="text" name="nombre_permiso" value="{{ old('nombre_permiso', $permiso->nombre_permiso) }}" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
-                        @error('nombre_permiso') <span class="text-red-600 text-sm">{{ $message }}</span> @enderror
+                        <x-input-label for="nombre_permiso" :value="__('Nombre del Permiso')" />
+                        <x-text-input id="nombre_permiso" name="nombre_permiso" type="text" class="mt-1 block w-full" :value="old('nombre_permiso', $permiso->nombre_permiso)" required autofocus />
+                        <x-input-error class="mt-2" :messages="$errors->get('nombre_permiso')" />
                     </div>
 
                     <div class="mb-4">
-                        <label class="block font-medium text-sm text-gray-700">Slug del Permiso *</label>
-                        <input type="text" name="slug_permiso" value="{{ old('slug_permiso', $permiso->slug_permiso) }}" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 font-mono text-sm">
-                        @error('slug_permiso') <span class="text-red-600 text-sm">{{ $message }}</span> @enderror
+                        <x-input-label for="slug_permiso" :value="__('Slug del Permiso')" />
+                        <x-text-input id="slug_permiso" name="slug_permiso" type="text" class="mt-1 block w-full font-mono text-sm" :value="old('slug_permiso', $permiso->slug_permiso)" required placeholder="ej: productos.crear" />
+                        <x-input-error class="mt-2" :messages="$errors->get('slug_permiso')" />
                     </div>
 
                     <div class="mb-4">
-                        <label class="block font-medium text-sm text-gray-700">Módulo del Permiso *</label>
-                        <input type="text" name="modulo_permiso" value="{{ old('modulo_permiso', $permiso->modulo_permiso) }}" required list="list-modulos" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+                        <x-input-label for="modulo_permiso" :value="__('Módulo del Permiso')" />
+                        <x-text-input id="modulo_permiso" name="modulo_permiso" type="text" class="mt-1 block w-full" :value="old('modulo_permiso', $permiso->modulo_permiso)" required list="list-modulos" />
                         <datalist id="list-modulos">
                             @foreach($modulosExistentes as $mod)
                                 <option value="{{ $mod }}">
                             @endforeach
                         </datalist>
-                        @error('modulo_permiso') <span class="text-red-600 text-sm">{{ $message }}</span> @enderror
+                        <x-input-error class="mt-2" :messages="$errors->get('modulo_permiso')" />
                     </div>
 
                     <div class="mb-4">
-                        <label class="block font-medium text-sm text-gray-700">Descripción</label>
-                        <textarea name="descripcion_permiso" rows="3" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">{{ old('descripcion_permiso', $permiso->descripcion_permiso) }}</textarea>
-                        @error('descripcion_permiso') <span class="text-red-600 text-sm">{{ $message }}</span> @enderror
+                        <x-input-label for="descripcion_permiso" :value="__('Descripción')" />
+                        <textarea id="descripcion_permiso" name="descripcion_permiso" rows="3" class="mt-1 block w-full border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 focus:border-indigo-500 dark:focus:border-indigo-600 focus:ring-indigo-500 dark:focus:ring-indigo-600 rounded-md shadow-sm">{{ old('descripcion_permiso', $permiso->descripcion_permiso) }}</textarea>
+                        <x-input-error class="mt-2" :messages="$errors->get('descripcion_permiso')" />
                     </div>
 
                     <div class="mb-4">
-                        <label class="block font-medium text-sm text-gray-700">Estado *</label>
-                        <select name="status" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+                        <x-input-label for="status" :value="__('Estado')" />
+                        <select id="status" name="status" required class="mt-1 block w-full border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 focus:border-indigo-500 dark:focus:border-indigo-600 focus:ring-indigo-500 dark:focus:ring-indigo-600 rounded-md shadow-sm">
                             <option value="1" {{ old('status', $permiso->status) == 1 ? 'selected' : '' }}>Activo</option>
                             <option value="2" {{ old('status', $permiso->status) == 2 ? 'selected' : '' }}>Inactivo</option>
                         </select>
-                        @error('status') <span class="text-red-600 text-sm">{{ $message }}</span> @enderror
+                        <x-input-error class="mt-2" :messages="$errors->get('status')" />
                     </div>
 
                     <div class="flex justify-end gap-3">
-                        <a href="{{ route('permisos.index') }}" class="px-4 py-2 bg-gray-200 text-gray-800 rounded-md text-xs font-semibold uppercase">Cancelar</a>
-                        <button type="submit" class="px-4 py-2 bg-indigo-600 text-white rounded-md text-xs font-semibold uppercase hover:bg-indigo-700">Actualizar Permiso</button>
+                        <a href="{{ route('permisos.index') }}" class="inline-flex items-center px-4 py-2 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-500 rounded-md font-semibold text-xs text-gray-700 dark:text-gray-300 uppercase tracking-widest shadow-sm hover:bg-gray-50 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 dark:focus:ring-offset-gray-800 disabled:opacity-25 transition ease-in-out duration-150">Cancelar</a>
+                        <x-primary-button class="ms-3">Actualizar Permiso</x-primary-button>
                     </div>
                 </form>
                 </div>

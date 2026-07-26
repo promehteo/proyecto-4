@@ -13,40 +13,40 @@
                     @csrf
 
                     <div class="mb-4">
-                        <label class="block font-medium text-sm text-gray-700">Nombre Completo *</label>
-                        <input type="text" name="name" value="{{ old('name') }}" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
-                        @error('name') <span class="text-red-600 text-sm">{{ $message }}</span> @enderror
+                        <x-input-label for="name" :value="__('Nombre Completo')" />
+                        <x-text-input id="name" name="name" type="text" class="mt-1 block w-full" :value="old('name')" required autofocus />
+                        <x-input-error class="mt-2" :messages="$errors->get('name')" />
                     </div>
 
                     <div class="mb-4">
-                        <label class="block font-medium text-sm text-gray-700">Correo Electrónico *</label>
-                        <input type="email" name="email" value="{{ old('email') }}" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
-                        @error('email') <span class="text-red-600 text-sm">{{ $message }}</span> @enderror
+                        <x-input-label for="email" :value="__('Correo Electrónico')" />
+                        <x-text-input id="email" name="email" type="email" class="mt-1 block w-full" :value="old('email')" required />
+                        <x-input-error class="mt-2" :messages="$errors->get('email')" />
                     </div>
 
                     <div class="mb-4">
-                        <label class="block font-medium text-sm text-gray-700">Contraseña *</label>
-                        <input type="password" name="password" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
-                        @error('password') <span class="text-red-600 text-sm">{{ $message }}</span> @enderror
+                        <x-input-label for="password" :value="__('Contraseña')" />
+                        <x-text-input id="password" name="password" type="password" class="mt-1 block w-full" required autocomplete="new-password" />
+                        <x-input-error class="mt-2" :messages="$errors->get('password')" />
                     </div>
 
                     <div class="mb-4">
-                        <label class="block font-medium text-sm text-gray-700">Confirmar Contraseña *</label>
-                        <input type="password" name="password_confirmation" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+                        <x-input-label for="password_confirmation" :value="__('Confirmar Contraseña')" />
+                        <x-text-input id="password_confirmation" name="password_confirmation" type="password" class="mt-1 block w-full" required autocomplete="new-password" />
                     </div>
 
                     <div class="mb-4">
-                        <label class="block font-medium text-sm text-gray-700">Estado *</label>
-                        <select name="status" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+                        <x-input-label for="status" :value="__('Estado')" />
+                        <select id="status" name="status" required class="mt-1 block w-full border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 focus:border-indigo-500 dark:focus:border-indigo-600 focus:ring-indigo-500 dark:focus:ring-indigo-600 rounded-md shadow-sm">
                             <option value="1" {{ old('status', '1') == '1' ? 'selected' : '' }}>Activo</option>
                             <option value="2" {{ old('status') == '2' ? 'selected' : '' }}>Inactivo</option>
                         </select>
-                        @error('status') <span class="text-red-600 text-sm">{{ $message }}</span> @enderror
+                        <x-input-error class="mt-2" :messages="$errors->get('status')" />
                     </div>
 
                     <div class="flex justify-end gap-3">
-                        <a href="{{ route('usuarios.index') }}" class="px-4 py-2 bg-gray-200 text-gray-800 rounded-md text-xs font-semibold uppercase">Cancelar</a>
-                        <button type="submit" class="px-4 py-2 bg-indigo-600 text-white rounded-md text-xs font-semibold uppercase hover:bg-indigo-700">Guardar Usuario</button>
+                        <a href="{{ route('usuarios.index') }}" class="inline-flex items-center px-4 py-2 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-500 rounded-md font-semibold text-xs text-gray-700 dark:text-gray-300 uppercase tracking-widest shadow-sm hover:bg-gray-50 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 dark:focus:ring-offset-gray-800 disabled:opacity-25 transition ease-in-out duration-150">Cancelar</a>
+                        <x-primary-button class="ms-3">Guardar Usuario</x-primary-button>
                     </div>
                 </form>
                 </div>
