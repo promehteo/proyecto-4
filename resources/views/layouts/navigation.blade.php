@@ -1,32 +1,17 @@
 <!-- Sidebar component - Fixed position, off-canvas en móvil -->
 <aside id="sidebar"
-       x-data="{ 
-           open: false,
-           collapsed: localStorage.getItem('sidebar-collapsed') === 'true',
-           toggle() {
-               this.collapsed = !this.collapsed;
-               localStorage.setItem('sidebar-collapsed', this.collapsed);
-               $dispatch('sidebar-toggle', { collapsed: this.collapsed });
-           }
-       }"
+       x-data="{ open: false }"
        @sidebar-toggle.window="open = true"
        @keydown.escape.window="open = false"
        :class="open ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'"
        class="fixed inset-y-0 left-0 z-30 flex flex-col w-64 lg:w-64 transition-all duration-200"
-       :class="collapsed ? 'lg:w-20' : 'lg:w-64'"
        aria-label="Navegación principal">
     
     <!-- Logo section -->
     <div class="flex items-center justify-between h-16 px-4 border-b border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900">
         <a href="{{ route('dashboard') }}" 
-           class="font-bold text-lg text-indigo-600 dark:text-indigo-400 truncate"
-           :class="collapsed ? 'lg:hidden' : ''">
+           class="font-bold text-lg text-indigo-600 dark:text-indigo-400 truncate">
             La Casa El Rapidito
-        </a>
-        <a href="{{ route('dashboard') }}" 
-           class="font-bold text-xl text-indigo-600 dark:text-indigo-400 hidden lg:block"
-           :class="collapsed ? '' : 'hidden'">
-            LR
         </a>
         <!-- Close button for mobile -->
         <button @click="open = false" 
@@ -108,56 +93,34 @@
                     <svg class="h-5 w-5 mr-3 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
                     </svg>
-                    <span :class="collapsed ? 'lg:hidden' : ''">{{ __('Usuarios') }}</span>
+                    <span>{{ __('Usuarios') }}</span>
                 </a>
             @endcan
+
+            <!-- Perfil -->
+            <a href="{{ route('profile.edit') }}" 
+               class="flex items-center px-3 py-2.5 rounded-lg text-sm font-medium transition-colors group"
+               :class="request()->routeIs('profile.*') ? 'bg-indigo-50 dark:bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 border-l-2 border-indigo-600' : 'text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800'"
+               aria-current="{{ request()->routeIs('profile.*') ? 'page' : null }}">
+                <svg class="h-5 w-5 mr-3 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                </svg>
+                <span>{{ __('Perfil') }}</span>
+            </a>
         </div>
     </nav>
 
-    <!-- Collapse toggle button (desktop only) -->
-    <div class="hidden lg:flex items-center justify-between px-3 py-3 border-t border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900">
-        <button @click="toggle()" 
-                class="flex items-center gap-2 px-2 py-1.5 rounded-lg text-xs font-medium text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-800 focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                :aria-expanded="!collapsed">
-            <svg class="h-4 w-4" :class="collapsed ? 'rotate-180' : ''" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 5l7 7-7 7M5 5l7 7-7 7" />
-            </svg>
-
-            <span x-text="collapsed ? 'Expandir' : 'Colapsar'" :class="collapsed ? 'lg:hidden' : ''"></span>
-
-        </button>
-    </div>
-
-    <!-- User Dropdown -->
+    <!-- Logout button at the bottom -->
     <div class="border-t border-slate-200 dark:border-slate-800 p-4 bg-white dark:bg-slate-900">
-        <x-dropdown align="left" width="48">
-            <x-slot name="trigger">
-                <button class="flex items-center w-full px-3 py-2 rounded-lg text-sm font-medium text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors focus:outline-none focus:ring-2 focus:ring-indigo-500">
-                    <svg class="h-5 w-5 mr-3 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-                    </svg>
-                    <span class="flex-1 text-left truncate" :class="collapsed ? 'lg:hidden' : ''">{{ Auth::user()->name }}</span>
-                    <svg class="h-4 w-4 ml-2 flex-shrink-0" :class="collapsed ? 'lg:hidden' : ''" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
-                    </svg>
-                </button>
-            </x-slot>
-
-            <x-slot name="content">
-                <x-dropdown-link :href="route('profile.edit')">
-                    {{ __('Profile') }}
-                </x-dropdown-link>
-
-                <form method="POST" action="{{ route('logout') }}">
-                    @csrf
-                    <x-dropdown-link :href="route('logout')"
-                            onclick="event.preventDefault();
-                                        this.closest('form').submit();">
-                        {{ __('Log Out') }}
-                    </x-dropdown-link>
-                </form>
-            </x-slot>
-        </x-dropdown>
+        <form method="POST" action="{{ route('logout') }}">
+            @csrf
+            <button type="submit" class="flex items-center w-full px-3 py-2 rounded-lg text-sm font-medium text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                <svg class="h-5 w-5 mr-3 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                </svg>
+                <span>{{ __('Cerrar Sesión') }}</span>
+            </button>
+        </form>
     </div>
 </aside>
 
