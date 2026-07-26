@@ -28,10 +28,7 @@
         @include('layouts.navigation')
         
         <!-- Main content container -->
-        <div class="min-h-screen transition-all duration-200 lg:ml-64"
-             x-data="{ collapsed: localStorage.getItem('sidebar-collapsed') === 'true' }"
-             @sidebar-toggle.window="collapsed = $event.detail.collapsed"
-             :class="collapsed ? 'lg:ml-20' : 'lg:ml-64'">
+        <div class="min-h-screen lg:ml-64">
             
             <!-- Header (sticky dentro del contenedor, NO fixed sobre viewport) -->
             @isset($header)
@@ -72,39 +69,6 @@
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
                                 </svg>
                             </button>
-                            
-                            <!-- User dropdown trigger -->
-                            @auth
-                                <div class="relative" x-data="{ open: false }">
-                                    <button @click="open = !open" 
-                                            class="flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 focus:outline-none focus:ring-2 focus:ring-indigo-500">
-                                        <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-                                        </svg>
-                                        <span class="hidden sm:inline">{{ Auth::user()->name }}</span>
-                                        <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
-                                        </svg>
-                                    </button>
-                                    
-                                    <div x-show="open" 
-                                         @click.away="open = false"
-                                         class="absolute right-0 mt-2 w-48 bg-white dark:bg-slate-900 rounded-lg shadow-lg border border-slate-200 dark:border-slate-800 py-1 z-30"
-                                         style="display: none;">
-                                        <a href="{{ route('profile.edit') }}" class="block px-4 py-2 text-sm text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800">
-                                            {{ __('Profile') }}
-                                        </a>
-                                        <form method="POST" action="{{ route('logout') }}">
-                                            @csrf
-                                            <button type="submit" 
-                                                    onclick="event.preventDefault(); this.closest('form').submit();"
-                                                    class="w-full text-left block px-4 py-2 text-sm text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800">
-                                                {{ __('Log Out') }}
-                                            </button>
-                                        </form>
-                                    </div>
-                                </div>
-                            @endauth
                         </div>
                     </div>
                 </header>
