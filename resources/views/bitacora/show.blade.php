@@ -6,9 +6,10 @@
     </x-slot>
 
     <div class="py-12">
-        <div class="max-w-5xl mx-auto sm:px-6 lg:px-8">
-            <div class="bg-white p-6 shadow-sm sm:rounded-lg space-y-6">
-                <div class="flex justify-between items-center border-b pb-4">
+        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-6">
+            <div class="p-4 sm:p-8 bg-white dark:bg-gray-800 shadow sm:rounded-lg">
+                <div class="max-w-xl space-y-6">
+                    <div class="flex justify-between items-center border-b pb-4">
                     <div>
                         <h3 class="text-lg font-bold text-gray-900">{{ $bitacora->accion_bitacora }}</h3>
                         <p class="text-sm text-gray-500">{{ $bitacora->descripcion_bitacora }}</p>
@@ -42,6 +43,7 @@
                         <h4 class="font-semibold text-gray-700 mb-2">Valores Nuevos (JSON)</h4>
                         <pre class="bg-gray-900 text-blue-400 p-4 rounded-md text-xs overflow-x-auto font-mono min-h-[150px]">{{ json_encode($bitacora->valores_nuevos_bitacora, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE) ?: 'null' }}</pre>
                     </div>
+                </div>
                 </div>
             </div>
         </div>
