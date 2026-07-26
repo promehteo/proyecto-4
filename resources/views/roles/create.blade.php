@@ -8,40 +8,40 @@
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-6">
             <div class="p-4 sm:p-8 bg-white dark:bg-gray-800 shadow sm:rounded-lg">
-                <div class="max-w-xl">
+                <div class="max-w-xl space-y-6">
                     <form method="POST" action="{{ route('roles.store') }}">
                     @csrf
 
-                    <div class="mb-4">
-                        <label class="block font-medium text-sm text-gray-700">Nombre del Rol *</label>
-                        <input type="text" name="nombre_rol" value="{{ old('nombre_rol') }}" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
-                        @error('nombre_rol') <span class="text-red-600 text-sm">{{ $message }}</span> @enderror
+                    <div>
+                        <x-input-label for="nombre_rol" :value="__('Nombre del Rol')" />
+                        <x-text-input id="nombre_rol" name="nombre_rol" type="text" class="mt-1 block w-full" :value="old('nombre_rol')" required autofocus />
+                        <x-input-error class="mt-2" :messages="$errors->get('nombre_rol')" />
                     </div>
 
-                    <div class="mb-4">
-                        <label class="block font-medium text-sm text-gray-700">Slug del Rol *</label>
-                        <input type="text" name="slug_rol" value="{{ old('slug_rol') }}" required placeholder="ej: auditor_inventario" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 font-mono text-sm">
-                        @error('slug_rol') <span class="text-red-600 text-sm">{{ $message }}</span> @enderror
+                    <div>
+                        <x-input-label for="slug_rol" :value="__('Slug del Rol')" />
+                        <x-text-input id="slug_rol" name="slug_rol" type="text" class="mt-1 block w-full font-mono text-sm" :value="old('slug_rol')" required placeholder="ej: auditor_inventario" />
+                        <x-input-error class="mt-2" :messages="$errors->get('slug_rol')" />
                     </div>
 
-                    <div class="mb-4">
-                        <label class="block font-medium text-sm text-gray-700">Descripción</label>
-                        <textarea name="descripcion_rol" rows="3" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">{{ old('descripcion_rol') }}</textarea>
-                        @error('descripcion_rol') <span class="text-red-600 text-sm">{{ $message }}</span> @enderror
+                    <div>
+                        <x-input-label for="descripcion_rol" :value="__('Descripción')" />
+                        <textarea id="descripcion_rol" name="descripcion_rol" rows="3" class="mt-1 block w-full border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 focus:border-indigo-500 dark:focus:border-indigo-600 focus:ring-indigo-500 dark:focus:ring-indigo-600 rounded-md shadow-sm">{{ old('descripcion_rol') }}</textarea>
+                        <x-input-error class="mt-2" :messages="$errors->get('descripcion_rol')" />
                     </div>
 
-                    <div class="mb-4">
-                        <label class="block font-medium text-sm text-gray-700">Estado *</label>
-                        <select name="status" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+                    <div>
+                        <x-input-label for="status" :value="__('Estado')" />
+                        <select id="status" name="status" required class="mt-1 block w-full border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 focus:border-indigo-500 dark:focus:border-indigo-600 focus:ring-indigo-500 dark:focus:ring-indigo-600 rounded-md shadow-sm">
                             <option value="1" {{ old('status', '1') == '1' ? 'selected' : '' }}>Activo</option>
                             <option value="2" {{ old('status') == '2' ? 'selected' : '' }}>Inactivo</option>
                         </select>
-                        @error('status') <span class="text-red-600 text-sm">{{ $message }}</span> @enderror
+                        <x-input-error class="mt-2" :messages="$errors->get('status')" />
                     </div>
 
-                    <div class="flex justify-end gap-3">
-                        <a href="{{ route('roles.index') }}" class="px-4 py-2 bg-gray-200 text-gray-800 rounded-md text-xs font-semibold uppercase">Cancelar</a>
-                        <button type="submit" class="px-4 py-2 bg-indigo-600 text-white rounded-md text-xs font-semibold uppercase hover:bg-indigo-700">Guardar Rol</button>
+                    <div class="flex items-center gap-4">
+                        <a href="{{ route('roles.index') }}" class="inline-flex items-center px-4 py-2 bg-gray-200 dark:bg-gray-700 border border-transparent rounded-md font-semibold text-xs text-gray-800 dark:text-gray-200 uppercase tracking-widest hover:bg-gray-300 dark:hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 dark:focus:ring-offset-gray-800 transition ease-in-out duration-150">{{ __('Cancelar') }}</a>
+                        <x-primary-button>{{ __('Guardar Rol') }}</x-primary-button>
                     </div>
                 </form>
                 </div>
