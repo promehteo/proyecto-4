@@ -81,9 +81,58 @@
                     <svg class="h-4 w-4 transform transition-transform" :class="expanded ? 'rotate-180' : ''" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
                     </svg>
-                    <span>{{ __('Usuarios') }}</span>
-                </a>
-            @endcan
+                </button>
+                
+                <div x-show="expanded" class="mt-2 space-y-1">
+                    @can('viewAny', App\Models\Bitacora::class)
+                        <a href="{{ route('bitacora.index') }}" 
+                           class="flex items-center px-3 py-2.5 rounded-lg text-sm font-medium transition-colors group"
+                           :class="request()->routeIs('bitacora.*') ? 'bg-indigo-50 dark:bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 border-l-2 border-indigo-600' : 'text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800'"
+                           aria-current="{{ request()->routeIs('bitacora.*') ? 'page' : null }}">
+                            <svg class="h-5 w-5 mr-3 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+                            </svg>
+                            <span>{{ __('Bitácora') }}</span>
+                        </a>
+                    @endcan
+
+                    @can('viewAny', App\Models\Rol::class)
+                        <a href="{{ route('roles.index') }}" 
+                           class="flex items-center px-3 py-2.5 rounded-lg text-sm font-medium transition-colors group"
+                           :class="request()->routeIs('roles.*') ? 'bg-indigo-50 dark:bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 border-l-2 border-indigo-600' : 'text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800'"
+                           aria-current="{{ request()->routeIs('roles.*') ? 'page' : null }}">
+                            <svg class="h-5 w-5 mr-3 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                            </svg>
+                            <span>{{ __('Roles') }}</span>
+                        </a>
+                    @endcan
+
+                    @can('viewAny', App\Models\Permiso::class)
+                        <a href="{{ route('permisos.index') }}" 
+                           class="flex items-center px-3 py-2.5 rounded-lg text-sm font-medium transition-colors group"
+                           :class="request()->routeIs('permisos.*') ? 'bg-indigo-50 dark:bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 border-l-2 border-indigo-600' : 'text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800'"
+                           aria-current="{{ request()->routeIs('permisos.*') ? 'page' : null }}">
+                            <svg class="h-5 w-5 mr-3 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 7a2 2 0 012 2m-2-2a2 2 0 00-2 2m2-2V5a2 2 0 10-4 0v2m4 0h3a2 2 0 012 2v7a2 2 0 01-2 2H5a2 2 0 01-2-2V9a2 2 0 012-2h3m3 4h3m-6 4h6" />
+                            </svg>
+                            <span>{{ __('Permisos') }}</span>
+                        </a>
+                    @endcan
+
+                    @can('viewAny', App\Models\User::class)
+                        <a href="{{ route('usuarios.index') }}" 
+                           class="flex items-center px-3 py-2.5 rounded-lg text-sm font-medium transition-colors group"
+                           :class="request()->routeIs('usuarios.*') ? 'bg-indigo-50 dark:bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 border-l-2 border-indigo-600' : 'text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800'"
+                           aria-current="{{ request()->routeIs('usuarios.*') ? 'page' : null }}">
+                            <svg class="h-5 w-5 mr-3 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+                            </svg>
+                            <span>{{ __('Usuarios') }}</span>
+                        </a>
+                    @endcan
+                </div>
+            </div>
 
             <!-- Perfil -->
             <a href="{{ route('profile.edit') }}" 
