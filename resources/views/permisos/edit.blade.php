@@ -6,9 +6,10 @@
     </x-slot>
 
     <div class="py-12">
-        <div class="max-w-3xl mx-auto sm:px-6 lg:px-8">
-            <div class="bg-white p-6 shadow-sm sm:rounded-lg">
-                <form method="POST" action="{{ route('permisos.update', $permiso) }}">
+        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-6">
+            <div class="p-4 sm:p-8 bg-white dark:bg-gray-800 shadow sm:rounded-lg">
+                <div class="max-w-xl">
+                    <form method="POST" action="{{ route('permisos.update', $permiso) }}">
                     @csrf
                     @method('PUT')
 
@@ -55,6 +56,7 @@
                         <button type="submit" class="px-4 py-2 bg-indigo-600 text-white rounded-md text-xs font-semibold uppercase hover:bg-indigo-700">Actualizar Permiso</button>
                     </div>
                 </form>
+                </div>
             </div>
         </div>
     </div>
