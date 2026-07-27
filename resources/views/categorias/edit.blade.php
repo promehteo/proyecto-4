@@ -41,25 +41,12 @@
                                 class="mt-1 block w-full border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 focus:border-indigo-500 dark:focus:border-indigo-600 focus:ring-indigo-500 dark:focus:ring-indigo-600 rounded-md shadow-sm">{{ old('descripcion_categoria', $categoria->descripcion_categoria) }}</textarea>
                             <x-input-error class="mt-2" :messages="$errors->get('descripcion_categoria')" />
                         </div>
+                 <div class="flex justify-end gap-3">
+                        <a href="{{ route('categorias.index') }}" class="inline-flex items-center px-4 py-2 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-500 rounded-md font-semibold text-xs text-gray-700 dark:text-gray-300 uppercase tracking-widest shadow-sm hover:bg-gray-50 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 dark:focus:ring-offset-gray-800 disabled:opacity-25 transition ease-in-out duration-150">Cancelar</a>
+                        <x-primary-button class="ms-3">Actualizar</x-primary-button>
+                    </div>
+                </form>
 
-                        <div class="mb-4">
-                            <x-input-label for="status" :value="__('Estado')" />
-                            <select id="status" name="status" required
-                                class="mt-1 block w-full border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 focus:border-indigo-500 dark:focus:border-indigo-600 focus:ring-indigo-500 dark:focus:ring-indigo-600 rounded-md shadow-sm">
-                                <option value="1" {{ old('status', $categoria->status) == 1 ? 'selected' : '' }}>Activo
-                                </option>
-                                <option value="2" {{ old('status', $categoria->status) == 2 ? 'selected' : '' }}>Inactivo
-                                </option>
-                            </select>
-                            <x-input-error class="mt-2" :messages="$errors->get('status')" />
-                        </div>
-
-                        <div class="flex justify-end gap-3">
-                            <a href="{{ route('categorias.index') }}"
-                                class="inline-flex items-center px-4 py-2 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-500 rounded-md font-semibold text-xs text-gray-700 dark:text-gray-300 uppercase tracking-widest shadow-sm hover:bg-gray-50 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 dark:focus:ring-offset-gray-800 disabled:opacity-25 transition ease-in-out duration-150">Cancelar</a>
-                            <x-primary-button class="ms-3">Actualizar</x-primary-button>
-                        </div>
-                    </form>
                 </div>
             </div>
         </div>

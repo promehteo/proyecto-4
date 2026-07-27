@@ -10,12 +10,21 @@ class CategoriaFormRepository
 {
     public function create(array $data): Categoria
     {
-        return Categoria::create($data);
+        return Categoria::create([
+            'nombre_categoria' => $data['nombre_categoria'],
+            'descripcion_categoria' => $data['descripcion_categoria'] ?? null,
+            'id_categoria_padre_categoria' => $data['id_categoria_padre_categoria'] ?? null,
+            'status' => 1,
+        ]);
     }
 
     public function update(Categoria $categoria, array $data): Categoria
     {
-        $categoria->update($data);
+        $categoria->update([
+            'nombre_categoria' => $data['nombre_categoria'],
+            'descripcion_categoria' => $data['descripcion_categoria'] ?? null,
+            'id_categoria_padre_categoria' => $data['id_categoria_padre_categoria'] ?? null,
+        ]);
         return $categoria->fresh();
     }
 
