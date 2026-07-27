@@ -12,34 +12,32 @@
                     <form method="POST" action="{{ route('categorias.store') }}" novalidate>
                         @csrf
 
-                        <div class="grid grid-cols-1 md:grid-cols-6 gap-4 mb-4">
-                            <div class="md:col-span-6">
-                                <x-input-label for="nombre_categoria" :value="__('Nombre de la Categoría')" />
-                                <x-text-input id="nombre_categoria" name="nombre_categoria" type="text"
-                                    class="mt-1 block w-full" :value="old('nombre_categoria')" required autofocus />
-                                <x-input-error class="mt-2" :messages="$errors->get('nombre_categoria')" />
-                            </div>
+                        <div class="mb-4">
+                            <x-input-label for="nombre_categoria" :value="__('Nombre de la Categoría')" />
+                            <x-text-input id="nombre_categoria" name="nombre_categoria" type="text"
+                                class="mt-1 block w-full" :value="old('nombre_categoria')" required autofocus />
+                            <x-input-error class="mt-2" :messages="$errors->get('nombre_categoria')" />
+                        </div>
 
-                            <div class="md:col-span-3">
-                                <x-input-label for="id_categoria_padre_categoria" :value="__('Categoría Padre (Opcional)')" />
-                                <select id="id_categoria_padre_categoria" name="id_categoria_padre_categoria"
-                                    class="mt-1 block w-full border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 focus:border-indigo-500 dark:focus:border-indigo-600 focus:ring-indigo-500 dark:focus:ring-indigo-600 rounded-md shadow-sm">
-                                    <option value="">— Ninguna (Categoría Principal) —</option>
-                                    @foreach($categoriasPadre as $padre)
-                                        <option value="{{ $padre->id_categoria }}" {{ old('id_categoria_padre_categoria') == $padre->id_categoria ? 'selected' : '' }}>
-                                            {{ $padre->nombre_categoria }}
-                                        </option>
-                                    @endforeach
-                                </select>
-                                <x-input-error class="mt-2" :messages="$errors->get('id_categoria_padre_categoria')" />
-                            </div>
+                        <div class="mb-4">
+                            <x-input-label for="id_categoria_padre_categoria" :value="__('Categoría Padre (Opcional)')" />
+                            <select id="id_categoria_padre_categoria" name="id_categoria_padre_categoria"
+                                class="mt-1 block w-full border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 focus:border-indigo-500 dark:focus:border-indigo-600 focus:ring-indigo-500 dark:focus:ring-indigo-600 rounded-md shadow-sm">
+                                <option value="">— Ninguna (Categoría Principal) —</option>
+                                @foreach($categoriasPadre as $padre)
+                                    <option value="{{ $padre->id_categoria }}" {{ old('id_categoria_padre_categoria') == $padre->id_categoria ? 'selected' : '' }}>
+                                        {{ $padre->nombre_categoria }}
+                                    </option>
+                                @endforeach
+                            </select>
+                            <x-input-error class="mt-2" :messages="$errors->get('id_categoria_padre_categoria')" />
+                        </div>
 
-                            <div class="md:col-span-3">
-                                <x-input-label for="descripcion_categoria" :value="__('Descripción')" />
-                                <textarea id="descripcion_categoria" name="descripcion_categoria" rows="3"
-                                    class="mt-1 block w-full border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 focus:border-indigo-500 dark:focus:border-indigo-600 focus:ring-indigo-500 dark:focus:ring-indigo-600 rounded-md shadow-sm">{{ old('descripcion_categoria') }}</textarea>
-                                <x-input-error class="mt-2" :messages="$errors->get('descripcion_categoria')" />
-                            </div>
+                        <div class="mb-4">
+                            <x-input-label for="descripcion_categoria" :value="__('Descripción')" />
+                            <textarea id="descripcion_categoria" name="descripcion_categoria" rows="3"
+                                class="mt-1 block w-full border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 focus:border-indigo-500 dark:focus:border-indigo-600 focus:ring-indigo-500 dark:focus:ring-indigo-600 rounded-md shadow-sm">{{ old('descripcion_categoria') }}</textarea>
+                            <x-input-error class="mt-2" :messages="$errors->get('descripcion_categoria')" />
                         </div>
 
                     <div class="flex justify-end gap-3">
