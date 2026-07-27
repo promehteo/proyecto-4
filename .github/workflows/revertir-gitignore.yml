@@ -17,6 +17,11 @@ jobs:
       HEAD_SHA: ${{ github.event.pull_request.head.sha }}
       BASE_REF: ${{ github.event.pull_request.base.ref }}
       PR: ${{ github.event.pull_request.number }}
+      # >>> AUTORES AUTOMATICOS (regex case-insensitive). Edita segun tu imagen.
+      # Cubre qwen-intl, qwen-chat coder, github-actions[bot] y el bot de limpieza.
+      AUTO_RE: "qwen|github-actions|gitignore-guard"
+      # >>> NOMBRES DE RAMA automaticos (red secundaria). Edita si ves otros prefijos.
+      HEAD_RE: "qwen|clean-pr-"
     steps:
       - uses: actions/checkout@v4
         with:
@@ -33,8 +38,29 @@ jobs:
             echo "toca=no" >> "$GITHUB_OUTPUT"
           fi
 
+      - name: Detectar si el PR es automatico (por autor del commit head)
+        id: autor
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          AUTOR=$(gh api "repos/$GITHUB_REPOSITORY/commits/$HEAD_SHA" \
+                    --jq '.commit.author.name + " " + .commit.author.email' 2>/dev/null || echo '')
+          HEADREF="${{ github.event.pull_request.head.ref }}"
+          AUTO=no
+          if printf '%s' "$AUTOR"  | grep -Eqi "$AUTO_RE"; then AUTO=yes; fi
+          if printf '%s' "$HEADREF" | grep -Eqi "$HEAD_RE"; then AUTO=yes; fi
+          echo "auto=$AUTO" >> "$GITHUB_OUTPUT"
+          echo "Autor commit head: $AUTOR | rama head: $HEADREF => automatico=$AUTO"
+
+      - name: Avisar (sin cerrar) si un PR humano toca .gitignore
+        if: steps.detect.outputs.toca == 'yes' && steps.autor.outputs.auto == 'no'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh pr comment "$PR" --body "Este PR modifica \`.gitignore\`. Como es de un autor humano, NO se cierra automaticamente. Revisa si el cambio es intencional antes de mergear." || true
+
       - name: Construir rama limpia clean-pr-N (git puro)
-        if: steps.detect.outputs.toca == 'yes'
+        if: steps.detect.outputs.toca == 'yes' && steps.autor.outputs.auto == 'yes'
         run: |
           git config user.name  "gitignore-guard[bot]"
           git config user.email "gitignore-guard[bot]@users.noreply.github.com"
@@ -47,7 +73,7 @@ jobs:
           git push -f origin "$BR"               # SOLO a clean-pr-N, nunca a la rama de Qwen
 
       - name: Abrir o actualizar PR limpio
-        if: steps.detect.outputs.toca == 'yes'
+        if: steps.detect.outputs.toca == 'yes' && steps.autor.outputs.auto == 'yes'
         id: cpr
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -64,9 +90,9 @@ jobs:
           fi
 
       - name: Cerrar el PR original
-        if: steps.detect.outputs.toca == 'yes'
+        if: steps.detect.outputs.toca == 'yes' && steps.autor.outputs.auto == 'yes'
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           LIMPIO="${{ steps.cpr.outputs.num }}"
-          gh pr close "$PR" --comment "Cerrado automaticamente: modificaba \`.gitignore\`. Version limpia en #${LIMPIO:-clean-pr-$PR}. Mergea esa." || true
+          gh pr close "$PR" --comment "Cerrado automaticamente: modificaba \`.gitignore\` (autor automatico). Version limpia en #${LIMPIO:-clean-pr-$PR}. Mergea esa." || true
