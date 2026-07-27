@@ -13,8 +13,9 @@
                         @csrf
                         @method('PUT')
 
-                        <div class="grid grid-cols-1 md:grid-cols-6 gap-4 mb-4">
-                            <div class="md:col-span-6">
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+                            <!-- Columna 1: Nombre de la Categoría -->
+                            <div>
                                 <x-input-label for="nombre_categoria" :value="__('Nombre de la Categoría')" />
                                 <x-text-input id="nombre_categoria" name="nombre_categoria" type="text"
                                     class="mt-1 block w-full" :value="old('nombre_categoria', $categoria->nombre_categoria)"
@@ -22,7 +23,8 @@
                                 <x-input-error class="mt-2" :messages="$errors->get('nombre_categoria')" />
                             </div>
 
-                            <div class="md:col-span-3">
+                            <!-- Columna 2: Categoría Padre -->
+                            <div>
                                 <x-input-label for="id_categoria_padre_categoria" :value="__('Categoría Padre (Opcional)')" />
                                 <select id="id_categoria_padre_categoria" name="id_categoria_padre_categoria"
                                     class="mt-1 block w-full border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 focus:border-indigo-500 dark:focus:border-indigo-600 focus:ring-indigo-500 dark:focus:ring-indigo-600 rounded-md shadow-sm">
@@ -36,10 +38,11 @@
                                 <x-input-error class="mt-2" :messages="$errors->get('id_categoria_padre_categoria')" />
                             </div>
 
-                            <div class="md:col-span-3">
+                            <!-- Columna 3: Descripción -->
+                            <div>
                                 <x-input-label for="descripcion_categoria" :value="__('Descripción')" />
                                 <textarea id="descripcion_categoria" name="descripcion_categoria" rows="3"
-                                    class="mt-1 block w-full border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 focus:border-indigo-500 dark:focus:border-indigo-600 focus:ring-indigo-500 dark:focus:ring-indigo-600 rounded-md shadow-sm">{{ old('descripcion_categoria', $categoria->descripcion_categoria) }}</textarea>
+                                    class="mt-1 block w-full border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 focus:border-indigo-500 dark:focus:border-indigo-600 focus:ring-indigo-500 dark:focus:ring-indigo-600 rounded-md shadow-sm resize-y">{{ old('descripcion_categoria', $categoria->descripcion_categoria) }}</textarea>
                                 <x-input-error class="mt-2" :messages="$errors->get('descripcion_categoria')" />
                             </div>
                         </div>
