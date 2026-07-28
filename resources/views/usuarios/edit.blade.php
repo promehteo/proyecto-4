@@ -8,48 +8,76 @@
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-6">
             <div class="p-4 sm:p-8 bg-white dark:bg-gray-800 shadow sm:rounded-lg">
-                <div class="max-w-xl">
-                    <form method="POST" action="{{ route('usuarios.update', $usuario) }}" novalidate>
-                    @csrf
-                    @method('PUT')
+                <div class="w-full">
+                    <form method="POST" action="{{ route('usuarios.update', $usuario) }}" novalidate
+                        x-data="{
+                            status: @js(old('status', (string)$usuario->status))
+                        }"
+                    >
+                        @csrf
+                        @method('PUT')
 
-                    <div class="mb-4">
-                        <x-input-label for="name" :value="__('Nombre Completo')" />
-                        <x-text-input id="name" name="name" type="text" class="mt-1 block w-full" :value="old('name', $usuario->name)" required autofocus />
-                        <x-input-error class="mt-2" :messages="$errors->get('name')" />
-                    </div>
+                        <!-- Fila 1: Grid de 2 columnas para datos básicos -->
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-4">
+                            
+                            {{-- Nombre Completo --}}
+                            <div>
+                                <x-input-label for="name" :value="__('Nombre Completo')" />
+                                <x-text-input id="name" name="name" type="text" class="mt-1 block w-full" :value="old('name', $usuario->name)" required autofocus />
+                                <x-input-error class="mt-2" :messages="$errors->get('name')" />
+                            </div>
 
-                    <div class="mb-4">
-                        <x-input-label for="email" :value="__('Correo Electrónico')" />
-                        <x-text-input id="email" name="email" type="email" class="mt-1 block w-full" :value="old('email', $usuario->email)" required />
-                        <x-input-error class="mt-2" :messages="$errors->get('email')" />
-                    </div>
+                            {{-- Correo Electrónico --}}
+                            <div>
+                                <x-input-label for="email" :value="__('Correo Electrónico')" />
+                                <x-text-input id="email" name="email" type="email" class="mt-1 block w-full" :value="old('email', $usuario->email)" required />
+                                <x-input-error class="mt-2" :messages="$errors->get('email')" />
+                            </div>
+                        </div>
 
-                    <div class="mb-4">
-                        <x-input-label for="password" :value="__('Nueva Contraseña (Opcional)')" />
-                        <x-text-input id="password" name="password" type="password" class="mt-1 block w-full" placeholder="Dejar en blanco para mantener la actual" autocomplete="new-password" />
-                        <x-input-error class="mt-2" :messages="$errors->get('password')" />
-                    </div>
+                        <!-- Fila 2: Grid de 2 columnas para contraseñas -->
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-4">
+                            
+                            {{-- Nueva Contraseña --}}
+                            <div>
+                                <x-input-label for="password" :value="__('Nueva Contraseña (Opcional)')" />
+                                <x-text-input id="password" name="password" type="password" class="mt-1 block w-full" placeholder="Dejar en blanco para mantener la actual" autocomplete="new-password" />
+                                <x-input-error class="mt-2" :messages="$errors->get('password')" />
+                            </div>
 
-                    <div class="mb-4">
-                        <x-input-label for="password_confirmation" :value="__('Confirmar Nueva Contraseña')" />
-                        <x-text-input id="password_confirmation" name="password_confirmation" type="password" class="mt-1 block w-full" placeholder="Confirmar contraseña" autocomplete="new-password" />
-                    </div>
+                            {{-- Confirmar Nueva Contraseña --}}
+                            <div>
+                                <x-input-label for="password_confirmation" :value="__('Confirmar Nueva Contraseña')" />
+                                <x-text-input id="password_confirmation" name="password_confirmation" type="password" class="mt-1 block w-full" placeholder="Confirmar contraseña" autocomplete="new-password" />
+                            </div>
+                        </div>
 
-                    <div class="mb-4">
-                        <x-input-label for="status" :value="__('Estado')" />
-                        <select id="status" name="status" required class="mt-1 block w-full border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 focus:border-indigo-500 dark:focus:border-indigo-600 focus:ring-indigo-500 dark:focus:ring-indigo-600 rounded-md shadow-sm">
-                            <option value="1" {{ old('status', $usuario->status) == 1 ? 'selected' : '' }}>Activo</option>
-                            <option value="2" {{ old('status', $usuario->status) == 2 ? 'selected' : '' }}>Inactivo</option>
-                        </select>
-                        <x-input-error class="mt-2" :messages="$errors->get('status')" />
-                    </div>
+                        <!-- Fila 3: Estado (Indicador de color reactivo) -->
+                        <div class="mb-4">
+                            <x-input-label for="status" :value="__('Estado')" />
+                            <div class="relative mt-1">
+                                <span aria-hidden="true"
+                                    :class="status == '1' ? 'bg-emerald-500' : 'bg-gray-400 dark:bg-gray-500'"
+                                    class="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 h-2 w-2 rounded-full transition-colors duration-150 motion-reduce:transition-none z-10"></span>
+                                <select id="status" name="status" x-model="status" required
+                                    class="block w-full border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 focus:border-indigo-500 dark:focus:border-indigo-600 focus:ring-indigo-500 dark:focus:ring-indigo-600 rounded-md shadow-sm pl-8">
+                                    <option value="1">Activo</option>
+                                    <option value="2">Inactivo</option>
+                                </select>
+                            </div>
+                            <x-input-error class="mt-2" :messages="$errors->get('status')" />
+                        </div>
 
-                    <div class="flex justify-end gap-3">
-                        <a href="{{ route('usuarios.index') }}" class="inline-flex items-center px-4 py-2 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-500 rounded-md font-semibold text-xs text-gray-700 dark:text-gray-300 uppercase tracking-widest shadow-sm hover:bg-gray-50 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 dark:focus:ring-offset-gray-800 disabled:opacity-25 transition ease-in-out duration-150">Cancelar</a>
-                        <x-primary-button class="ms-3">Actualizar Usuario</x-primary-button>
-                    </div>
-                </form>
+                        <div class="flex justify-end gap-3">
+                            <a href="{{ route('usuarios.index') }}" 
+                                class="inline-flex items-center px-4 py-2 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-500 rounded-md font-semibold text-xs text-gray-700 dark:text-gray-300 uppercase tracking-widest shadow-sm hover:bg-gray-50 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 dark:focus:ring-offset-gray-800 disabled:opacity-25 transition ease-in-out duration-150">
+                                Cancelar
+                            </a>
+                            <x-primary-button class="ms-3">
+                                Actualizar Usuario
+                            </x-primary-button>
+                        </div>
+                    </form>
                 </div>
             </div>
         </div>

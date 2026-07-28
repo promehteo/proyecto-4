@@ -18,7 +18,7 @@ class CategoriaListRepository
         return Categoria::with('padre')
             ->search($search)
             ->byStatus($status)
-            ->orderBy('nombre_categoria')
+            ->orderBy('id_categoria', 'desc')
             ->paginate($perPage)
             ->withQueryString();
     }

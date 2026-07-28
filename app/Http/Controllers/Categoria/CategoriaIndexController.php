@@ -27,12 +27,21 @@ class CategoriaIndexController extends Controller
         $search = $request->input('search');
         $status = $request->input('status');
 
+        $perPage = (int) $request->input('per_page', 10);
+        $perPage = max(5, min(25, $perPage));
+
         $categorias = $this->listRepository->paginate([
             'search' => $search,
             'status' => $status,
-        ]);
+        ], $perPage);
 
         return view('categorias.index', compact('categorias', 'search', 'status'));
+    }
+
+    public function show(Categoria $categoria): View
+    {
+        $this->authorize('view', $categoria);
+        return view('categorias.show', compact('categoria'));
     }
 
     public function inactivar(CategoriaIndexRequest $request, Categoria $categoria): RedirectResponse

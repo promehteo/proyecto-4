@@ -14,6 +14,11 @@ class CategoriaPolicy
         return $user->hasPermissionTo('categorias.ver');
     }
 
+    public function view(User $user, Categoria $categoria): bool
+    {
+        return $user->hasPermissionTo('categorias.ver');
+    }
+
     public function create(User $user): bool
     {
         return $user->hasPermissionTo('categorias.crear');

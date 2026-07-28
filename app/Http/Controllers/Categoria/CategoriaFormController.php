@@ -36,14 +36,14 @@ class CategoriaFormController extends Controller
 
         BitacoraService::registrar(
             auditable: $categoria,
-            accion: 'creación de categoría',
+            accion: 'registro de categoría',
             valoresAnteriores: null,
             valoresNuevos: $categoria->toArray(),
-            descripcion: "Categoría '{$categoria->nombre_categoria}' creada exitosamente."
+            descripcion: "Categoría '{$categoria->nombre_categoria}' registrada exitosamente."
         );
 
         return redirect()->route('categorias.index')
-            ->with('success', "La categoría '{$categoria->nombre_categoria}' ha sido creada correctamente.");
+            ->with('success', "La categoría '{$categoria->nombre_categoria}' ha sido registrada correctamente.");
     }
 
     public function edit(Categoria $categoria): View
@@ -67,10 +67,10 @@ class CategoriaFormController extends Controller
             accion: 'edición de categoría',
             valoresAnteriores: $valoresAnteriores,
             valoresNuevos: $categoriaActualizada->toArray(),
-            descripcion: "Categoría '{$categoriaActualizada->nombre_categoria}' actualizada exitosamente."
+            descripcion: "Categoría '{$categoriaActualizada->nombre_categoria}' editada exitosamente."
         );
 
         return redirect()->route('categorias.index')
-            ->with('success', "La categoría '{$categoriaActualizada->nombre_categoria}' ha sido actualizada correctamente.");
+            ->with('success', "La categoría '{$categoriaActualizada->nombre_categoria}' ha sido editada correctamente.");
     }
 }

@@ -30,12 +30,13 @@ Route::middleware('auth')->group(function () {
 
     // Módulo 1: Categorías
     Route::get('/categorias', [CategoriaIndexController::class, 'index'])->name('categorias.index');
-    Route::get('/categorias/crear', [CategoriaFormController::class, 'create'])->name('categorias.create');
+    Route::get('/categorias/registrar', [CategoriaFormController::class, 'create'])->name('categorias.create');
     Route::post('/categorias', [CategoriaFormController::class, 'store'])->name('categorias.store');
     Route::get('/categorias/{categoria}/editar', [CategoriaFormController::class, 'edit'])->name('categorias.edit');
     Route::put('/categorias/{categoria}', [CategoriaFormController::class, 'update'])->name('categorias.update');
     Route::patch('/categorias/{categoria}/inactivar', [CategoriaIndexController::class, 'inactivar'])->name('categorias.inactivar');
     Route::patch('/categorias/{categoria}/activar', [CategoriaIndexController::class, 'activar'])->name('categorias.activar');
+    Route::get('/categorias/{categoria}', [CategoriaIndexController::class, 'show'])->name('categorias.show');
 
     // Módulo 2: Bitácora (Solo Lectura)
     Route::get('/bitacora', [BitacoraIndexController::class, 'index'])->name('bitacora.index');

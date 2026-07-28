@@ -1,8 +1,9 @@
-<!-- Sidebar component - Fixed position, off-canvas en móvil -->
-<aside id="sidebar" x-data="{ open: false }" @sidebar-toggle.window="open = true" @keydown.escape.window="open = false"
-    :class="open ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'"
-    class="fixed inset-y-0 left-0 z-30 flex flex-col w-64 lg:w-64 transition-all duration-200"
-    aria-label="Navegación principal">
+<div x-data="{ open: false }" @sidebar-toggle.window="open = !open" @keydown.escape.window="open = false">
+    <!-- Sidebar component - Fixed position, off-canvas en móvil -->
+    <aside id="sidebar" 
+        :class="open ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'"
+        class="fixed inset-y-0 left-0 z-30 flex flex-col w-64 lg:w-64 transition-all duration-200 -translate-x-full lg:translate-x-0"
+        aria-label="Navegación principal">
 
     <!-- Logo section -->
     <div
@@ -170,9 +171,10 @@
     </div>
 </aside>
 
-<!-- Overlay for mobile (solo visible cuando sidebar está abierto en móvil) -->
-<div x-show="open" @click="open = false" x-transition:enter="transition-opacity ease-linear duration-300"
-    x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100"
-    x-transition:leave="transition-opacity ease-linear duration-300" x-transition:leave-start="opacity-100"
-    x-transition:leave-end="opacity-0" class="fixed inset-0 bg-slate-900/60 z-20 lg:hidden" style="display: none;"
-    aria-hidden="true"></div>
+    <!-- Overlay for mobile (solo visible cuando sidebar está abierto en móvil) -->
+    <div x-show="open" @click="open = false" x-transition:enter="transition-opacity ease-linear duration-300"
+        x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100"
+        x-transition:leave="transition-opacity ease-linear duration-300" x-transition:leave-start="opacity-100"
+        x-transition:leave-end="opacity-0" class="fixed inset-0 bg-slate-900/60 z-20 lg:hidden" style="display: none;"
+        aria-hidden="true"></div>
+</div>
