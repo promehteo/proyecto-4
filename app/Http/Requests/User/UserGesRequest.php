@@ -29,6 +29,10 @@ class UserGesRequest extends FormRequest
         $usuario = $this->route('usuario');
         $userId = $usuario ? $usuario->id : null;
 
+        if (!$userId && ($this->input('usuario_id') || $this->input('_model_id'))) {
+            $userId = (int) ($this->input('usuario_id') ?: $this->input('_model_id'));
+        }
+
         $passwordRule = $userId ? ['nullable', 'string', 'min:8', 'confirmed'] : ['required', 'string', 'min:8', 'confirmed'];
 
         return [

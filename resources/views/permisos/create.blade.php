@@ -1,120 +1,268 @@
 <x-app-layout>
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            {{ __('Nuevo Permiso') }}
+            {{ __('Registrar Permiso') }}
         </h2>
     </x-slot>
 
-    <div class="py-12">
+    <div class="py-12" x-data="permisoForm()">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-6">
-            <div class="p-4 sm:p-8 bg-white dark:bg-gray-800 shadow sm:rounded-lg">
+            <x-card>
+                <div class="flex items-center justify-between border-b border-slate-200 dark:border-slate-800 pb-4 mb-6">
+                    <div>
+                        <h3 class="text-lg font-medium text-slate-900 dark:text-slate-100 font-semibold">Información General</h3>
+                        <p class="text-sm text-slate-500 dark:text-slate-400">Registrar un nuevo permiso de acceso al sistema.</p>
+                    </div>
+                    <!-- Indicador de validación reactiva -->
+                    <div class="flex items-center gap-2 text-sm text-indigo-500 font-medium" x-show="isValidating" style="display: none;">
+                        <svg class="animate-spin h-4 w-4" fill="none" viewBox="0 0 24 24">
+                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
+                        </svg>
+                        Validando...
+                    </div>
+                </div>
+
                 <div class="w-full">
-                    <form method="POST" action="{{ route('permisos.store') }}" novalidate
-                        x-data="{
-                            nombre: @js(old('nombre_permiso', '')),
-                            slug: @js(old('slug_permiso', '')),
-                            slugTouched: @js(old('slug_permiso') !== null && old('slug_permiso') !== ''),
-                            desc: @js(old('descripcion_permiso', '')),
-                            status: @js(old('status', '1')),
-                            maxDesc: 255,
-                            slugify(v) {
-                                return (v || '').toString().toLowerCase()
-                                    .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
-                                    .replace(/[^a-z0-9]+/g, '.')
-                                    .replace(/^\.+|\.+$/g, '')
-                                    .slice(0, 80);
-                            },
-                            regen() { this.slug = this.slugify(this.nombre); this.slugTouched = false; }
-                        }"
-                        x-effect="if (!slugTouched) { slug = slugify(nombre) }"
-                    >
+                    <form method="POST" action="{{ route('permisos.store') }}" novalidate @submit.prevent="submitForm($event)">
                         @csrf
 
-                        <!-- Fila 1: Grid de 3 columnas para Nombre, Slug y Módulo -->
-                        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-4">
-                            
-                            {{-- Nombre del Permiso --}}
+                        <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-6">
+                            {{-- Nombre del permiso --}}
                             <div>
                                 <x-input-label for="nombre_permiso" :value="__('Nombre del Permiso')" />
-                                <x-text-input id="nombre_permiso" name="nombre_permiso" type="text"
-                                    x-model="nombre"
-                                    class="mt-1 block w-full" required autofocus />
-                                <x-input-error class="mt-2" :messages="$errors->get('nombre_permiso')" />
+                                <x-text-input
+                                    id="nombre_permiso"
+                                    name="nombre_permiso"
+                                    type="text"
+                                    x-model="form.nombre_permiso"
+                                    @input="markDirty('nombre_permiso'); if(!slugTouched) { form.slug_permiso = slugify(form.nombre_permiso); markDirty('slug_permiso'); }"
+                                    @blur="markDirty('nombre_permiso')"
+                                    class="mt-1 block w-full"
+                                    required
+                                    autofocus />
+                                <template x-if="errors['nombre_permiso']">
+                                    <p class="text-sm text-red-600 dark:text-red-400 mt-2" x-text="errors['nombre_permiso'][0]"></p>
+                                </template>
+                                @if($errors->has('nombre_permiso'))
+                                    <template x-if="!dirtyFields.has('nombre_permiso')">
+                                        <x-input-error class="mt-2" :messages="$errors->get('nombre_permiso')" />
+                                    </template>
+                                @endif
                             </div>
 
-                            {{-- Slug del Permiso (Generado en vivo) --}}
+                            {{-- Slug --}}
                             <div>
                                 <x-input-label for="slug_permiso" :value="__('Slug del Permiso')" />
-                                <x-text-input id="slug_permiso" name="slug_permiso" type="text"
-                                    x-model="slug"
-                                    @input="slugTouched = true"
-                                    class="mt-1 block w-full font-mono text-sm" required
-                                    placeholder="ej: productos.crear" />
-                                <p class="mt-1 text-xs text-gray-400 dark:text-gray-500">
+                                <x-text-input
+                                    id="slug_permiso"
+                                    name="slug_permiso"
+                                    type="text"
+                                    x-model="form.slug_permiso"
+                                    @input="slugTouched = true; markDirty('slug_permiso')"
+                                    @blur="markDirty('slug_permiso')"
+                                    class="mt-1 block w-full font-mono text-sm"
+                                    required
+                                    placeholder="ej: categorias.crear" />
+                                <p class="mt-1 text-xs text-slate-500 dark:text-slate-400">
                                     Se genera desde el nombre.
                                     <button type="button" @click="regen()"
-                                        class="font-medium text-indigo-600 dark:text-indigo-400 hover:text-indigo-500 dark:hover:text-indigo-300 hover:underline focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 rounded">
+                                        class="font-medium text-indigo-600 dark:text-indigo-400 hover:underline focus:outline-none">
                                         Regenerar
                                     </button>
                                 </p>
-                                <x-input-error class="mt-2" :messages="$errors->get('slug_permiso')" />
+                                <template x-if="errors['slug_permiso']">
+                                    <p class="text-sm text-red-600 dark:text-red-400 mt-2" x-text="errors['slug_permiso'][0]"></p>
+                                </template>
+                                @if($errors->has('slug_permiso'))
+                                    <template x-if="!dirtyFields.has('slug_permiso')">
+                                        <x-input-error class="mt-2" :messages="$errors->get('slug_permiso')" />
+                                    </template>
+                                @endif
                             </div>
 
-                            {{-- Módulo del Permiso --}}
+                            {{-- Módulo --}}
                             <div>
-                                <x-input-label for="modulo_permiso" :value="__('Módulo del Permiso')" />
-                                <x-text-input id="modulo_permiso" name="modulo_permiso" type="text"
-                                    class="mt-1 block w-full" :value="old('modulo_permiso')" required list="list-modulos"
-                                    placeholder="ej: inventario" />
-                                <datalist id="list-modulos">
-                                    @foreach($modulosExistentes as $mod)
-                                        <option value="{{ $mod }}">
-                                    @endforeach
-                                </datalist>
-                                <x-input-error class="mt-2" :messages="$errors->get('modulo_permiso')" />
+                                <x-input-label for="modulo_permiso" :value="__('Módulo')" />
+                                <x-text-input
+                                    id="modulo_permiso"
+                                    name="modulo_permiso"
+                                    type="text"
+                                    x-model="form.modulo_permiso"
+                                    @input="markDirty('modulo_permiso')"
+                                    @blur="markDirty('modulo_permiso')"
+                                    class="mt-1 block w-full"
+                                    required
+                                    placeholder="ej: Categorías" />
+                                <template x-if="errors['modulo_permiso']">
+                                    <p class="text-sm text-red-600 dark:text-red-400 mt-2" x-text="errors['modulo_permiso'][0]"></p>
+                                </template>
+                                @if($errors->has('modulo_permiso'))
+                                    <template x-if="!dirtyFields.has('modulo_permiso')">
+                                        <x-input-error class="mt-2" :messages="$errors->get('modulo_permiso')" />
+                                    </template>
+                                @endif
+                            </div>
+
+                            {{-- Estado --}}
+                            <div>
+                                <x-input-label for="status" :value="__('Estado')" />
+                                <x-select
+                                    id="status"
+                                    name="status"
+                                    x-model="form.status"
+                                    @change="markDirty('status')"
+                                    class="mt-1 block w-full">
+                                    <option value="1">Activo</option>
+                                    <option value="2">Inactivo</option>
+                                </x-select>
+                                <template x-if="errors['status']">
+                                    <p class="text-sm text-red-600 dark:text-red-400 mt-2" x-text="errors['status'][0]"></p>
+                                </template>
+                                @if($errors->has('status'))
+                                    <template x-if="!dirtyFields.has('status')">
+                                        <x-input-error class="mt-2" :messages="$errors->get('status')" />
+                                    </template>
+                                @endif
                             </div>
                         </div>
 
-                        <!-- Fila 2: Ancho completo para Descripción -->
-                        <div class="mb-4">
+                        {{-- Descripción --}}
+                        <div class="mb-6">
                             <div class="flex items-baseline justify-between gap-3">
                                 <x-input-label for="descripcion_permiso" :value="__('Descripción')" />
                                 <span
-                                    x-text="desc.length + ' / ' + maxDesc"
-                                    :class="desc.length >= maxDesc ? 'text-rose-500' : (desc.length >= maxDesc - 50 ? 'text-amber-500' : 'text-gray-400 dark:text-gray-500')"
-                                    aria-live="polite"
-                                    class="text-xs tabular-nums transition-colors duration-150 motion-reduce:transition-none"></span>
+                                    x-text="(form.descripcion_permiso || '').length + ' / 255'"
+                                    :class="(form.descripcion_permiso || '').length >= 255 ? 'text-rose-500' : 'text-slate-400 dark:text-slate-500'"
+                                    class="text-xs tabular-nums"></span>
                             </div>
-                            <textarea id="descripcion_permiso" name="descripcion_permiso" rows="3"
-                                maxlength="255" x-model="desc"
-                                class="mt-1 block w-full border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 focus:border-indigo-500 dark:focus:border-indigo-600 focus:ring-indigo-500 dark:focus:ring-indigo-600 rounded-md shadow-sm">{{ old('descripcion_permiso', '') }}</textarea>
-                            <x-input-error class="mt-2" :messages="$errors->get('descripcion_permiso')" />
+                            <x-textarea
+                                id="descripcion_permiso"
+                                name="descripcion_permiso"
+                                rows="3"
+                                maxlength="255"
+                                x-model="form.descripcion_permiso"
+                                @input="markDirty('descripcion_permiso')"
+                                @blur="markDirty('descripcion_permiso')"
+                                class="mt-1 block w-full">{{ old('descripcion_permiso', '') }}</x-textarea>
+                            <template x-if="errors['descripcion_permiso']">
+                                <p class="text-sm text-red-600 dark:text-red-400 mt-2" x-text="errors['descripcion_permiso'][0]"></p>
+                            </template>
+                            @if($errors->has('descripcion_permiso'))
+                                <template x-if="!dirtyFields.has('descripcion_permiso')">
+                                    <x-input-error class="mt-2" :messages="$errors->get('descripcion_permiso')" />
+                                </template>
+                            @endif
                         </div>
 
-                        <!-- Fila 3: Estado (Indicador de color reactivo) -->
-                        <div class="mb-4">
-                            <x-input-label for="status" :value="__('Estado')" />
-                            <div class="relative mt-1">
-                                <span aria-hidden="true"
-                                    :class="status == '1' ? 'bg-emerald-500' : 'bg-gray-400 dark:bg-gray-500'"
-                                    class="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 h-2 w-2 rounded-full transition-colors duration-150 motion-reduce:transition-none z-10"></span>
-                                <select id="status" name="status" x-model="status" required
-                                    class="block w-full border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 focus:border-indigo-500 dark:focus:border-indigo-600 focus:ring-indigo-500 dark:focus:ring-indigo-600 rounded-md shadow-sm pl-8">
-                                    <option value="1">Activo</option>
-                                    <option value="2">Inactivo</option>
-                                </select>
-                            </div>
-                            <x-input-error class="mt-2" :messages="$errors->get('status')" />
-                        </div>
-
-                        <div class="flex justify-end gap-3">
+                        <!-- Botones de Acción -->
+                        <div class="mt-6 flex flex-col-reverse sm:flex-row justify-end gap-3">
                             <a href="{{ route('permisos.index') }}"
-                                class="inline-flex items-center px-4 py-2 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-500 rounded-md font-semibold text-xs text-gray-700 dark:text-gray-300 uppercase tracking-widest shadow-sm hover:bg-gray-50 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 dark:focus:ring-offset-gray-800 disabled:opacity-25 transition ease-in-out duration-150">Cancelar</a>
-                            <x-primary-button class="ms-3">Guardar Permiso</x-primary-button>
+                                class="inline-flex items-center justify-center gap-1.5 px-4 py-2 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-500 rounded-md font-semibold text-xs text-gray-700 dark:text-gray-300 uppercase tracking-widest shadow-sm hover:bg-gray-50 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 dark:focus:ring-offset-gray-800 disabled:opacity-25 transition ease-in-out duration-150 w-full sm:w-auto">
+                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
+                                </svg>
+                                Volver
+                            </a>
+                            <x-primary-button class="w-full sm:w-auto justify-center" ::disabled="isValidating">Registrar</x-primary-button>
                         </div>
                     </form>
                 </div>
-            </div>
+            </x-card>
         </div>
     </div>
+
+    <script>
+        function permisoForm(permisoId = null) {
+            return {
+                form: {
+                    nombre_permiso: @js(old('nombre_permiso', '')),
+                    slug_permiso: @js(old('slug_permiso', '')),
+                    modulo_permiso: @js(old('modulo_permiso', '')),
+                    descripcion_permiso: @js(old('descripcion_permiso', '')),
+                    status: @js(old('status', '1'))
+                },
+                slugTouched: @js(old('slug_permiso') !== null && old('slug_permiso') !== ''),
+                errors: {},
+                dirtyFields: new Set(),
+                isValidating: false,
+                debounceTimeout: null,
+
+                slugify(v) {
+                    return (v || '').toString().toLowerCase()
+                        .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+                        .replace(/[^a-z0-9.]+/g, '.')
+                        .replace(/^\.+|\.+$/g, '')
+                        .slice(0, 100);
+                },
+
+                regen() {
+                    this.form.slug_permiso = this.slugify(this.form.nombre_permiso);
+                    this.slugTouched = false;
+                    this.markDirty('slug_permiso');
+                },
+
+                markDirty(field) {
+                    this.dirtyFields.add(field);
+                    this.debounceValidate();
+                },
+
+                debounceValidate() {
+                    clearTimeout(this.debounceTimeout);
+                    this.debounceTimeout = setTimeout(() => {
+                        this.validateForm();
+                    }, 500);
+                },
+
+                async validateForm() {
+                    if (this.dirtyFields.size === 0) return;
+
+                    this.isValidating = true;
+
+                    try {
+                        const response = await fetch("{{ route('api.system.validate-partial', ['formRequest' => 'Permiso/PermisoGesRequest']) }}", {
+                            method: "POST",
+                            headers: {
+                                "Content-Type": "application/json",
+                                "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                            },
+                            body: JSON.stringify({
+                                ...this.form,
+                                _model_id: permisoId,
+                                _dirty: Array.from(this.dirtyFields)
+                            })
+                        });
+
+                        const result = await response.json();
+                        
+                        this.dirtyFields.forEach(field => {
+                            delete this.errors[field];
+                        });
+
+                        if (result.errors) {
+                            Object.assign(this.errors, result.errors);
+                        }
+                    } catch (error) {
+                        console.error("Error en validación reactiva:", error);
+                    } finally {
+                        this.isValidating = false;
+                    }
+                },
+
+                async submitForm(e) {
+                    this.dirtyFields.add('nombre_permiso');
+                    this.dirtyFields.add('slug_permiso');
+                    this.dirtyFields.add('modulo_permiso');
+                    this.dirtyFields.add('status');
+                    this.dirtyFields.add('descripcion_permiso');
+                    
+                    await this.validateForm();
+                    
+                    if (Object.keys(this.errors).length === 0) {
+                        e.target.submit();
+                    }
+                }
+            };
+        }
+    </script>
 </x-app-layout>

@@ -36,14 +36,14 @@ class PermisoFormController extends Controller
 
         BitacoraService::registrar(
             auditable: $permiso,
-            accion: 'creación de permiso',
+            accion: 'registro de permiso',
             valoresAnteriores: null,
             valoresNuevos: $permiso->toArray(),
-            descripcion: "Permiso '{$permiso->nombre_permiso}' creado exitosamente."
+            descripcion: "Permiso '{$permiso->nombre_permiso}' registrado exitosamente."
         );
 
         return redirect()->route('permisos.index')
-            ->with('success', "El permiso '{$permiso->nombre_permiso}' ha sido creado correctamente.");
+            ->with('success', "El permiso '{$permiso->nombre_permiso}' ha sido registrado correctamente.");
     }
 
     public function edit(Permiso $permiso): View
@@ -67,10 +67,10 @@ class PermisoFormController extends Controller
             accion: 'edición de permiso',
             valoresAnteriores: $valoresAnteriores,
             valoresNuevos: $permisoActualizado->toArray(),
-            descripcion: "Permiso '{$permisoActualizado->nombre_permiso}' actualizado exitosamente."
+            descripcion: "Permiso '{$permisoActualizado->nombre_permiso}' editado exitosamente."
         );
 
         return redirect()->route('permisos.index')
-            ->with('success', "El permiso '{$permisoActualizado->nombre_permiso}' ha sido actualizado correctamente.");
+            ->with('success', "El permiso '{$permisoActualizado->nombre_permiso}' ha sido editado correctamente.");
     }
 }

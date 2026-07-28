@@ -32,14 +32,14 @@ class RolFormController extends Controller
 
         BitacoraService::registrar(
             auditable: $rol,
-            accion: 'creación de rol',
+            accion: 'registro de rol',
             valoresAnteriores: null,
             valoresNuevos: $rol->toArray(),
-            descripcion: "Rol '{$rol->nombre_rol}' creado exitosamente."
+            descripcion: "Rol '{$rol->nombre_rol}' registrado exitosamente."
         );
 
         return redirect()->route('roles.index')
-            ->with('success', "El rol '{$rol->nombre_rol}' ha sido creado correctamente.");
+            ->with('success', "El rol '{$rol->nombre_rol}' ha sido registrado correctamente.");
     }
 
     public function edit(Rol $rol): View
@@ -61,10 +61,10 @@ class RolFormController extends Controller
             accion: 'edición de rol',
             valoresAnteriores: $valoresAnteriores,
             valoresNuevos: $rolActualizado->toArray(),
-            descripcion: "Rol '{$rolActualizado->nombre_rol}' actualizado exitosamente."
+            descripcion: "Rol '{$rolActualizado->nombre_rol}' editado exitosamente."
         );
 
         return redirect()->route('roles.index')
-            ->with('success', "El rol '{$rolActualizado->nombre_rol}' ha sido actualizado correctamente.");
+            ->with('success', "El rol '{$rolActualizado->nombre_rol}' ha sido editado correctamente.");
     }
 }

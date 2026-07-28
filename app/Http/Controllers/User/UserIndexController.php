@@ -68,4 +68,13 @@ class UserIndexController extends Controller
         return redirect()->route('usuarios.index')
             ->with('success', "El usuario '{$usuarioActivado->name}' ha sido activado.");
     }
+
+    public function show(User $usuario): View
+    {
+        $this->authorize('view', $usuario);
+
+        $usuario->load('roles');
+
+        return view('usuarios.show', compact('usuario'));
+    }
 }

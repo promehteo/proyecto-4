@@ -45,7 +45,7 @@ Route::middleware('auth')->group(function () {
 
     // Módulo 3: Roles
     Route::get('/roles', [RolIndexController::class, 'index'])->name('roles.index');
-    Route::get('/roles/crear', [RolFormController::class, 'create'])->name('roles.create');
+    Route::get('/roles/registrar', [RolFormController::class, 'create'])->name('roles.create');
     Route::post('/roles', [RolFormController::class, 'store'])->name('roles.store');
     Route::get('/roles/{rol}/editar', [RolFormController::class, 'edit'])->name('roles.edit');
     Route::put('/roles/{rol}', [RolFormController::class, 'update'])->name('roles.update');
@@ -53,19 +53,21 @@ Route::middleware('auth')->group(function () {
     Route::patch('/roles/{rol}/activar', [RolIndexController::class, 'activar'])->name('roles.activar');
     Route::get('/roles/{rol}/permisos', [RolPermisoController::class, 'editPermisos'])->name('roles.permisos.edit');
     Route::put('/roles/{rol}/permisos', [RolPermisoController::class, 'updatePermisos'])->name('roles.permisos.update');
+    Route::get('/roles/{rol}', [RolIndexController::class, 'show'])->name('roles.show');
 
     // Módulo 3: Permisos
     Route::get('/permisos', [PermisoIndexController::class, 'index'])->name('permisos.index');
-    Route::get('/permisos/crear', [PermisoFormController::class, 'create'])->name('permisos.create');
+    Route::get('/permisos/registrar', [PermisoFormController::class, 'create'])->name('permisos.create');
     Route::post('/permisos', [PermisoFormController::class, 'store'])->name('permisos.store');
     Route::get('/permisos/{permiso}/editar', [PermisoFormController::class, 'edit'])->name('permisos.edit');
     Route::put('/permisos/{permiso}', [PermisoFormController::class, 'update'])->name('permisos.update');
     Route::patch('/permisos/{permiso}/inactivar', [PermisoIndexController::class, 'inactivar'])->name('permisos.inactivar');
     Route::patch('/permisos/{permiso}/activar', [PermisoIndexController::class, 'activar'])->name('permisos.activar');
+    Route::get('/permisos/{permiso}', [PermisoIndexController::class, 'show'])->name('permisos.show');
 
     // Módulo 3: Gestión de Usuarios y Roles
     Route::get('/usuarios', [UserIndexController::class, 'index'])->name('usuarios.index');
-    Route::get('/usuarios/crear', [UserFormController::class, 'create'])->name('usuarios.create');
+    Route::get('/usuarios/registrar', [UserFormController::class, 'create'])->name('usuarios.create');
     Route::post('/usuarios', [UserFormController::class, 'store'])->name('usuarios.store');
     Route::get('/usuarios/{usuario}/editar', [UserFormController::class, 'edit'])->name('usuarios.edit');
     Route::put('/usuarios/{usuario}', [UserFormController::class, 'update'])->name('usuarios.update');
@@ -73,6 +75,7 @@ Route::middleware('auth')->group(function () {
     Route::patch('/usuarios/{usuario}/activar', [UserIndexController::class, 'activar'])->name('usuarios.activar');
     Route::get('/usuarios/{usuario}/roles', [UserRolController::class, 'editRoles'])->name('usuarios.roles.edit');
     Route::put('/usuarios/{usuario}/roles', [UserRolController::class, 'updateRoles'])->name('usuarios.roles.update');
+    Route::get('/usuarios/{usuario}', [UserIndexController::class, 'show'])->name('usuarios.show');
 
     // Validación genérica y dinámica de FormRequests
     Route::post('/api/validate/{formRequest}', [\App\Http\Controllers\SystemValidationController::class, 'validatePartial'])

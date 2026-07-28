@@ -29,6 +29,10 @@ class PermisoGesRequest extends FormRequest
         $permiso = $this->route('permiso');
         $permisoId = $permiso ? $permiso->id_permiso : null;
 
+        if (!$permisoId && ($this->input('permiso_id') || $this->input('_model_id'))) {
+            $permisoId = (int) ($this->input('permiso_id') ?: $this->input('_model_id'));
+        }
+
         return [
             'nombre_permiso' => ['required', 'string', 'max:120'],
             'slug_permiso' => ['required', 'string', 'max:150', "unique:permiso,slug_permiso,{$permisoId},id_permiso", 'regex:/^[a-z0-9._-]+$/'],

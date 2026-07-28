@@ -35,14 +35,14 @@ class UserFormController extends Controller
 
         BitacoraService::registrar(
             auditable: $usuario,
-            accion: 'creación de usuario',
+            accion: 'registro de usuario',
             valoresAnteriores: null,
             valoresNuevos: $usuario->toArray(),
-            descripcion: "Usuario '{$usuario->name}' creado exitosamente."
+            descripcion: "Usuario '{$usuario->name}' registrado exitosamente."
         );
 
         return redirect()->route('usuarios.index')
-            ->with('success', "El usuario '{$usuario->name}' ha sido creado correctamente.");
+            ->with('success', "El usuario '{$usuario->name}' ha sido registrado correctamente.");
     }
 
     public function edit(User $usuario): View
@@ -72,10 +72,10 @@ class UserFormController extends Controller
             accion: $cambioPassword ? 'cambio de contraseña' : 'edición de usuario',
             valoresAnteriores: $valoresAnteriores,
             valoresNuevos: $usuarioActualizado->toArray(),
-            descripcion: "Usuario '{$usuarioActualizado->name}' actualizado exitosamente."
+            descripcion: "Usuario '{$usuarioActualizado->name}' editado exitosamente."
         );
 
         return redirect()->route('usuarios.index')
-            ->with('success', "El usuario '{$usuarioActualizado->name}' ha sido actualizado correctamente.");
+            ->with('success', "El usuario '{$usuarioActualizado->name}' ha sido editado correctamente.");
     }
 }

@@ -15,7 +15,7 @@
             this.confirmModal = true;
         }
     }">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-6">
 
             @if(session('success'))
                 <div class="mb-4 bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative">
@@ -31,117 +31,126 @@
                 </div>
             @endif
 
-            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg p-6">
-                <div class="flex flex-col md:flex-row justify-between items-center mb-6 gap-4">
-                    <form method="GET" action="{{ route('roles.index') }}" class="flex flex-wrap items-center gap-3 w-full md:w-auto">
-                        <input type="text" name="search" value="{{ $search }}" placeholder="Buscar por nombre o slug..." class="rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 text-sm">
-                        <select name="status" class="rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 text-sm">
+            <x-card>
+                <div class="flex flex-col md:flex-row justify-between items-stretch md:items-center mb-6 gap-4 w-full">
+                    <form method="GET" action="{{ route('roles.index') }}" x-data x-ref="filterForm" class="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 w-full md:w-auto">
+                        <x-text-input 
+                            type="text" 
+                            name="search" 
+                            value="{{ $search }}" 
+                            placeholder="Buscar por nombre o slug..." 
+                            @input.debounce.500ms="$refs.filterForm.submit()"
+                            class="text-sm py-1.5 w-full"
+                        />
+                        <x-select 
+                            name="status" 
+                            @change="$refs.filterForm.submit()"
+                            class="text-sm py-1.5 w-full"
+                        >
                             <option value="">Todos los estados</option>
                             <option value="1" {{ (string)$status === '1' ? 'selected' : '' }}>Activos</option>
                             <option value="2" {{ (string)$status === '2' ? 'selected' : '' }}>Inactivos</option>
-                        </select>
-                        <button type="submit" class="inline-flex items-center px-4 py-2 bg-gray-800 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-700">
-                            Filtrar
-                        </button>
+                        </x-select>
                     </form>
 
                     @can('create', App\Models\Rol::class)
-                        <a href="{{ route('roles.create') }}" class="inline-flex items-center px-4 py-2 bg-indigo-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-indigo-500">
-                            + Nuevo Rol
+                        <a href="{{ route('roles.create') }}" class="inline-flex items-center justify-center px-4 py-2 bg-indigo-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-indigo-500 w-full md:w-auto transition-colors">
+                            + Registrar Rol
                         </a>
                     @endcan
                 </div>
 
-                <div class="overflow-x-auto">
-                    <table class="min-w-full divide-y divide-gray-200">
-                        <thead class="bg-gray-50">
-                            <tr>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">ID</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nombre</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Slug</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Descripción</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Permisos Activos</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Estado</th>
-                                <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Acciones</th>
-                            </tr>
-                        </thead>
-                        <tbody class="bg-white divide-y divide-gray-200">
-                            @forelse($roles as $r)
-                                <tr>
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">#{{ $r->id_rol }}</td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{{ $r->nombre_rol }}</td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-xs font-mono text-indigo-600">{{ $r->slug_rol }}</td>
-                                    <td class="px-6 py-4 text-sm text-gray-500">{{ $r->descripcion_rol ?? 'N/A' }}</td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                        <span class="px-2 py-1 bg-gray-100 rounded text-xs font-semibold">{{ $r->permisos_count }} permisos</span>
-                                    </td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm">
-                                        @if($r->status === 1)
-                                            <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">Activo</span>
-                                        @else
-                                            <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-red-100 text-red-800">Inactivo</span>
-                                        @endif
-                                    </td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                                        <div class="flex justify-end gap-3">
-                                            @can('assignPermissions', $r)
-                                                <a href="{{ route('roles.permisos.edit', $r) }}" class="text-blue-600 hover:text-blue-900">Permisos</a>
-                                            @endcan
+                <x-data-table :paginator="$roles" :headers="['ID', 'NOMBRE', 'SLUG', 'DESCRIPCIÓN', 'PERMISOS ACTIVOS', 'ESTADO', 'ACCIONES']">
+                    @forelse($roles as $r)
+                        <tr>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-500">#{{ $r->id_rol }}</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm font-semibold text-slate-900 dark:text-slate-200">{{ $r->nombre_rol }}</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-xs font-mono text-indigo-600 dark:text-indigo-400 font-semibold">{{ $r->slug_rol }}</td>
+                            <td class="px-6 py-4 text-sm text-slate-500 dark:text-slate-400 truncate max-w-xs" title="{{ $r->descripcion_rol ?? '' }}">{{ $r->descripcion_rol ?? 'N/A' }}</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-500 dark:text-slate-400">
+                                <span class="px-2.5 py-1 bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-md text-xs font-medium">{{ $r->permisos_count }} permisos</span>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm">
+                                @if($r->status === 1)
+                                    <span class="px-3 py-1 inline-flex text-xs font-bold rounded-md bg-emerald-600 text-white">Activo</span>
+                                @else
+                                    <span class="px-3 py-1 inline-flex text-xs font-bold rounded-md bg-rose-600 text-white">Inactivo</span>
+                                @endif
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                                <div class="flex justify-end gap-2">
+                                    <a href="{{ route('roles.show', $r) }}" class="px-3 py-1 inline-flex items-center text-xs font-bold rounded-md bg-blue-600 text-white hover:bg-blue-700 transition-colors duration-150 gap-1">
+                                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
+                                        </svg>
+                                        Ver
+                                    </a>
 
-                                            @can('update', $r)
-                                                <a href="{{ route('roles.edit', $r) }}" class="text-indigo-600 hover:text-indigo-900">Editar</a>
-                                            @endcan
+                                    @can('assignPermissions', $r)
+                                        <a href="{{ route('roles.permisos.edit', $r) }}" class="px-3 py-1 inline-flex items-center text-xs font-bold rounded-md bg-purple-600 text-white hover:bg-purple-700 transition-colors duration-150 gap-1">
+                                            Permisos
+                                        </a>
+                                    @endcan
 
-                                            @if($r->status === 1)
-                                                @can('deactivate', $r)
-                                                    <button type="button" @click="abrirConfirmacion('{{ route('roles.inactivar', $r) }}', '{{ $r->nombre_rol }}')" class="text-red-600 hover:text-red-900">
-                                                        Inactivar
-                                                    </button>
-                                                @endcan
-                                            @else
-                                                @can('activate', $r)
-                                                    <form method="POST" action="{{ route('roles.activar', $r) }}" class="inline">
-                                                        @csrf
-                                                        @method('PATCH')
-                                                        <button type="submit" class="text-green-600 hover:text-green-900">Activar</button>
-                                                    </form>
-                                                @endcan
-                                            @endif
-                                        </div>
-                                    </td>
-                                </tr>
-                            @empty
-                                <tr>
-                                    <td colspan="7" class="px-6 py-4 text-center text-sm text-gray-500">No se encontraron roles.</td>
-                                </tr>
-                            @endforelse
-                        </tbody>
-                    </table>
-                </div>
+                                    @can('update', $r)
+                                        <a href="{{ route('roles.edit', $r) }}" class="px-3 py-1 inline-flex items-center text-xs font-bold rounded-md bg-amber-500 text-white hover:bg-amber-600 transition-colors duration-150 gap-1">
+                                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path>
+                                            </svg>
+                                            Editar
+                                        </a>
+                                    @endcan
 
-                <div class="mt-4">
-                    {{ $roles->links() }}
-                </div>
-            </div>
+                                    @if($r->status === 1)
+                                        @can('deactivate', $r)
+                                            <button type="button" @click="abrirConfirmacion('{{ route('roles.inactivar', $r) }}', '{{ $r->nombre_rol }}')" class="px-3 py-1 inline-flex items-center text-xs font-bold rounded-md bg-red-600 text-white hover:bg-red-500 transition-colors duration-150 gap-1">
+                                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                                                </svg>
+                                                Inactivar
+                                            </button>
+                                        @endcan
+                                    @else
+                                        @can('activate', $r)
+                                            <form method="POST" action="{{ route('roles.activar', $r) }}" class="inline">
+                                                @csrf
+                                                @method('PATCH')
+                                                <button type="submit" class="px-3 py-1 inline-flex items-center text-xs font-bold rounded-md bg-emerald-600 text-white hover:bg-emerald-500 transition-colors duration-150 gap-1">
+                                                    Activar
+                                                </button>
+                                            </form>
+                                        @endcan
+                                    @endif
+                                </div>
+                            </td>
+                        </tr>
+                    @empty
+                        <tr>
+                            <td colspan="7" class="px-6 py-4 text-center text-sm text-slate-500">No se encontraron roles.</td>
+                        </tr>
+                    @endforelse
+                </x-data-table>
+            </x-card>
         </div>
 
         <!-- Modal de Confirmación para Inactivar Rol -->
         <div x-show="confirmModal" class="fixed inset-0 z-50 overflow-y-auto" style="display: none;">
             <div class="flex items-center justify-center min-h-screen px-4">
-                <div class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity"></div>
-                <div class="bg-white rounded-lg overflow-hidden shadow-xl transform transition-all sm:max-w-lg sm:w-full p-6 z-10">
-                    <h3 class="text-lg font-medium text-gray-900 mb-4">Confirmar Inactivación de Rol</h3>
-                    <p class="text-sm text-gray-500 mb-6">
-                        ¿Está seguro que desea inactivar el rol <strong x-text="nombreRol"></strong>? El rol no se borrará físicamente.
+                <div class="fixed inset-0 bg-gray-500/75 dark:bg-slate-900/80 transition-opacity"></div>
+                <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl overflow-hidden shadow-xl transform transition-all sm:max-w-lg sm:w-full p-6 z-10">
+                    <h3 class="text-lg font-medium text-slate-900 dark:text-slate-100 font-semibold mb-4">Confirmar Inactivación de Rol</h3>
+                    <p class="text-sm text-slate-600 dark:text-slate-400 mb-6">
+                        ¿Está seguro que desea inactivar el rol <strong class="text-slate-900 dark:text-slate-100" x-text="nombreRol"></strong>? El rol no se borrará físicamente.
                     </p>
-                    <div class="flex justify-end gap-3">
-                        <button type="button" @click="confirmModal = false" class="px-4 py-2 bg-gray-200 text-gray-800 text-xs font-semibold uppercase rounded-md hover:bg-gray-300">
+                    <div class="flex flex-col-reverse sm:flex-row justify-end gap-3">
+                        <button type="button" @click="confirmModal = false" class="px-4 py-2 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-500 text-slate-700 dark:text-slate-300 text-xs font-semibold uppercase rounded-md hover:bg-gray-50 dark:hover:bg-gray-700 w-full sm:w-auto">
                             Cancelar
                         </button>
-                        <form :action="inactivarUrl" method="POST">
+                        <form :action="inactivarUrl" method="POST" class="w-full sm:w-auto">
                             @csrf
                             @method('PATCH')
-                            <button type="submit" class="px-4 py-2 bg-red-600 text-white text-xs font-semibold uppercase rounded-md hover:bg-red-700">
+                            <button type="submit" class="px-4 py-2 bg-red-600 text-white text-xs font-semibold uppercase rounded-md hover:bg-red-500 w-full justify-center">
                                 Inactivar
                             </button>
                         </form>

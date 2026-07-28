@@ -29,6 +29,10 @@ class RolGesRequest extends FormRequest
         $rol = $this->route('rol');
         $rolId = $rol ? $rol->id_rol : null;
 
+        if (!$rolId && ($this->input('rol_id') || $this->input('_model_id'))) {
+            $rolId = (int) ($this->input('rol_id') ?: $this->input('_model_id'));
+        }
+
         return [
             'nombre_rol' => ['required', 'string', 'max:100'],
             'slug_rol' => ['required', 'string', 'max:120', "unique:rol,slug_rol,{$rolId},id_rol", 'regex:/^[a-z0-9._-]+$/'],

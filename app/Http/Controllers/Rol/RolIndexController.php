@@ -68,4 +68,13 @@ class RolIndexController extends Controller
         return redirect()->route('roles.index')
             ->with('success', "El rol '{$rolActivado->nombre_rol}' ha sido activado.");
     }
+
+    public function show(Rol $rol): View
+    {
+        $this->authorize('view', $rol);
+
+        $rol->load('permisos');
+
+        return view('roles.show', compact('rol'));
+    }
 }

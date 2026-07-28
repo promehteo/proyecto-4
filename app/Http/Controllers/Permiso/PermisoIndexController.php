@@ -72,4 +72,11 @@ class PermisoIndexController extends Controller
         return redirect()->route('permisos.index')
             ->with('success', "El permiso '{$permisoActivado->nombre_permiso}' ha sido activado.");
     }
+
+    public function show(Permiso $permiso): View
+    {
+        $this->authorize('view', $permiso);
+
+        return view('permisos.show', compact('permiso'));
+    }
 }
