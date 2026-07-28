@@ -1,6 +1,6 @@
 <x-app-layout>
     <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
+        <h2 class="font-semibold text-xl text-gray-800 dark:text-slate-100 leading-tight">
             {{ __('Gestión de Permisos') }}
         </h2>
     </x-slot>
@@ -73,10 +73,10 @@
                 <x-data-table :paginator="$permisos" :headers="['ID', 'NOMBRE', 'SLUG', 'MÓDULO', 'ESTADO', 'ACCIONES']">
                     @forelse($permisos as $p)
                         <tr>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-500">#{{ $p->id_permiso }}</td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm font-semibold text-slate-900 dark:text-slate-200">{{ $p->nombre_permiso }}</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-slate-900 dark:text-slate-100">#{{ $p->id_permiso }}</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm font-semibold text-slate-900 dark:text-slate-100">{{ $p->nombre_permiso }}</td>
                             <td class="px-6 py-4 whitespace-nowrap text-xs font-mono text-indigo-600 dark:text-indigo-400 font-semibold">{{ $p->slug_permiso }}</td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-slate-700 dark:text-slate-300">
+                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-slate-900 dark:text-slate-100">
                                 <span class="px-2.5 py-1 bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-md text-xs">{{ $p->modulo_permiso }}</span>
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap text-sm">

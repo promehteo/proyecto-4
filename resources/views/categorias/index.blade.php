@@ -1,6 +1,6 @@
 <x-app-layout>
     <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
+        <h2 class="font-semibold text-xl text-gray-800 dark:text-slate-100 leading-tight">
             {{ __('Catálogo de Categorías') }}
         </h2>
     </x-slot>
@@ -67,11 +67,11 @@
 
                     @forelse($categorias as $cat)
                         <tr>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm font-semibold text-slate-200">{{ $cat->nombre_categoria }}</td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-400">
+                            <td class="px-6 py-4 whitespace-nowrap text-sm font-semibold text-slate-900 dark:text-slate-100">{{ $cat->nombre_categoria }}</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-slate-900 dark:text-slate-100">
                                 {{ $cat->padre ? $cat->padre->nombre_categoria : '— Sin padre —' }}
                             </td>
-                            <td class="px-6 py-4 text-sm text-slate-400">{{ $cat->descripcion_categoria ?? 'N/A' }}</td>
+                            <td class="px-6 py-4 text-sm font-medium text-slate-900 dark:text-slate-100">{{ $cat->descripcion_categoria ?? 'N/A' }}</td>
                             <td class="px-6 py-4 whitespace-nowrap text-sm">
                                 @if($cat->status === 1)
                                     <span class="px-3 py-1 inline-flex text-xs font-bold rounded-md bg-emerald-600 text-white">Activo</span>

@@ -7,7 +7,7 @@
 
     <!-- Logo section -->
     <div
-        class="flex items-center justify-between h-16 px-4 border-b border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900">
+        class="flex items-center justify-between h-16 px-4 border-b border-r border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900">
         <a href="{{ route('dashboard') }}" class="font-bold text-lg text-indigo-600 dark:text-indigo-400 truncate">
             La Casa El Rapidito
         </a>
@@ -27,7 +27,7 @@
             <!-- Sección Principal -->
             <div x-data="{ expanded: false }">
                 <button @click="expanded = !expanded"
-                    class="flex items-center justify-between w-full px-3 py-2 text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider hover:text-slate-700 dark:hover:text-slate-300">
+                    class="flex items-center justify-between w-full px-3 py-2 text-xs font-semibold text-slate-700 dark:text-slate-300 uppercase tracking-wider hover:text-slate-900 dark:hover:text-slate-100">
                     <span>Principal</span>
                     <svg class="h-4 w-4 transform transition-transform" :class="expanded ? 'rotate-180' : ''"
                         fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -52,7 +52,7 @@
             <!-- Sección Inventario -->
             <div x-data="{ expanded: false }">
                 <button @click="expanded = !expanded"
-                    class="flex items-center justify-between w-full px-3 py-2 text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider hover:text-slate-700 dark:hover:text-slate-300">
+                    class="flex items-center justify-between w-full px-3 py-2 text-xs font-semibold text-slate-700 dark:text-slate-300 uppercase tracking-wider hover:text-slate-900 dark:hover:text-slate-100">
                     <span>Inventario</span>
                     <svg class="h-4 w-4 transform transition-transform" :class="expanded ? 'rotate-180' : ''"
                         fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -78,7 +78,7 @@
             <!-- Sección Administración -->
             <div x-data="{ expanded: false }">
                 <button @click="expanded = !expanded"
-                    class="flex items-center justify-between w-full px-3 py-2 text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider hover:text-slate-700 dark:hover:text-slate-300">
+                    class="flex items-center justify-between w-full px-3 py-2 text-xs font-semibold text-slate-700 dark:text-slate-300 uppercase tracking-wider hover:text-slate-900 dark:hover:text-slate-100">
                     <span>Administración</span>
                     <svg class="h-4 w-4 transform transition-transform" :class="expanded ? 'rotate-180' : ''"
                         fill="none" stroke="currentColor" viewBox="0 0 24 24">

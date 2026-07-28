@@ -1,6 +1,6 @@
 <x-app-layout>
     <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
+        <h2 class="font-semibold text-xl text-gray-800 dark:text-slate-100 leading-tight">
             {{ __('Bitácora de Auditoría del Sistema') }}
         </h2>
     </x-slot>
@@ -73,6 +73,7 @@
                                 name="auditable_tipo" 
                                 value="{{ $auditableTipo }}" 
                                 placeholder="Ej: Categoria, Rol, User" 
+                                @input.debounce.500ms="$refs.filterForm.submit()"
                                 class="mt-1 w-full text-sm py-1.5" 
                             />
                         </div>
@@ -83,6 +84,7 @@
                                 name="auditable_id" 
                                 value="{{ $auditableId }}" 
                                 placeholder="Ej: 1" 
+                                @input.debounce.500ms="$refs.filterForm.submit()"
                                 class="mt-1 w-full text-sm py-1.5" 
                             />
                         </div>
@@ -106,30 +108,31 @@
                         </div>
                     </div>
 
-                    <div class="flex justify-end gap-3 pt-2">
-                        <a href="{{ route('bitacora.index') }}" class="px-4 py-2 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-500 text-slate-700 dark:text-gray-300 rounded-md text-xs font-semibold uppercase hover:bg-gray-50 dark:hover:bg-gray-700">Limpiar</a>
-                        <button type="submit" class="px-4 py-2 bg-indigo-600 text-white rounded-md text-xs font-semibold uppercase hover:bg-indigo-500">Filtrar Auditoría</button>
-                    </div>
+                    @if($search || $usuarioId || $accion || $ip || $auditableTipo || $auditableId || $fechaDesde || $fechaHasta)
+                        <div class="flex justify-end pt-2">
+                            <a href="{{ route('bitacora.index') }}" class="px-4 py-2 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-500 text-slate-700 dark:text-gray-300 rounded-md text-xs font-semibold uppercase hover:bg-gray-50 dark:hover:bg-gray-700">Limpiar Filtros</a>
+                        </div>
+                    @endif
                 </form>
 
                 <x-data-table :paginator="$bitacoras" :headers="['FECHA / HORA', 'USUARIO (SNAPSHOT)', 'ACCIÓN', 'ENTIDAD AFECTADA', 'IP / MÉTODO', 'ACCIONES']">
                     @forelse($bitacoras as $log)
                         <tr>
-                            <td class="px-6 py-4 whitespace-nowrap text-xs text-slate-500 dark:text-slate-400">
+                            <td class="px-6 py-4 whitespace-nowrap text-xs font-medium text-slate-900 dark:text-slate-100">
                                 {{ $log->fecha_bitacora ? $log->fecha_bitacora->format('d/m/Y H:i:s') : 'N/A' }}
                             </td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm font-semibold text-slate-900 dark:text-slate-200">
+                            <td class="px-6 py-4 whitespace-nowrap text-sm font-semibold text-slate-900 dark:text-slate-100">
                                 {{ $log->usuario_snapshot_bitacora }}
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap text-sm font-semibold text-indigo-600 dark:text-indigo-400">
                                 {{ $log->accion_bitacora }}
                             </td>
-                            <td class="px-6 py-4 text-xs text-slate-500 dark:text-slate-400">
+                            <td class="px-6 py-4 text-xs font-medium text-slate-900 dark:text-slate-100">
                                 <span class="font-mono bg-slate-100 dark:bg-slate-800 px-1.5 py-0.5 rounded">{{ class_basename($log->auditable_tipo_bitacora) }}</span>
-                                <span class="text-slate-400">#{{ $log->auditable_id_bitacora }}</span>
+                                <span class="text-slate-900 dark:text-slate-100">#{{ $log->auditable_id_bitacora }}</span>
                             </td>
-                            <td class="px-6 py-4 whitespace-nowrap text-xs text-slate-500 dark:text-slate-400">
-                                {{ $log->ip_bitacora }} <span class="text-slate-400">({{ $log->metodo_bitacora }})</span>
+                            <td class="px-6 py-4 whitespace-nowrap text-xs font-medium text-slate-900 dark:text-slate-100">
+                                {{ $log->ip_bitacora }} <span class="text-slate-900 dark:text-slate-100">({{ $log->metodo_bitacora }})</span>
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                                 <a href="{{ route('bitacora.show', $log) }}" class="px-3 py-1 inline-flex items-center text-xs font-bold rounded-md bg-blue-600 text-white hover:bg-blue-700 transition-colors duration-150 gap-1">

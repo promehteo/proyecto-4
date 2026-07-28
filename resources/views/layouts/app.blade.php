@@ -32,12 +32,12 @@
             
             <!-- Header (sticky dentro del contenedor, NO fixed sobre viewport) -->
             @isset($header)
-                <header class="sticky top-0 z-20 bg-white/80 dark:bg-slate-900/80 backdrop-blur-sm border-b border-slate-200 dark:border-slate-800 shadow-sm">
-                    <div class="px-4 sm:px-6 lg:px-8 py-4 flex items-center justify-between">
+                <header class="sticky top-0 z-20 h-16 bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 shadow-sm flex items-center">
+                    <div class="w-full px-4 sm:px-6 lg:px-8 flex items-center justify-between">
                         <div class="flex items-center gap-4">
                             <!-- Mobile hamburger -->
                             <button x-data @click="$dispatch('sidebar-toggle')" 
-                                    class="lg:hidden p-2 rounded-lg text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-800 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                                    class="lg:hidden p-2 rounded-lg text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 focus:outline-none focus:ring-2 focus:ring-indigo-500"
                                     aria-label="Abrir menú"
                                     aria-expanded="false"
                                     aria-controls="sidebar">
@@ -61,7 +61,7 @@
                                     localStorage.setItem('theme', 'light');
                                 }
                             " 
-                                    class="p-2 rounded-lg text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-800 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                                    class="p-2 rounded-lg text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 focus:outline-none focus:ring-2 focus:ring-indigo-500"
                                     aria-label="Cambiar tema">
                                 <svg x-show="!isDark" style="display: none;" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
@@ -82,7 +82,7 @@
 
             <!-- Footer -->
             <footer class="bg-white/80 dark:bg-slate-900/80 backdrop-blur-sm border-t border-slate-200 dark:border-slate-800 py-4 mt-8">
-                <div class="px-4 sm:px-6 lg:px-8 text-center text-sm text-slate-500 dark:text-slate-400 font-medium">
+                <div class="px-4 sm:px-6 lg:px-8 text-center text-sm text-slate-700 dark:text-slate-300 font-medium">
                     &copy; {{ date('Y') }} {{ config('app.name', 'Laravel') }}. Todos los derechos reservados.
                 </div>
             </footer>

@@ -1,6 +1,6 @@
 <x-app-layout>
     <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
+        <h2 class="font-semibold text-xl text-gray-800 dark:text-slate-100 leading-tight">
             {{ __('Gestión de Usuarios') }}
         </h2>
     </x-slot>
@@ -63,10 +63,10 @@
                 <x-data-table :paginator="$usuarios" :headers="['ID', 'NOMBRE', 'CORREO ELECTRÓNICO', 'ROLES ASIGNADOS', 'ESTADO', 'ACCIONES']">
                     @forelse($usuarios as $u)
                         <tr>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-500">#{{ $u->id }}</td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm font-semibold text-slate-900 dark:text-slate-200">{{ $u->name }}</td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-600 dark:text-slate-400">{{ $u->email }}</td>
-                            <td class="px-6 py-4 text-sm text-slate-500 dark:text-slate-400">
+                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-slate-900 dark:text-slate-100">#{{ $u->id }}</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm font-semibold text-slate-900 dark:text-slate-100">{{ $u->name }}</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-slate-900 dark:text-slate-100">{{ $u->email }}</td>
+                            <td class="px-6 py-4 text-sm font-medium text-slate-900 dark:text-slate-100">
                                 @forelse($u->roles as $r)
                                     <span class="inline-block px-2.5 py-0.5 bg-indigo-50 dark:bg-indigo-950/50 text-indigo-700 dark:text-indigo-300 text-xs font-semibold rounded border border-indigo-200 dark:border-indigo-800 mr-1 mb-1">
                                         {{ $r->nombre_rol }}

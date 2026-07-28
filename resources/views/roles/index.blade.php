@@ -1,6 +1,6 @@
 <x-app-layout>
     <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
+        <h2 class="font-semibold text-xl text-gray-800 dark:text-slate-100 leading-tight">
             {{ __('Gestión de Roles') }}
         </h2>
     </x-slot>
@@ -63,11 +63,11 @@
                 <x-data-table :paginator="$roles" :headers="['ID', 'NOMBRE', 'SLUG', 'DESCRIPCIÓN', 'PERMISOS ACTIVOS', 'ESTADO', 'ACCIONES']">
                     @forelse($roles as $r)
                         <tr>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-500">#{{ $r->id_rol }}</td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm font-semibold text-slate-900 dark:text-slate-200">{{ $r->nombre_rol }}</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-slate-900 dark:text-slate-100">#{{ $r->id_rol }}</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm font-semibold text-slate-900 dark:text-slate-100">{{ $r->nombre_rol }}</td>
                             <td class="px-6 py-4 whitespace-nowrap text-xs font-mono text-indigo-600 dark:text-indigo-400 font-semibold">{{ $r->slug_rol }}</td>
-                            <td class="px-6 py-4 text-sm text-slate-500 dark:text-slate-400 truncate max-w-xs" title="{{ $r->descripcion_rol ?? '' }}">{{ $r->descripcion_rol ?? 'N/A' }}</td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-500 dark:text-slate-400">
+                            <td class="px-6 py-4 text-sm font-medium text-slate-900 dark:text-slate-100 truncate max-w-xs" title="{{ $r->descripcion_rol ?? '' }}">{{ $r->descripcion_rol ?? 'N/A' }}</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-slate-900 dark:text-slate-100">
                                 <span class="px-2.5 py-1 bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-md text-xs font-medium">{{ $r->permisos_count }} permisos</span>
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap text-sm">
