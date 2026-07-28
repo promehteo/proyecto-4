@@ -59,10 +59,8 @@
                             <div class="border border-slate-200 dark:border-slate-800 rounded-xl p-5 bg-slate-50 dark:bg-slate-950">
                                 <div class="flex justify-between items-center mb-4 border-b border-slate-200 dark:border-slate-800 pb-3">
                                     <label class="flex items-center gap-3 cursor-pointer select-none">
-                                        <input type="checkbox"
-                                               :checked="moduloMarcado(@js($moduloIds))"
-                                               @change="toggleModulo(@js($moduloIds), $event.target.checked)"
-                                               class="rounded border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 text-indigo-600 focus:ring-indigo-500">
+                                        <x-checkbox :checked="moduloMarcado(@js($moduloIds))"
+                                                    @change="toggleModulo(@js($moduloIds), $event.target.checked)" />
                                         <h4 class="text-sm font-bold text-slate-900 dark:text-slate-100 uppercase tracking-wider">
                                             Módulo: {{ $modulo }}
                                         </h4>
@@ -72,11 +70,10 @@
                                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
                                     @foreach($permisosGroup as $p)
                                         <label class="flex items-start gap-2.5 bg-white dark:bg-slate-900 p-3 rounded-lg border border-slate-200 dark:border-slate-800 cursor-pointer hover:bg-indigo-50/50 dark:hover:bg-slate-800/60 transition-colors">
-                                            <input type="checkbox"
-                                                   name="permisos[]"
-                                                   value="{{ $p->id_permiso }}"
-                                                   x-model.number="permisosSeleccionados"
-                                                   class="modulo-{{ $moduloSlug }} rounded border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 text-indigo-600 focus:ring-indigo-500 mt-1">
+                                            <x-checkbox name="permisos[]"
+                                                        value="{{ $p->id_permiso }}"
+                                                        x-model.number="permisosSeleccionados"
+                                                        class="modulo-{{ $moduloSlug }}" />
                                             <div>
                                                 <div class="text-sm font-semibold text-slate-900 dark:text-slate-100">{{ $p->nombre_permiso }}</div>
                                                 @if($p->descripcion_permiso)

@@ -24,11 +24,9 @@
                     <div class="space-y-4 mb-8">
                         @foreach($rolesActivos as $r)
                             <label class="flex items-start gap-3 p-4 bg-slate-50 dark:bg-slate-950 rounded-xl border border-slate-200 dark:border-slate-800 cursor-pointer hover:bg-indigo-50/50 dark:hover:bg-slate-800/60 transition-colors">
-                                <input type="checkbox"
-                                       name="roles[]"
-                                       value="{{ $r->id_rol }}"
-                                       x-model.number="rolesSeleccionados"
-                                       class="rounded border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 text-indigo-600 focus:ring-indigo-500 mt-1">
+                                <x-checkbox name="roles[]"
+                                            value="{{ $r->id_rol }}"
+                                            x-model.number="rolesSeleccionados" />
                                 <div class="flex-1">
                                     <div class="flex items-center gap-2">
                                         <span class="text-sm font-semibold text-slate-900 dark:text-slate-100">{{ $r->nombre_rol }}</span>
