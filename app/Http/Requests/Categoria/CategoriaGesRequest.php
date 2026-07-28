@@ -29,6 +29,11 @@ class CategoriaGesRequest extends FormRequest
         $categoria = $this->route('categoria');
         $categoriaId = $categoria ? $categoria->id_categoria : null;
 
+        if (!$categoriaId && ($this->input('categoria_id') || $this->input('_model_id'))) {
+            $categoriaId = (int) ($this->input('categoria_id') ?: $this->input('_model_id'));
+            $categoria = Categoria::find($categoriaId);
+        }
+
         return [
             'nombre_categoria' => ['required', 'string', 'max:120'],
             'descripcion_categoria' => ['nullable', 'string', 'max:255'],

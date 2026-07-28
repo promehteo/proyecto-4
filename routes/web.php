@@ -32,6 +32,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/categorias', [CategoriaIndexController::class, 'index'])->name('categorias.index');
     Route::get('/categorias/registrar', [CategoriaFormController::class, 'create'])->name('categorias.create');
     Route::post('/categorias', [CategoriaFormController::class, 'store'])->name('categorias.store');
+
     Route::get('/categorias/{categoria}/editar', [CategoriaFormController::class, 'edit'])->name('categorias.edit');
     Route::put('/categorias/{categoria}', [CategoriaFormController::class, 'update'])->name('categorias.update');
     Route::patch('/categorias/{categoria}/inactivar', [CategoriaIndexController::class, 'inactivar'])->name('categorias.inactivar');
@@ -72,6 +73,11 @@ Route::middleware('auth')->group(function () {
     Route::patch('/usuarios/{usuario}/activar', [UserIndexController::class, 'activar'])->name('usuarios.activar');
     Route::get('/usuarios/{usuario}/roles', [UserRolController::class, 'editRoles'])->name('usuarios.roles.edit');
     Route::put('/usuarios/{usuario}/roles', [UserRolController::class, 'updateRoles'])->name('usuarios.roles.update');
+
+    // Validación genérica y dinámica de FormRequests
+    Route::post('/api/validate/{formRequest}', [\App\Http\Controllers\SystemValidationController::class, 'validatePartial'])
+        ->where('formRequest', '.*')
+        ->name('api.system.validate-partial');
 });
 
 require __DIR__.'/auth.php';
