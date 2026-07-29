@@ -3,7 +3,7 @@
     'headers' => [],     // Array de cabeceras ['NOMBRE', 'DESCRIPCIÓN', ...] o un Blade Slot
 ])
 
-<div class="bg-white dark:bg-[#0f172a] rounded-xl border border-slate-200 dark:border-slate-800 overflow-hidden font-sans shadow-sm">
+<div class="bg-slate-50 dark:bg-[#0f172a] rounded-xl border border-slate-200 dark:border-slate-800 overflow-hidden font-sans shadow-sm">
     <div class="overflow-x-auto">
         <table class="w-full text-left border-collapse">
             <thead>
@@ -30,7 +30,7 @@
             <!-- Select de registros por página -->
             <div class="flex items-center text-sm text-slate-900 dark:text-slate-100 font-medium">
                 <select 
-                    class="bg-white dark:bg-[#0f172a] border border-slate-300 dark:border-slate-700 text-slate-900 dark:text-slate-100 text-sm rounded focus:ring-indigo-500 focus:border-indigo-500 py-1 pl-2 pr-6"
+                    class="bg-slate-50 dark:bg-[#0f172a] border border-slate-300 dark:border-slate-700 text-slate-900 dark:text-slate-100 text-sm rounded focus:ring-indigo-500 focus:border-indigo-500 py-1 pl-2 pr-6"
                     onchange="window.location.href=this.value">
                     @foreach([5, 10, 15, 20, 25] as $size)
                         <option value="{{ request()->fullUrlWithQuery(['per_page' => $size]) }}" {{ request('per_page', $paginator->perPage()) == $size ? 'selected' : '' }}>
@@ -50,7 +50,7 @@
         <div class="p-4 border-t border-slate-200 dark:border-slate-800 flex flex-col sm:flex-row items-center justify-between gap-4 bg-slate-50 dark:bg-[#0f172a]">
             <div class="flex items-center text-sm text-slate-900 dark:text-slate-100 font-medium">
                 <select 
-                    class="bg-white dark:bg-[#0f172a] border border-slate-300 dark:border-slate-700 text-slate-900 dark:text-slate-100 text-sm rounded focus:ring-indigo-500 focus:border-indigo-500 py-1 pl-2 pr-6"
+                    class="bg-slate-50 dark:bg-[#0f172a] border border-slate-300 dark:border-slate-700 text-slate-900 dark:text-slate-100 text-sm rounded focus:ring-indigo-500 focus:border-indigo-500 py-1 pl-2 pr-6"
                     onchange="window.location.href=this.value">
                     @foreach([5, 10, 15, 20, 25] as $size)
                         <option value="{{ request()->fullUrlWithQuery(['per_page' => $size]) }}" {{ request('per_page', $paginator->perPage()) == $size ? 'selected' : '' }}>

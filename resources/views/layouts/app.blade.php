@@ -23,7 +23,7 @@
             }
         </script>
     </head>
-    <body class="font-sans antialiased bg-slate-50 dark:bg-slate-950 text-slate-800 dark:text-slate-100">
+    <body class="font-sans antialiased bg-slate-100 dark:bg-slate-900 text-slate-800 dark:text-slate-100">
         <!-- Sidebar (fixed) -->
         @include('layouts.navigation')
         
@@ -32,12 +32,12 @@
             
             <!-- Header (sticky dentro del contenedor, NO fixed sobre viewport) -->
             @isset($header)
-                <header class="sticky top-0 z-20 h-16 bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 shadow-sm flex items-center">
+                <header class="sticky top-0 z-20 h-16 bg-blue-600 border-b border-blue-700 shadow-md flex items-center">
                     <div class="w-full px-4 sm:px-6 lg:px-8 flex items-center justify-between">
                         <div class="flex items-center gap-4">
                             <!-- Mobile hamburger -->
                             <button x-data @click="$dispatch('sidebar-toggle')" 
-                                    class="lg:hidden p-2 rounded-lg text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                                    class="lg:hidden p-2 rounded-lg text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-white"
                                     aria-label="Abrir menú"
                                     aria-expanded="false"
                                     aria-controls="sidebar">
@@ -45,22 +45,24 @@
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
                                 </svg>
                             </button>
-                            {{ $header }}
+                            <div class="text-white [&_h2]:!text-white [&_h2]:!font-bold">
+                                {{ $header }}
+                            </div>
                         </div>
                         
                         <!-- User menu / theme toggle centralized in dropdown -->
                         <div class="flex items-center gap-2" x-data="{ isDark: document.documentElement.classList.contains('dark') }">
                             <x-dropdown align="right" width="48">
                                 <x-slot name="trigger">
-                                    <button class="inline-flex items-center gap-2.5 px-3 py-1.5 border border-slate-200 dark:border-slate-800 rounded-full text-sm font-semibold text-slate-700 dark:text-slate-300 bg-white dark:bg-slate-900 hover:bg-slate-50 dark:hover:bg-slate-800/50 hover:text-slate-900 dark:hover:text-slate-100 focus:outline-none transition ease-in-out duration-150">
-                                        <!-- Círculo tipo avatar de Facebook -->
-                                        <div class="flex items-center justify-center w-7 h-7 rounded-full bg-slate-100 dark:bg-slate-800 text-indigo-600 dark:text-indigo-400">
+                                    <button class="inline-flex items-center gap-2.5 px-3 py-1.5 border border-blue-500 rounded-full text-sm font-semibold text-white bg-blue-700 hover:bg-blue-800 focus:outline-none transition ease-in-out duration-150 shadow-sm">
+                                        <!-- Círculo tipo avatar -->
+                                        <div class="flex items-center justify-center w-7 h-7 rounded-full bg-blue-600 text-white shadow-inner">
                                             <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
                                             </svg>
                                         </div>
                                         <span>{{ Auth::user()->name }}</span>
-                                        <svg class="fill-current h-4 w-4 text-slate-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
+                                        <svg class="fill-current h-4 w-4 text-blue-200" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
                                             <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
                                         </svg>
                                     </button>
