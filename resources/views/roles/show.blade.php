@@ -1,7 +1,7 @@
 <x-app-layout>
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
-            {{ __('Detalles del Rol: ') . $rol->nombre_rol }}
+            {{ __('Detalle de Rol') }}
         </h2>
     </x-slot>
 
