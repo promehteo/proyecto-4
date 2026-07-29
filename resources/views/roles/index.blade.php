@@ -5,7 +5,7 @@
         </h2>
     </x-slot>
 
-    <div class="py-12" x-data="{
+    <div class="pt-6 pb-12" x-data="{
         confirmModal: false,
         inactivarUrl: '',
         nombreRol: '',
