@@ -5,9 +5,9 @@ declare(strict_types=1);
 namespace App\Repositories\Rol;
 
 use App\Models\Permiso;
-use App\Models\PermisoRol;
 use App\Models\Rol;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\DB;
 
 class RolFormRepository
 {
@@ -45,35 +45,46 @@ class RolFormRepository
 
     public function getAssignedPermisoIds(int $rolId): array
     {
-        return PermisoRol::where('id_rol_permiso_rol', $rolId)
+        return DB::table('detalle_permiso')
+            ->where('id_rol', $rolId)
             ->where('status', 1)
-            ->pluck('id_permiso_permiso_rol')
+            ->pluck('id_permiso')
             ->toArray();
     }
 
     public function getPivotState(int $rolId): array
     {
-        return PermisoRol::where('id_rol_permiso_rol', $rolId)
+        return DB::table('detalle_permiso')
+            ->where('id_rol', $rolId)
             ->get()
             ->toArray();
     }
 
     public function syncPermisos(Rol $rol, array $permisoIds): array
     {
-        PermisoRol::where('id_rol_permiso_rol', $rol->id_rol)
-            ->whereNotIn('id_permiso_permiso_rol', $permisoIds)
+        DB::table('detalle_permiso')
+            ->where('id_rol', $rol->id_rol)
+            ->whereNotIn('id_permiso', $permisoIds)
             ->update(['status' => 2]);
 
         foreach ($permisoIds as $permisoId) {
-            PermisoRol::updateOrCreate(
-                [
-                    'id_rol_permiso_rol' => $rol->id_rol,
-                    'id_permiso_permiso_rol' => $permisoId,
-                ],
-                [
+            $exists = DB::table('detalle_permiso')
+                ->where('id_rol', $rol->id_rol)
+                ->where('id_permiso', $permisoId)
+                ->exists();
+
+            if ($exists) {
+                DB::table('detalle_permiso')
+                    ->where('id_rol', $rol->id_rol)
+                    ->where('id_permiso', $permisoId)
+                    ->update(['status' => 1]);
+            } else {
+                DB::table('detalle_permiso')->insert([
+                    'id_rol' => $rol->id_rol,
+                    'id_permiso' => $permisoId,
                     'status' => 1,
-                ]
-            );
+                ]);
+            }
         }
 
         return $this->getPivotState($rol->id_rol);

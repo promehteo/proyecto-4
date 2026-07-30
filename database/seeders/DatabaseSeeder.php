@@ -4,11 +4,8 @@ declare(strict_types=1);
 
 namespace Database\Seeders;
 
-use App\Models\Categoria;
 use App\Models\Permiso;
-use App\Models\PermisoRol;
 use App\Models\Rol;
-use App\Models\RolUsuario;
 use App\Models\User;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
@@ -17,30 +14,27 @@ class DatabaseSeeder extends Seeder
 {
     public function run(): void
     {
-        // 1. Roles Base (Sin delete ni truncate, usando updateOrCreate)
+        // 1. Roles Base
         $rolAdmin = Rol::updateOrCreate(
-            ['slug_rol' => 'admin'],
+            ['clave_rol' => 'admin'],
             [
                 'nombre_rol' => 'Administrador',
-                'descripcion_rol' => 'Acceso total al sistema de inventario',
                 'status' => 1,
             ]
         );
 
         $rolCajero = Rol::updateOrCreate(
-            ['slug_rol' => 'cajero'],
+            ['clave_rol' => 'cajero'],
             [
                 'nombre_rol' => 'Cajero',
-                'descripcion_rol' => 'Gestión de ventas y caja',
                 'status' => 1,
             ]
         );
 
         $rolInventario = Rol::updateOrCreate(
-            ['slug_rol' => 'inventario'],
+            ['clave_rol' => 'inventario'],
             [
                 'nombre_rol' => 'Encargado de Inventario',
-                'descripcion_rol' => 'Gestión de stock, productos y categorías',
                 'status' => 1,
             ]
         );
@@ -83,70 +77,34 @@ class DatabaseSeeder extends Seeder
 
         foreach ($permisosData as $item) {
             $permiso = Permiso::updateOrCreate(
-                ['slug_permiso' => $item['slug']],
+                ['clave_permiso' => $item['slug']],
                 [
                     'nombre_permiso' => $item['nombre'],
                     'modulo_permiso' => $item['modulo'],
-                    'descripcion_permiso' => "Permiso para {$item['nombre']}",
                     'status' => 1,
                 ]
             );
 
-            // Asignar todos los permisos al rol administrador con status = 1
-            PermisoRol::updateOrCreate(
-                [
-                    'id_rol_permiso_rol' => $rolAdmin->id_rol,
-                    'id_permiso_permiso_rol' => $permiso->id_permiso,
-                ],
-                [
-                    'status' => 1,
-                ]
-            );
+            // Asignar todos los permisos al rol administrador
+            $rolAdmin->permisos()->syncWithoutDetaching([
+                $permiso->id_permiso => ['status' => 1]
+            ]);
         }
 
         // 3. Usuario Administrador Inicial
         $adminUser = User::updateOrCreate(
             ['email' => 'admin@larapidito.com'],
             [
-                'name' => 'Administrador',
+                'nombre' => 'Administrador',
+                'apellido' => 'Sistema',
                 'password' => Hash::make('password'),
                 'status' => 1,
             ]
         );
 
         // Asignar rol Administrador al usuario
-        RolUsuario::updateOrCreate(
-            [
-                'id_usuario_rol_usuario' => $adminUser->id,
-                'id_rol_rol_usuario' => $rolAdmin->id_rol,
-            ],
-            [
-                'status' => 1,
-            ]
-        );
-
-        // 4. Categorías de ejemplo para Alimentos y Bebidas
-        $categoriasEjemplo = [
-            'Panadería' => 'Panes frescos, pasteles y bollería',
-            'Cárnicos' => 'Cortes de carne, embutidos y aves',
-            'Lácteos' => 'Leches, quesos, yogures y mantequillas',
-            'Salsas' => 'Salsas preparadas, aderezos y condimentos',
-            'Vegetales' => 'Verduras, hortalizas y legumbres frescas',
-            'Abarrotes' => 'Productos secos, granos y enlatados',
-            'Aceites y grasas' => 'Aceites vegetales, de oliva y mantecas',
-            'Empaques' => 'Cajas, bolsas y envases de empaque',
-            'Descartables' => 'Vasos, platos, cubiertos y servilletas desechables',
-        ];
-
-        foreach ($categoriasEjemplo as $nombre => $descripcion) {
-            Categoria::updateOrCreate(
-                ['nombre_categoria' => $nombre],
-                [
-                    'descripcion_categoria' => $descripcion,
-                    'id_categoria_padre_categoria' => null,
-                    'status' => 1,
-                ]
-            );
-        }
+        $adminUser->roles()->syncWithoutDetaching([
+            $rolAdmin->id_rol => ['status' => 1]
+        ]);
     }
 }

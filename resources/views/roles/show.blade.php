@@ -22,11 +22,11 @@
                         <p class="text-slate-800 dark:text-slate-200 font-semibold text-lg mt-1">{{ $rol->nombre_rol }}</p>
                     </div>
 
-                    <!-- Slug -->
+                    <!-- Clave -->
                     <div>
-                        <x-input-label :value="__('Slug del Rol')" />
+                        <x-input-label :value="__('Clave del Rol')" />
                         <p class="font-mono text-sm text-indigo-600 dark:text-indigo-400 font-semibold mt-1 bg-indigo-50 dark:bg-indigo-950/50 px-2.5 py-1 rounded-md inline-block">
-                            {{ $rol->slug_rol }}
+                            {{ $rol->clave_rol }}
                         </p>
                     </div>
 
@@ -40,14 +40,6 @@
                                 <span class="px-3 py-1 inline-flex text-xs font-bold rounded-md bg-rose-600 text-white">Inactivo</span>
                             @endif
                         </div>
-                    </div>
-
-                    <!-- Descripción -->
-                    <div class="md:col-span-3">
-                        <x-input-label :value="__('Descripción')" />
-                        <p class="text-slate-700 dark:text-slate-300 bg-slate-50 dark:bg-slate-950 p-4 rounded-md border border-slate-200 dark:border-slate-800 mt-1">
-                            {{ $rol->descripcion_rol ?? 'Sin descripción disponible.' }}
-                        </p>
                     </div>
 
                     <!-- Permisos Asignados -->

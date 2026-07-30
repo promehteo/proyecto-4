@@ -10,22 +10,21 @@
             <x-card>
                 <div class="border-b border-slate-200 dark:border-slate-800 pb-4 mb-6">
                     <h3 class="text-lg font-medium text-slate-900 dark:text-slate-100 font-semibold">{{ $bitacora->accion_bitacora }}</h3>
-                    <p class="text-sm text-slate-500 dark:text-slate-400">{{ $bitacora->descripcion_bitacora }}</p>
                 </div>
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6 text-sm mb-6">
                     <div class="bg-slate-50 dark:bg-slate-950 p-4 rounded-md border border-slate-200 dark:border-slate-800 space-y-2">
-                        <p class="text-slate-700 dark:text-slate-300"><strong>Usuario Snapshot:</strong> {{ $bitacora->usuario_snapshot_bitacora }}</p>
+                        <p class="text-slate-700 dark:text-slate-300"><strong>Usuario:</strong> {{ $bitacora->usuario ? ($bitacora->usuario->nombre . ' ' . $bitacora->usuario->apellido) : 'Sistema / Anónimo' }}</p>
                         <p class="text-slate-700 dark:text-slate-300"><strong>ID Usuario Relacionado:</strong> #{{ $bitacora->id_usuario_bitacora ?? 'N/A' }}</p>
-                        <p class="text-slate-700 dark:text-slate-300"><strong>Entidad Afectada:</strong> {{ class_basename($bitacora->auditable_tipo_bitacora) }}</p>
-                        <p class="text-slate-700 dark:text-slate-300"><strong>ID Afectado:</strong> #{{ $bitacora->auditable_id_bitacora }}</p>
+                        <p class="text-slate-700 dark:text-slate-300"><strong>Módulo:</strong> {{ class_basename($bitacora->modulo_bitacora) }}</p>
+                        <p class="text-slate-700 dark:text-slate-300"><strong>ID Registro Afectado:</strong> #{{ $bitacora->registro_id_bitacora }}</p>
                         <p class="text-slate-700 dark:text-slate-300"><strong>Fecha / Hora:</strong> {{ $bitacora->fecha_bitacora ? $bitacora->fecha_bitacora->format('d/m/Y H:i:s') : 'N/A' }}</p>
                     </div>
                     <div class="bg-slate-50 dark:bg-slate-950 p-4 rounded-md border border-slate-200 dark:border-slate-800 space-y-2">
                         <p class="text-slate-700 dark:text-slate-300"><strong>IP Origen:</strong> {{ $bitacora->ip_bitacora }}</p>
                         <p class="text-slate-700 dark:text-slate-300"><strong>Método HTTP:</strong> <span class="font-bold text-indigo-600 dark:text-indigo-400">{{ $bitacora->metodo_bitacora }}</span></p>
                         <p class="text-slate-700 dark:text-slate-300"><strong>URL Solicitada:</strong> <span class="text-xs break-all font-mono">{{ $bitacora->url_bitacora }}</span></p>
-                        <p class="text-slate-700 dark:text-slate-300"><strong>User Agent:</strong> <span class="text-xs break-all text-slate-500">{{ $bitacora->user_agent_bitacora }}</span></p>
+                        <p class="text-slate-700 dark:text-slate-300"><strong>Navegador:</strong> <span class="text-xs break-all text-slate-500">{{ $bitacora->navegador_bitacora }}</span></p>
                     </div>
                 </div>
 

@@ -36,7 +36,7 @@
                                     name="nombre_permiso"
                                     type="text"
                                     x-model="form.nombre_permiso"
-                                    @input="markDirty('nombre_permiso'); if(!slugTouched) { form.slug_permiso = slugify(form.nombre_permiso); markDirty('slug_permiso'); }"
+                                    @input="markDirty('nombre_permiso'); if(!slugTouched) { form.clave_permiso = slugify(form.nombre_permiso); markDirty('clave_permiso'); }"
                                     @blur="markDirty('nombre_permiso')"
                                     class="mt-1 block w-full"
                                     required
@@ -51,16 +51,16 @@
                                 @endif
                             </div>
 
-                            {{-- Slug --}}
+                            {{-- Clave --}}
                             <div>
-                                <x-input-label for="slug_permiso" :value="__('Slug del Permiso')" />
+                                <x-input-label for="clave_permiso" :value="__('Clave del Permiso')" />
                                 <x-text-input
-                                    id="slug_permiso"
-                                    name="slug_permiso"
+                                    id="clave_permiso"
+                                    name="clave_permiso"
                                     type="text"
-                                    x-model="form.slug_permiso"
-                                    @input="slugTouched = true; markDirty('slug_permiso')"
-                                    @blur="markDirty('slug_permiso')"
+                                    x-model="form.clave_permiso"
+                                    @input="slugTouched = true; markDirty('clave_permiso')"
+                                    @blur="markDirty('clave_permiso')"
                                     class="mt-1 block w-full font-mono text-sm"
                                     required
                                     placeholder="ej: categorias.crear" />
@@ -71,12 +71,12 @@
                                         Regenerar
                                     </button>
                                 </p>
-                                <template x-if="errors['slug_permiso']">
-                                    <p class="text-sm text-red-600 dark:text-red-400 mt-2" x-text="errors['slug_permiso'][0]"></p>
+                                <template x-if="errors['clave_permiso']">
+                                    <p class="text-sm text-red-600 dark:text-red-400 mt-2" x-text="errors['clave_permiso'][0]"></p>
                                 </template>
-                                @if($errors->has('slug_permiso'))
-                                    <template x-if="!dirtyFields.has('slug_permiso')">
-                                        <x-input-error class="mt-2" :messages="$errors->get('slug_permiso')" />
+                                @if($errors->has('clave_permiso'))
+                                    <template x-if="!dirtyFields.has('clave_permiso')">
+                                        <x-input-error class="mt-2" :messages="$errors->get('clave_permiso')" />
                                     </template>
                                 @endif
                             </div>
@@ -127,34 +127,6 @@
                             </div>
                         </div>
 
-                        {{-- Descripción --}}
-                        <div class="mb-6">
-                            <div class="flex items-baseline justify-between gap-3">
-                                <x-input-label for="descripcion_permiso" :value="__('Descripción')" />
-                                <span
-                                    x-text="(form.descripcion_permiso || '').length + ' / 255'"
-                                    :class="(form.descripcion_permiso || '').length >= 255 ? 'text-rose-500' : 'text-slate-400 dark:text-slate-500'"
-                                    class="text-xs tabular-nums"></span>
-                            </div>
-                            <x-textarea
-                                id="descripcion_permiso"
-                                name="descripcion_permiso"
-                                rows="3"
-                                maxlength="255"
-                                x-model="form.descripcion_permiso"
-                                @input="markDirty('descripcion_permiso')"
-                                @blur="markDirty('descripcion_permiso')"
-                                class="mt-1 block w-full">{{ old('descripcion_permiso', '') }}</x-textarea>
-                            <template x-if="errors['descripcion_permiso']">
-                                <p class="text-sm text-red-600 dark:text-red-400 mt-2" x-text="errors['descripcion_permiso'][0]"></p>
-                            </template>
-                            @if($errors->has('descripcion_permiso'))
-                                <template x-if="!dirtyFields.has('descripcion_permiso')">
-                                    <x-input-error class="mt-2" :messages="$errors->get('descripcion_permiso')" />
-                                </template>
-                            @endif
-                        </div>
-
                         <!-- Botones de Acción -->
                         <div class="mt-6 flex flex-col-reverse sm:flex-row justify-end gap-3">
                             <a href="{{ route('permisos.index') }}"
@@ -177,12 +149,11 @@
             return {
                 form: {
                     nombre_permiso: @js(old('nombre_permiso', '')),
-                    slug_permiso: @js(old('slug_permiso', '')),
+                    clave_permiso: @js(old('clave_permiso', '')),
                     modulo_permiso: @js(old('modulo_permiso', '')),
-                    descripcion_permiso: @js(old('descripcion_permiso', '')),
                     status: @js(old('status', '1'))
                 },
-                slugTouched: @js(old('slug_permiso') !== null && old('slug_permiso') !== ''),
+                slugTouched: @js(old('clave_permiso') !== null && old('clave_permiso') !== ''),
                 errors: {},
                 dirtyFields: new Set(),
                 isValidating: false,
@@ -197,9 +168,9 @@
                 },
 
                 regen() {
-                    this.form.slug_permiso = this.slugify(this.form.nombre_permiso);
+                    this.form.clave_permiso = this.slugify(this.form.nombre_permiso);
                     this.slugTouched = false;
-                    this.markDirty('slug_permiso');
+                    this.markDirty('clave_permiso');
                 },
 
                 markDirty(field) {
@@ -251,10 +222,9 @@
 
                 async submitForm(e) {
                     this.dirtyFields.add('nombre_permiso');
-                    this.dirtyFields.add('slug_permiso');
+                    this.dirtyFields.add('clave_permiso');
                     this.dirtyFields.add('modulo_permiso');
                     this.dirtyFields.add('status');
-                    this.dirtyFields.add('descripcion_permiso');
                     
                     await this.validateForm();
                     

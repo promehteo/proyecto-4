@@ -31,7 +31,7 @@ class UserIndexRequest extends FormRequest
     {
         /** @var mixed $usuario */
         $usuario = $this->route('usuario');
-        $idUsuario = is_object($usuario) ? $usuario->id : $usuario;
+        $idUsuario = is_object($usuario) ? $usuario->id_user : $usuario;
         if ($idUsuario) {
             $this->merge([
                 'id_usuario' => (int) $idUsuario,
@@ -46,9 +46,9 @@ class UserIndexRequest extends FormRequest
                 'id_usuario' => [
                     'required',
                     'integer',
-                    'exists:users,id',
+                    'exists:user,id_user',
                     function ($attribute, $value, $fail) {
-                        if ((int) $this->user()->id === (int) $value) {
+                        if ((int) $this->user()->id_user === (int) $value) {
                             $fail('No puede inactivar su propio usuario.');
                             return;
                         }
@@ -58,14 +58,14 @@ class UserIndexRequest extends FormRequest
                             $adminsActivosCount = User::where('status', 1)
                                 ->whereHas('roles', function ($q) {
                                     $q->where('rol.status', 1)
-                                      ->where('rol_usuario.status', 1)
-                                      ->where('slug_rol', 'admin');
+                                      ->where('detalle_rol.status', 1)
+                                      ->where('clave_rol', 'admin');
                                 })
-                                ->where('id', '!=', $value)
+                                ->where('id_user', '!=', $value)
                                 ->count();
 
                             if ($adminsActivosCount === 0) {
-                                $fail('No se puede inactivar al usuario porque es el único administrador activo del sistema.');
+                                  $fail('No se puede inactivar al usuario porque es el único administrador activo del sistema.');
                             }
                         }
                     },
@@ -75,7 +75,7 @@ class UserIndexRequest extends FormRequest
 
         if ($this->isMethod('PATCH') && $this->routeIs('usuarios.activar')) {
             return [
-                'id_usuario' => ['required', 'integer', 'exists:users,id'],
+                'id_usuario' => ['required', 'integer', 'exists:user,id_user'],
             ];
         }
 

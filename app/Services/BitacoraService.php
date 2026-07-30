@@ -35,27 +35,23 @@ class BitacoraService
     ): Bitacora {
         $user = Auth::user();
 
-        $auditableTipo = is_object($auditable) ? get_class($auditable) : (string) $auditable;
-        $auditableId = is_object($auditable) ? ($auditable->getKey() ?? 0) : 0;
-
-        $userSnapshot = $user ? "{$user->name} ({$user->email})" : 'Sistema / Anónimo';
+        $modulo = is_object($auditable) ? get_class($auditable) : (string) $auditable;
+        $registroId = is_object($auditable) ? ($auditable->getKey() ?? 0) : 0;
 
         $cleanAnteriores = $valoresAnteriores ? static::cleanSensitiveData($valoresAnteriores) : null;
         $cleanNuevos = $valoresNuevos ? static::cleanSensitiveData($valoresNuevos) : null;
 
         return Bitacora::create([
-            'id_usuario_bitacora' => $user?->id,
-            'usuario_snapshot_bitacora' => $userSnapshot,
+            'id_usuario_bitacora' => $user?->id_user,
             'accion_bitacora' => $accion,
-            'auditable_tipo_bitacora' => $auditableTipo,
-            'auditable_id_bitacora' => $auditableId,
+            'modulo_bitacora' => $modulo,
+            'registro_id_bitacora' => $registroId,
             'valores_anteriores_bitacora' => $cleanAnteriores,
             'valores_nuevos_bitacora' => $cleanNuevos,
             'ip_bitacora' => Request::ip(),
-            'user_agent_bitacora' => Request::userAgent(),
+            'navegador_bitacora' => Request::userAgent(),
             'url_bitacora' => Request::fullUrl(),
             'metodo_bitacora' => Request::method(),
-            'descripcion_bitacora' => $descripcion,
             'fecha_bitacora' => now(),
             'status' => 1,
         ]);

@@ -31,8 +31,8 @@
                             >
                                 <option value="">Todos los usuarios</option>
                                 @foreach($usuarios as $user)
-                                    <option value="{{ $user->id }}" {{ (string)$usuarioId === (string)$user->id ? 'selected' : '' }}>
-                                        {{ $user->name }} ({{ $user->email }})
+                                    <option value="{{ $user->id_user }}" {{ (string)$usuarioId === (string)$user->id_user ? 'selected' : '' }}>
+                                        {{ $user->nombre }} {{ $user->apellido }} ({{ $user->email }})
                                     </option>
                                 @endforeach
                             </x-select>
@@ -67,18 +67,18 @@
 
                     <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
                         <div>
-                            <x-input-label :value="__('Tipo Entidad')" />
+                            <x-input-label :value="__('Módulo')" />
                             <x-text-input 
                                 type="text" 
                                 name="auditable_tipo" 
                                 value="{{ $auditableTipo }}" 
-                                placeholder="Ej: Categoria, Rol, User" 
+                                placeholder="Ej: Rol, User" 
                                 @input.debounce.500ms="$refs.filterForm.submit()"
                                 class="mt-1 w-full text-sm py-1.5" 
                             />
                         </div>
                         <div>
-                            <x-input-label :value="__('ID Entidad')" />
+                            <x-input-label :value="__('ID Registro')" />
                             <x-text-input 
                                 type="number" 
                                 name="auditable_id" 
@@ -115,21 +115,21 @@
                     @endif
                 </form>
 
-                <x-data-table :paginator="$bitacoras" :headers="['FECHA / HORA', 'USUARIO (SNAPSHOT)', 'ACCIÓN', 'ENTIDAD AFECTADA', 'IP / MÉTODO', 'ACCIONES']">
+                <x-data-table :paginator="$bitacoras" :headers="['FECHA / HORA', 'USUARIO', 'ACCIÓN', 'ENTIDAD AFECTADA', 'IP / MÉTODO', 'ACCIONES']">
                     @forelse($bitacoras as $log)
                         <tr>
                             <td class="px-6 py-4 whitespace-nowrap text-xs font-medium text-slate-900 dark:text-slate-100">
                                 {{ $log->fecha_bitacora ? $log->fecha_bitacora->format('d/m/Y H:i:s') : 'N/A' }}
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap text-sm font-semibold text-slate-900 dark:text-slate-100">
-                                {{ $log->usuario_snapshot_bitacora }}
+                                {{ $log->usuario ? ($log->usuario->nombre . ' ' . $log->usuario->apellido) : 'Sistema / Anónimo' }}
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap text-sm font-semibold text-indigo-600 dark:text-indigo-400">
                                 {{ $log->accion_bitacora }}
                             </td>
                             <td class="px-6 py-4 text-xs font-medium text-slate-900 dark:text-slate-100">
-                                <span class="font-mono bg-slate-100 dark:bg-slate-800 px-1.5 py-0.5 rounded">{{ class_basename($log->auditable_tipo_bitacora) }}</span>
-                                <span class="text-slate-900 dark:text-slate-100">#{{ $log->auditable_id_bitacora }}</span>
+                                <span class="font-mono bg-slate-100 dark:bg-slate-800 px-1.5 py-0.5 rounded">{{ class_basename($log->modulo_bitacora) }}</span>
+                                <span class="text-slate-900 dark:text-slate-100">#{{ $log->registro_id_bitacora }}</span>
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap text-xs font-medium text-slate-900 dark:text-slate-100">
                                 {{ $log->ip_bitacora }} <span class="text-slate-900 dark:text-slate-100">({{ $log->metodo_bitacora }})</span>

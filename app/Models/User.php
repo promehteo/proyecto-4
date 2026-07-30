@@ -15,13 +15,19 @@ class User extends Authenticatable
     /** @use HasFactory<UserFactory> */
     use HasFactory, Notifiable;
 
+    protected $table = 'user';
+    protected $primaryKey = 'id_user';
+    const UPDATED_AT = null;
+
     /**
      * The attributes that are mass assignable.
      *
      * @var list<string>
      */
     protected $fillable = [
-        'name',
+        'nombre',
+        'apellido',
+        'cedula',
         'email',
         'password',
         'status',
@@ -55,10 +61,10 @@ class User extends Authenticatable
     {
         return $this->belongsToMany(
             Rol::class,
-            'rol_usuario',
-            'id_usuario_rol_usuario',
-            'id_rol_rol_usuario'
-        )->withPivot('status', 'id_rol_usuario');
+            'detalle_rol',
+            'id_usuario',
+            'id_rol'
+        )->withPivot('status', 'id_detalle_rol');
     }
 
     public function scopeActive(Builder $query): Builder
@@ -78,15 +84,16 @@ class User extends Authenticatable
         }
 
         return $query->where(function (Builder $q) use ($term) {
-            $q->where('name', 'like', "%{$term}%")
+            $q->where('nombre', 'like', "%{$term}%")
+              ->orWhere('apellido', 'like', "%{$term}%")
               ->orWhere('email', 'like', "%{$term}%");
         });
     }
 
     /**
-     * Revisa si el usuario tiene un rol activo por slug.
+     * Revisa si el usuario tiene un rol activo por clave.
      */
-    public function hasRole(string $slug): bool
+    public function hasRole(string $clave): bool
     {
         if ($this->status !== 1) {
             return false;
@@ -94,15 +101,15 @@ class User extends Authenticatable
 
         return $this->roles()
             ->where('rol.status', 1)
-            ->where('rol_usuario.status', 1)
-            ->where('slug_rol', $slug)
+            ->where('detalle_rol.status', 1)
+            ->where('clave_rol', $clave)
             ->exists();
     }
 
     /**
      * Revisa si el usuario tiene un permiso activo a través de sus roles activos.
      */
-    public function hasPermissionTo(string $permissionSlug): bool
+    public function hasPermissionTo(string $permissionClave): bool
     {
         if ($this->status !== 1) {
             return false;
@@ -115,11 +122,11 @@ class User extends Authenticatable
 
         return $this->roles()
             ->where('rol.status', 1)
-            ->where('rol_usuario.status', 1)
-            ->whereHas('permisos', function (Builder $q) use ($permissionSlug) {
+            ->where('detalle_rol.status', 1)
+            ->whereHas('permisos', function (Builder $q) use ($permissionClave) {
                 $q->where('permiso.status', 1)
-                  ->where('permiso_rol.status', 1)
-                  ->where('slug_permiso', $permissionSlug);
+                  ->where('detalle_permiso.status', 1)
+                  ->where('clave_permiso', $permissionClave);
             })->exists();
     }
 }

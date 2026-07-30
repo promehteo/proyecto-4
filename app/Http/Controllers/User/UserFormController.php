@@ -38,11 +38,11 @@ class UserFormController extends Controller
             accion: 'registro de usuario',
             valoresAnteriores: null,
             valoresNuevos: $usuario->toArray(),
-            descripcion: "Usuario '{$usuario->name}' registrado exitosamente."
+            descripcion: "Usuario '{$usuario->nombre} {$usuario->apellido}' registrado exitosamente."
         );
 
         return redirect()->route('usuarios.index')
-            ->with('success', "El usuario '{$usuario->name}' ha sido registrado correctamente.");
+            ->with('success', "El usuario '{$usuario->nombre} {$usuario->apellido}' ha sido registrado correctamente.");
     }
 
     public function edit(User $usuario): View
@@ -72,10 +72,10 @@ class UserFormController extends Controller
             accion: $cambioPassword ? 'cambio de contraseña' : 'edición de usuario',
             valoresAnteriores: $valoresAnteriores,
             valoresNuevos: $usuarioActualizado->toArray(),
-            descripcion: "Usuario '{$usuarioActualizado->name}' editado exitosamente."
+            descripcion: "Usuario '{$usuarioActualizado->nombre} {$usuarioActualizado->apellido}' editado exitosamente."
         );
 
         return redirect()->route('usuarios.index')
-            ->with('success', "El usuario '{$usuarioActualizado->name}' ha sido editado correctamente.");
+            ->with('success', "El usuario '{$usuarioActualizado->nombre} {$usuarioActualizado->apellido}' ha sido editado correctamente.");
     }
 }

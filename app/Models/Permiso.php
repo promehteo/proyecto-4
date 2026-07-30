@@ -16,9 +16,8 @@ class Permiso extends Model
 
     protected $fillable = [
         'nombre_permiso',
-        'slug_permiso',
+        'clave_permiso',
         'modulo_permiso',
-        'descripcion_permiso',
         'status',
     ];
 
@@ -33,10 +32,10 @@ class Permiso extends Model
     {
         return $this->belongsToMany(
             Rol::class,
-            'permiso_rol',
-            'id_permiso_permiso_rol',
-            'id_rol_permiso_rol'
-        )->withPivot('status', 'id_permiso_rol');
+            'detalle_permiso',
+            'id_permiso',
+            'id_rol'
+        )->withPivot('status', 'id_detalle_permiso');
     }
 
     public function scopeActive(Builder $query): Builder
@@ -67,9 +66,8 @@ class Permiso extends Model
 
         return $query->where(function (Builder $q) use ($term) {
             $q->where('nombre_permiso', 'like', "%{$term}%")
-              ->orWhere('slug_permiso', 'like', "%{$term}%")
-              ->orWhere('modulo_permiso', 'like', "%{$term}%")
-              ->orWhere('descripcion_permiso', 'like', "%{$term}%");
+              ->orWhere('clave_permiso', 'like', "%{$term}%")
+              ->orWhere('modulo_permiso', 'like', "%{$term}%");
         });
     }
 }

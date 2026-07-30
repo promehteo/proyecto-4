@@ -22,11 +22,11 @@
                         <p class="text-slate-800 dark:text-slate-200 font-semibold text-lg mt-1">{{ $permiso->nombre_permiso }}</p>
                     </div>
 
-                    <!-- Slug -->
+                    <!-- Clave -->
                     <div>
-                        <x-input-label :value="__('Slug del Permiso')" />
+                        <x-input-label :value="__('Clave del Permiso')" />
                         <p class="font-mono text-sm text-indigo-600 dark:text-indigo-400 font-semibold mt-1 bg-indigo-50 dark:bg-indigo-950/50 px-2.5 py-1 rounded-md inline-block">
-                            {{ $permiso->slug_permiso }}
+                            {{ $permiso->clave_permiso }}
                         </p>
                     </div>
 
@@ -48,14 +48,6 @@
                                 <span class="px-3 py-1 inline-flex text-xs font-bold rounded-md bg-rose-600 text-white">Inactivo</span>
                             @endif
                         </div>
-                    </div>
-
-                    <!-- Descripción -->
-                    <div class="md:col-span-4">
-                        <x-input-label :value="__('Descripción')" />
-                        <p class="text-slate-700 dark:text-slate-300 bg-slate-50 dark:bg-slate-950 p-4 rounded-md border border-slate-200 dark:border-slate-800 mt-1">
-                            {{ $permiso->descripcion_permiso ?? 'Sin descripción disponible.' }}
-                        </p>
                     </div>
                 </div>
 

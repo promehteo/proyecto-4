@@ -23,7 +23,7 @@ class UserRolController extends Controller
         $this->authorize('assignRoles', $usuario);
 
         $rolesActivos = $this->formRepository->getActiveRolesForSelect();
-        $rolesAsignadosIds = $this->formRepository->getAssignedRoleIds($usuario->id);
+        $rolesAsignadosIds = $this->formRepository->getAssignedRoleIds($usuario->id_user);
 
         return view('usuarios.roles', compact('usuario', 'rolesActivos', 'rolesAsignadosIds'));
     }
@@ -32,7 +32,7 @@ class UserRolController extends Controller
     {
         $rolesEnviados = array_map('intval', $request->input('roles', []));
 
-        $anterioresPivote = $this->formRepository->getPivotState($usuario->id);
+        $anterioresPivote = $this->formRepository->getPivotState($usuario->id_user);
         $nuevosPivote = $this->formRepository->syncRoles($usuario, $rolesEnviados);
 
         BitacoraService::registrar(
@@ -40,10 +40,10 @@ class UserRolController extends Controller
             accion: 'asignación de roles a usuario',
             valoresAnteriores: ['roles_pivote' => $anterioresPivote],
             valoresNuevos: ['roles_pivote' => $nuevosPivote],
-            descripcion: "Roles me actualizados para el usuario '{$usuario->name}'."
+            descripcion: "Roles actualizados para el usuario '{$usuario->nombre} {$usuario->apellido}'."
         );
 
         return redirect()->route('usuarios.index')
-            ->with('success', "Los roles del usuario '{$usuario->name}' han sido actualizados correctamente.");
+            ->with('success', "Los roles del usuario '{$usuario->nombre} {$usuario->apellido}' han sido actualizados correctamente.");
     }
 }

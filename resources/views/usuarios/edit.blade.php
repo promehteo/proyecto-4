@@ -5,7 +5,7 @@
         </h2>
     </x-slot>
 
-    <div class="py-12" x-data="userForm({{ $usuario->id }})">
+    <div class="py-12" x-data="userForm({{ $usuario->id_user }})">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-6">
             <x-card>
                 <div class="flex items-center justify-between border-b border-slate-200 dark:border-slate-800 pb-4 mb-6">
@@ -31,23 +31,66 @@
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
                             {{-- Nombre --}}
                             <div>
-                                <x-input-label for="name" :value="__('Nombre Completo')" />
+                                <x-input-label for="nombre" :value="__('Nombre')" />
                                 <x-text-input
-                                    id="name"
-                                    name="name"
+                                    id="nombre"
+                                    name="nombre"
                                     type="text"
-                                    x-model="form.name"
-                                    @input="markDirty('name')"
-                                    @blur="markDirty('name')"
+                                    x-model="form.nombre"
+                                    @input="markDirty('nombre')"
+                                    @blur="markDirty('nombre')"
                                     class="mt-1 block w-full"
                                     required
                                     autofocus />
-                                <template x-if="errors['name']">
-                                    <p class="text-sm text-red-600 dark:text-red-400 mt-2" x-text="errors['name'][0]"></p>
+                                <template x-if="errors['nombre']">
+                                    <p class="text-sm text-red-600 dark:text-red-400 mt-2" x-text="errors['nombre'][0]"></p>
                                 </template>
-                                @if($errors->has('name'))
-                                    <template x-if="!dirtyFields.has('name')">
-                                        <x-input-error class="mt-2" :messages="$errors->get('name')" />
+                                @if($errors->has('nombre'))
+                                    <template x-if="!dirtyFields.has('nombre')">
+                                        <x-input-error class="mt-2" :messages="$errors->get('nombre')" />
+                                    </template>
+                                @endif
+                            </div>
+
+                            {{-- Apellido --}}
+                            <div>
+                                <x-input-label for="apellido" :value="__('Apellido')" />
+                                <x-text-input
+                                    id="apellido"
+                                    name="apellido"
+                                    type="text"
+                                    x-model="form.apellido"
+                                    @input="markDirty('apellido')"
+                                    @blur="markDirty('apellido')"
+                                    class="mt-1 block w-full"
+                                    required />
+                                <template x-if="errors['apellido']">
+                                    <p class="text-sm text-red-600 dark:text-red-400 mt-2" x-text="errors['apellido'][0]"></p>
+                                </template>
+                                @if($errors->has('apellido'))
+                                    <template x-if="!dirtyFields.has('apellido')">
+                                        <x-input-error class="mt-2" :messages="$errors->get('apellido')" />
+                                    </template>
+                                @endif
+                            </div>
+
+                            {{-- Cédula --}}
+                            <div>
+                                <x-input-label for="cedula" :value="__('Cédula')" />
+                                <x-text-input
+                                    id="cedula"
+                                    name="cedula"
+                                    type="number"
+                                    x-model="form.cedula"
+                                    @input="markDirty('cedula')"
+                                    @blur="markDirty('cedula')"
+                                    class="mt-1 block w-full" />
+                                <template x-if="errors['cedula']">
+                                    <p class="text-sm text-red-600 dark:text-red-400 mt-2" x-text="errors['cedula'][0]"></p>
+                                </template>
+                                @if($errors->has('cedula'))
+                                    <template x-if="!dirtyFields.has('cedula')">
+                                        <x-input-error class="mt-2" :messages="$errors->get('cedula')" />
                                     </template>
                                 @endif
                             </div>
@@ -156,7 +199,9 @@
         function userForm(userId = null) {
             return {
                 form: {
-                    name: @js(old('name', $usuario->name)),
+                    nombre: @js(old('nombre', $usuario->nombre)),
+                    apellido: @js(old('apellido', $usuario->apellido)),
+                    cedula: @js(old('cedula', $usuario->cedula)),
                     email: @js(old('email', $usuario->email)),
                     password: '',
                     password_confirmation: '',
@@ -215,7 +260,9 @@
                 },
 
                 async submitForm(e) {
-                    this.dirtyFields.add('name');
+                    this.dirtyFields.add('nombre');
+                    this.dirtyFields.add('apellido');
+                    this.dirtyFields.add('cedula');
                     this.dirtyFields.add('email');
                     if (this.form.password) {
                         this.dirtyFields.add('password');

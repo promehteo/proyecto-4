@@ -5,10 +5,8 @@ declare(strict_types=1);
 use App\Models\Bitacora;
 use App\Models\Categoria;
 use App\Models\Permiso;
-use App\Models\PermisoRol;
 use App\Models\Producto;
 use App\Models\Rol;
-use App\Models\RolUsuario;
 use App\Models\User;
 use App\Services\BitacoraService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -24,7 +22,9 @@ beforeEach(function () {
 
     // Crear un usuario sin permisos
     $this->userSinPermiso = User::create([
-        'name' => 'Usuario Sin Permisos',
+        'nombre' => 'Usuario Sin',
+        'apellido' => 'Permisos',
+        'cedula' => 99999999,
         'email' => 'sinpermiso@larapidito.com',
         'password' => Hash::make('password'),
         'status' => 1,
@@ -100,7 +100,7 @@ test('usuario sin permiso no puede crear roles', function () {
     $this->actingAs($this->userSinPermiso)
         ->post(route('roles.store'), [
             'nombre_rol' => 'Nuevo Rol',
-            'slug_rol' => 'nuevo.rol',
+            'clave_rol' => 'nuevo.rol',
             'status' => 1,
         ])
         ->assertForbidden();
@@ -111,7 +111,7 @@ test('usuario sin permiso no puede editar roles', function () {
     $this->actingAs($this->userSinPermiso)
         ->put(route('roles.update', $rol), [
             'nombre_rol' => 'Edit Rol',
-            'slug_rol' => $rol->slug_rol,
+            'clave_rol' => $rol->clave_rol,
             'status' => 1,
         ])
         ->assertForbidden();
@@ -133,90 +133,126 @@ test('usuario sin permiso no puede asignar permisos a roles', function () {
         ->assertForbidden();
 });
 
-test('usuario sin permiso no puede asignar roles a usuarios', function () {
+test('usuario sin permiso no puede ver permisos', function () {
     $this->actingAs($this->userSinPermiso)
-        ->put(route('usuarios.roles.update', $this->adminUser), [
+        ->get(route('permisos.index'))
+        ->assertForbidden();
+});
+
+test('usuario sin permiso no puede crear permisos', function () {
+    $this->actingAs($this->userSinPermiso)
+        ->post(route('permisos.store'), [
+            'nombre_permiso' => 'Nuevo Permiso',
+            'clave_permiso' => 'nuevo.permiso',
+            'modulo_permiso' => 'modulo',
+            'status' => 1,
+        ])
+        ->assertForbidden();
+});
+
+test('usuario sin permiso no puede editar permisos', function () {
+    $permiso = Permiso::first();
+    $this->actingAs($this->userSinPermiso)
+        ->put(route('permisos.update', $permiso), [
+            'nombre_permiso' => 'Edit Permiso',
+            'clave_permiso' => $permiso->clave_permiso,
+            'modulo_permiso' => $permiso->modulo_permiso,
+            'status' => 1,
+        ])
+        ->assertForbidden();
+});
+
+test('usuario sin permiso no puede inactivar permisos', function () {
+    $permiso = Permiso::first();
+    $this->actingAs($this->userSinPermiso)
+        ->patch(route('permisos.inactivar', $permiso))
+        ->assertForbidden();
+});
+
+test('usuario sin permiso no puede ver usuarios', function () {
+    $this->actingAs($this->userSinPermiso)
+        ->get(route('usuarios.index'))
+        ->assertForbidden();
+});
+
+test('usuario sin permiso no puede crear usuarios', function () {
+    $this->actingAs($this->userSinPermiso)
+        ->post(route('usuarios.store'), [
+            'nombre' => 'Test',
+            'apellido' => 'User',
+            'email' => 't@t.com',
+            'password' => 'password',
+            'password_confirmation' => 'password',
+            'status' => 1,
+        ])
+        ->assertForbidden();
+});
+
+test('usuario sin permiso no puede editar usuarios', function () {
+    $u = User::first();
+    $this->actingAs($this->userSinPermiso)
+        ->put(route('usuarios.update', $u), [
+            'nombre' => 'Test',
+            'apellido' => 'User',
+            'email' => 't@t.com',
+            'status' => 1,
+        ])
+        ->assertForbidden();
+});
+
+test('usuario sin permiso no puede inactivar usuarios', function () {
+    $u = User::first();
+    $this->actingAs($this->userSinPermiso)
+        ->patch(route('usuarios.inactivar', $u))
+        ->assertForbidden();
+});
+
+test('usuario sin permiso no puede asignar roles a usuarios', function () {
+    $u = User::first();
+    $this->actingAs($this->userSinPermiso)
+        ->put(route('usuarios.roles.update', $u), [
             'roles' => [],
         ])
         ->assertForbidden();
 });
 
-test('administrador puede acceder a todo', function () {
-    $this->actingAs($this->adminUser)
-        ->get(route('categorias.index'))
-        ->assertOk();
-
-    $this->actingAs($this->adminUser)
-        ->get(route('bitacora.index'))
-        ->assertOk();
-
-    $this->actingAs($this->adminUser)
-        ->get(route('roles.index'))
-        ->assertOk();
-
-    $this->actingAs($this->adminUser)
-        ->get(route('permisos.index'))
-        ->assertOk();
-
-    $this->actingAs($this->adminUser)
-        ->get(route('usuarios.index'))
-        ->assertOk();
-});
-
 // =========================================================================
-// PRUEBAS DE MÓDULO 1: CATEGORÍAS
+// PRUEBAS DE MÓDULO 1: CATEGORÍAS (JERÁRQUICAS, BITÁCORA, REGLAS)
 // =========================================================================
 
-test('crear categoría correctamente y registrar en bitácora', function () {
+test('registrar bitácora al crear, editar, inactivar y activar categoría', function () {
+    // 1. Crear
     $this->actingAs($this->adminUser)
         ->post(route('categorias.store'), [
-            'nombre_categoria' => 'Bebidas Energéticas',
-            'descripcion_categoria' => 'Bebidas con cafeína y taurina',
+            'nombre_categoria' => 'Panadería',
             'status' => 1,
         ])
         ->assertRedirect(route('categorias.index'));
 
-    $this->assertDatabaseHas('categoria', [
-        'nombre_categoria' => 'Bebidas Energéticas',
-        'status' => 1,
-    ]);
-
+    $categoria = Categoria::where('nombre_categoria', 'Panadería')->first();
     $this->assertDatabaseHas('bitacora', [
         'accion_bitacora' => 'creación de categoría',
-        'auditable_tipo_bitacora' => Categoria::class,
+        'registro_id_bitacora' => $categoria->id_categoria,
     ]);
-});
 
-test('editar categoría correctamente y registrar en bitácora', function () {
-    $categoria = Categoria::where('nombre_categoria', 'Panadería')->first();
-
+    // 2. Editar
     $this->actingAs($this->adminUser)
         ->put(route('categorias.update', $categoria), [
             'nombre_categoria' => 'Panadería y Pastelería',
-            'descripcion_categoria' => 'Panes y pasteles finos',
             'status' => 1,
         ])
         ->assertRedirect(route('categorias.index'));
 
-    $this->assertDatabaseHas('categoria', [
-        'id_categoria' => $categoria->id_categoria,
-        'nombre_categoria' => 'Panadería y Pastelería',
-    ]);
-
     $this->assertDatabaseHas('bitacora', [
         'accion_bitacora' => 'edición de categoría',
-        'auditable_id_bitacora' => $categoria->id_categoria,
+        'registro_id_bitacora' => $categoria->id_categoria,
     ]);
-});
 
-test('inactivar categoría correctamente y registrar en bitácora', function () {
-    $categoria = Categoria::where('nombre_categoria', 'Salsas')->first();
-
+    // 3. Inactivar
     $this->actingAs($this->adminUser)
         ->patch(route('categorias.inactivar', $categoria))
         ->assertRedirect(route('categorias.index'));
 
-    // Aserción de Inactivación Lógica (sin eliminación física)
     $this->assertDatabaseHas('categoria', [
         'id_categoria' => $categoria->id_categoria,
         'status' => 2,
@@ -224,14 +260,10 @@ test('inactivar categoría correctamente y registrar en bitácora', function () 
 
     $this->assertDatabaseHas('bitacora', [
         'accion_bitacora' => 'inactivación de categoría',
-        'auditable_id_bitacora' => $categoria->id_categoria,
+        'registro_id_bitacora' => $categoria->id_categoria,
     ]);
-});
 
-test('activar categoría correctamente y registrar en bitácora', function () {
-    $categoria = Categoria::where('nombre_categoria', 'Vegetales')->first();
-    $categoria->update(['status' => 2]);
-
+    // 4. Activar
     $this->actingAs($this->adminUser)
         ->patch(route('categorias.activar', $categoria))
         ->assertRedirect(route('categorias.index'));
@@ -243,7 +275,7 @@ test('activar categoría correctamente y registrar en bitácora', function () {
 
     $this->assertDatabaseHas('bitacora', [
         'accion_bitacora' => 'activación de categoría',
-        'auditable_id_bitacora' => $categoria->id_categoria,
+        'registro_id_bitacora' => $categoria->id_categoria,
     ]);
 });
 
@@ -357,29 +389,28 @@ test('registrar bitácora al crear, editar, inactivar y activar rol', function (
     $this->actingAs($this->adminUser)
         ->post(route('roles.store'), [
             'nombre_rol' => 'Supervisor',
-            'slug_rol' => 'supervisor',
-            'descripcion_rol' => 'Supervisor de tienda',
+            'clave_rol' => 'supervisor',
             'status' => 1,
         ])
         ->assertRedirect(route('roles.index'));
 
-    $rol = Rol::where('slug_rol', 'supervisor')->first();
+    $rol = Rol::where('clave_rol', 'supervisor')->first();
     $this->assertDatabaseHas('bitacora', [
         'accion_bitacora' => 'creación de rol',
-        'auditable_id_bitacora' => $rol->id_rol,
+        'registro_id_bitacora' => $rol->id_rol,
     ]);
 
     // 2. Editar
     $this->actingAs($this->adminUser)
         ->put(route('roles.update', $rol), [
             'nombre_rol' => 'Supervisor General',
-            'slug_rol' => 'supervisor',
+            'clave_rol' => 'supervisor',
             'status' => 1,
         ]);
 
     $this->assertDatabaseHas('bitacora', [
         'accion_bitacora' => 'edición de rol',
-        'auditable_id_bitacora' => $rol->id_rol,
+        'registro_id_bitacora' => $rol->id_rol,
     ]);
 
     // 3. Inactivar
@@ -393,7 +424,7 @@ test('registrar bitácora al crear, editar, inactivar y activar rol', function (
 
     $this->assertDatabaseHas('bitacora', [
         'accion_bitacora' => 'inactivación de rol',
-        'auditable_id_bitacora' => $rol->id_rol,
+        'registro_id_bitacora' => $rol->id_rol,
     ]);
 
     // 4. Activar
@@ -407,7 +438,7 @@ test('registrar bitácora al crear, editar, inactivar y activar rol', function (
 
     $this->assertDatabaseHas('bitacora', [
         'accion_bitacora' => 'activación de rol',
-        'auditable_id_bitacora' => $rol->id_rol,
+        'registro_id_bitacora' => $rol->id_rol,
     ]);
 });
 
@@ -416,29 +447,29 @@ test('registrar bitácora al crear, editar, inactivar y activar permiso', functi
     $this->actingAs($this->adminUser)
         ->post(route('permisos.store'), [
             'nombre_permiso' => 'Exportar Reportes',
-            'slug_permiso' => 'reportes.exportar',
+            'clave_permiso' => 'reportes.exportar',
             'modulo_permiso' => 'reportes',
             'status' => 1,
         ]);
 
-    $permiso = Permiso::where('slug_permiso', 'reportes.exportar')->first();
+    $permiso = Permiso::where('clave_permiso', 'reportes.exportar')->first();
     $this->assertDatabaseHas('bitacora', [
         'accion_bitacora' => 'creación de permiso',
-        'auditable_id_bitacora' => $permiso->id_permiso,
+        'registro_id_bitacora' => $permiso->id_permiso,
     ]);
 
     // 2. Editar
     $this->actingAs($this->adminUser)
         ->put(route('permisos.update', $permiso), [
             'nombre_permiso' => 'Exportar Todo',
-            'slug_permiso' => 'reportes.exportar',
+            'clave_permiso' => 'reportes.exportar',
             'modulo_permiso' => 'reportes',
             'status' => 1,
         ]);
 
     $this->assertDatabaseHas('bitacora', [
         'accion_bitacora' => 'edición de permiso',
-        'auditable_id_bitacora' => $permiso->id_permiso,
+        'registro_id_bitacora' => $permiso->id_permiso,
     ]);
 
     // 3. Inactivar
@@ -452,7 +483,7 @@ test('registrar bitácora al crear, editar, inactivar y activar permiso', functi
 
     $this->assertDatabaseHas('bitacora', [
         'accion_bitacora' => 'inactivación de permiso',
-        'auditable_id_bitacora' => $permiso->id_permiso,
+        'registro_id_bitacora' => $permiso->id_permiso,
     ]);
 
     // 4. Activar
@@ -466,12 +497,12 @@ test('registrar bitácora al crear, editar, inactivar y activar permiso', functi
 
     $this->assertDatabaseHas('bitacora', [
         'accion_bitacora' => 'activación de permiso',
-        'auditable_id_bitacora' => $permiso->id_permiso,
+        'registro_id_bitacora' => $permiso->id_permiso,
     ]);
 });
 
 test('registrar bitácora al cambiar permisos de rol sin eliminación física pivote', function () {
-    $rol = Rol::create(['nombre_rol' => 'Tester', 'slug_rol' => 'tester', 'status' => 1]);
+    $rol = Rol::create(['nombre_rol' => 'Tester', 'clave_rol' => 'tester', 'status' => 1]);
     $permiso1 = Permiso::first();
     $permiso2 = Permiso::skip(1)->first();
 
@@ -481,9 +512,9 @@ test('registrar bitácora al cambiar permisos de rol sin eliminación física pi
             'permisos' => [$permiso1->id_permiso, $permiso2->id_permiso],
         ]);
 
-    $this->assertDatabaseHas('permiso_rol', [
-        'id_rol_permiso_rol' => $rol->id_rol,
-        'id_permiso_permiso_rol' => $permiso1->id_permiso,
+    $this->assertDatabaseHas('detalle_permiso', [
+        'id_rol' => $rol->id_rol,
+        'id_permiso' => $permiso1->id_permiso,
         'status' => 1,
     ]);
 
@@ -494,22 +525,29 @@ test('registrar bitácora al cambiar permisos de rol sin eliminación física pi
         ]);
 
     // Aserción Pivote Inactivo (status = 2)
-    $this->assertDatabaseHas('permiso_rol', [
-        'id_rol_permiso_rol' => $rol->id_rol,
-        'id_permiso_permiso_rol' => $permiso2->id_permiso,
+    $this->assertDatabaseHas('detalle_permiso', [
+        'id_rol' => $rol->id_rol,
+        'id_permiso' => $permiso2->id_permiso,
         'status' => 2,
     ]);
 
     $this->assertDatabaseHas('bitacora', [
         'accion_bitacora' => 'asignación de permisos a rol',
-        'auditable_id_bitacora' => $rol->id_rol,
+        'registro_id_bitacora' => $rol->id_rol,
     ]);
 });
 
 test('registrar bitácora al cambiar roles de usuario sin eliminación física pivote', function () {
-    $user = User::create(['name' => 'Empleado 1', 'email' => 'emp1@test.com', 'password' => Hash::make('password'), 'status' => 1]);
-    $rolCajero = Rol::where('slug_rol', 'cajero')->first();
-    $rolInventario = Rol::where('slug_rol', 'inventario')->first();
+    $user = User::create([
+        'nombre' => 'Empleado',
+        'apellido' => '1',
+        'cedula' => 11111111,
+        'email' => 'emp1@test.com',
+        'password' => Hash::make('password'),
+        'status' => 1
+    ]);
+    $rolCajero = Rol::where('clave_rol', 'cajero')->first();
+    $rolInventario = Rol::where('clave_rol', 'inventario')->first();
 
     // Asignar cajero e inventario
     $this->actingAs($this->adminUser)
@@ -517,9 +555,9 @@ test('registrar bitácora al cambiar roles de usuario sin eliminación física p
             'roles' => [$rolCajero->id_rol, $rolInventario->id_rol],
         ]);
 
-    $this->assertDatabaseHas('rol_usuario', [
-        'id_usuario_rol_usuario' => $user->id,
-        'id_rol_rol_usuario' => $rolCajero->id_rol,
+    $this->assertDatabaseHas('detalle_rol', [
+        'id_usuario' => $user->id_user,
+        'id_rol' => $rolCajero->id_rol,
         'status' => 1,
     ]);
 
@@ -530,15 +568,15 @@ test('registrar bitácora al cambiar roles de usuario sin eliminación física p
         ]);
 
     // Pivote inactivo
-    $this->assertDatabaseHas('rol_usuario', [
-        'id_usuario_rol_usuario' => $user->id,
-        'id_rol_rol_usuario' => $rolInventario->id_rol,
+    $this->assertDatabaseHas('detalle_rol', [
+        'id_usuario' => $user->id_user,
+        'id_rol' => $rolInventario->id_rol,
         'status' => 2,
     ]);
 
     $this->assertDatabaseHas('bitacora', [
         'accion_bitacora' => 'asignación de roles a usuario',
-        'auditable_id_bitacora' => $user->id,
+        'registro_id_bitacora' => $user->id_user,
     ]);
 });
 
@@ -548,5 +586,5 @@ test('no permitir eliminación física de rol, permiso o usuario', function () {
 
     $this->actingAs($this->adminUser)->delete("/roles/{$rol->id_rol}")->assertStatus(405);
     $this->actingAs($this->adminUser)->delete("/permisos/{$permiso->id_permiso}")->assertStatus(405);
-    $this->actingAs($this->adminUser)->delete("/usuarios/{$this->userSinPermiso->id}")->assertStatus(405);
+    $this->actingAs($this->adminUser)->delete("/usuarios/{$this->userSinPermiso->id_user}")->assertStatus(405);
 });

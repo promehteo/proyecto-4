@@ -16,8 +16,8 @@ class BitacoraListRepository
         $search = $filters['search'] ?? null;
         $usuarioId = isset($filters['usuario_id']) && $filters['usuario_id'] !== '' ? (int) $filters['usuario_id'] : null;
         $accion = $filters['accion'] ?? null;
-        $auditableTipo = $filters['auditable_tipo'] ?? null;
-        $auditableId = isset($filters['auditable_id']) && $filters['auditable_id'] !== '' ? (int) $filters['auditable_id'] : null;
+        $modulo = $filters['auditable_tipo'] ?? null;
+        $registroId = isset($filters['auditable_id']) && $filters['auditable_id'] !== '' ? (int) $filters['auditable_id'] : null;
         $fechaDesde = $filters['fecha_desde'] ?? null;
         $fechaHasta = $filters['fecha_hasta'] ?? null;
         $ip = $filters['ip'] ?? null;
@@ -26,8 +26,8 @@ class BitacoraListRepository
             ->search($search)
             ->byUsuario($usuarioId)
             ->byAccion($accion)
-            ->byAuditableTipo($auditableTipo)
-            ->byAuditableId($auditableId)
+            ->byModulo($modulo)
+            ->byRegistroId($registroId)
             ->byFechaDesde($fechaDesde)
             ->byFechaHasta($fechaHasta)
             ->byIp($ip)
@@ -38,7 +38,7 @@ class BitacoraListRepository
 
     public function getUsersForFilter(): Collection
     {
-        return User::orderBy('name')->get();
+        return User::orderBy('nombre')->get();
     }
 
     public function getDistinctAcciones(): Collection

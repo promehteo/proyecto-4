@@ -30,11 +30,8 @@
                                 <div class="flex-1">
                                     <div class="flex items-center gap-2">
                                         <span class="text-sm font-semibold text-slate-900 dark:text-slate-100">{{ $r->nombre_rol }}</span>
-                                        <span class="text-xs font-mono text-indigo-600 dark:text-indigo-400 font-medium px-2 py-0.5 bg-indigo-50 dark:bg-indigo-950/50 rounded-md border border-indigo-200 dark:border-indigo-800">{{ $r->slug_rol }}</span>
+                                        <span class="text-xs font-mono text-indigo-600 dark:text-indigo-400 font-medium px-2 py-0.5 bg-indigo-50 dark:bg-indigo-950/50 rounded-md border border-indigo-200 dark:border-indigo-800">{{ $r->clave_rol }}</span>
                                     </div>
-                                    @if($r->descripcion_rol)
-                                        <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">{{ $r->descripcion_rol }}</p>
-                                    @endif
                                 </div>
                             </label>
                         @endforeach

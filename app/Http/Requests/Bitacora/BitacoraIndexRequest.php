@@ -17,7 +17,7 @@ class BitacoraIndexRequest extends FormRequest
     {
         return [
             'search' => ['nullable', 'string', 'max:190'],
-            'usuario_id' => ['nullable', 'integer', 'exists:users,id'],
+            'usuario_id' => ['nullable', 'integer', 'exists:user,id_user'],
             'accion' => ['nullable', 'string', 'max:80'],
             'auditable_tipo' => ['nullable', 'string', 'max:190'],
             'auditable_id' => ['nullable', 'integer'],

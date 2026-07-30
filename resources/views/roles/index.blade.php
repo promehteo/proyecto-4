@@ -38,7 +38,7 @@
                             type="text" 
                             name="search" 
                             value="{{ $search }}" 
-                            placeholder="Buscar por nombre o slug..." 
+                            placeholder="Buscar por nombre o clave..." 
                             @input.debounce.500ms="$refs.filterForm.submit()"
                             class="text-sm py-1.5 w-full"
                         />
@@ -60,13 +60,12 @@
                     @endcan
                 </div>
 
-                <x-data-table :paginator="$roles" :headers="['ID', 'NOMBRE', 'SLUG', 'DESCRIPCIÓN', 'PERMISOS ACTIVOS', 'ESTADO', 'ACCIONES']">
+                <x-data-table :paginator="$roles" :headers="['ID', 'NOMBRE', 'CLAVE', 'PERMISOS ACTIVOS', 'ESTADO', 'ACCIONES']">
                     @forelse($roles as $r)
                         <tr>
                             <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-slate-900 dark:text-slate-100">#{{ $r->id_rol }}</td>
                             <td class="px-6 py-4 whitespace-nowrap text-sm font-semibold text-slate-900 dark:text-slate-100">{{ $r->nombre_rol }}</td>
-                            <td class="px-6 py-4 whitespace-nowrap text-xs font-mono text-indigo-600 dark:text-indigo-400 font-semibold">{{ $r->slug_rol }}</td>
-                            <td class="px-6 py-4 text-sm font-medium text-slate-900 dark:text-slate-100 truncate max-w-xs" title="{{ $r->descripcion_rol ?? '' }}">{{ $r->descripcion_rol ?? 'N/A' }}</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-xs font-mono text-indigo-600 dark:text-indigo-400 font-semibold">{{ $r->clave_rol }}</td>
                             <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-slate-900 dark:text-slate-100">
                                 <span class="px-2.5 py-1 bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-md text-xs font-medium">{{ $r->permisos_count }} permisos</span>
                             </td>
@@ -127,7 +126,7 @@
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="7" class="px-6 py-4 text-center text-sm text-slate-500">No se encontraron roles.</td>
+                            <td colspan="6" class="px-6 py-4 text-center text-sm text-slate-500">No se encontraron roles.</td>
                         </tr>
                     @endforelse
                 </x-data-table>

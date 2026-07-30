@@ -16,17 +16,15 @@ class Bitacora extends Model
 
     protected $fillable = [
         'id_usuario_bitacora',
-        'usuario_snapshot_bitacora',
         'accion_bitacora',
-        'auditable_tipo_bitacora',
-        'auditable_id_bitacora',
+        'modulo_bitacora',
+        'registro_id_bitacora',
         'valores_anteriores_bitacora',
         'valores_nuevos_bitacora',
         'ip_bitacora',
-        'user_agent_bitacora',
+        'navegador_bitacora',
         'url_bitacora',
         'metodo_bitacora',
-        'descripcion_bitacora',
         'fecha_bitacora',
         'status',
     ];
@@ -43,7 +41,7 @@ class Bitacora extends Model
 
     public function usuario(): BelongsTo
     {
-        return $this->belongsTo(User::class, 'id_usuario_bitacora', 'id');
+        return $this->belongsTo(User::class, 'id_usuario_bitacora', 'id_user');
     }
 
     public function scopeActive(Builder $query): Builder
@@ -61,14 +59,14 @@ class Bitacora extends Model
         return $accion ? $query->where('accion_bitacora', $accion) : $query;
     }
 
-    public function scopeByAuditableTipo(Builder $query, ?string $tipo): Builder
+    public function scopeByModulo(Builder $query, ?string $modulo): Builder
     {
-        return $tipo ? $query->where('auditable_tipo_bitacora', 'like', "%{$tipo}%") : $query;
+        return $modulo ? $query->where('modulo_bitacora', 'like', "%{$modulo}%") : $query;
     }
 
-    public function scopeByAuditableId(Builder $query, ?int $id): Builder
+    public function scopeByRegistroId(Builder $query, ?int $id): Builder
     {
-        return $id ? $query->where('auditable_id_bitacora', $id) : $query;
+        return $id ? $query->where('registro_id_bitacora', $id) : $query;
     }
 
     public function scopeByFechaDesde(Builder $query, ?string $fecha): Builder
@@ -93,10 +91,8 @@ class Bitacora extends Model
         }
 
         return $query->where(function (Builder $q) use ($term) {
-            $q->where('usuario_snapshot_bitacora', 'like', "%{$term}%")
-              ->orWhere('accion_bitacora', 'like', "%{$term}%")
-              ->orWhere('auditable_tipo_bitacora', 'like', "%{$term}%")
-              ->orWhere('descripcion_bitacora', 'like', "%{$term}%");
+            $q->where('accion_bitacora', 'like', "%{$term}%")
+              ->orWhere('modulo_bitacora', 'like', "%{$term}%");
         });
     }
 }

@@ -21,7 +21,7 @@ class UserRolRequest extends FormRequest
         $usuario = $this->route('usuario');
         if ($usuario) {
             $this->merge([
-                'id_usuario' => $usuario->id,
+                'id_usuario' => $usuario->id_user,
             ]);
         }
     }
@@ -32,7 +32,7 @@ class UserRolRequest extends FormRequest
             'id_usuario' => [
                 'required',
                 'integer',
-                'exists:users,id',
+                'exists:user,id_user',
                 function ($attribute, $value, $fail) {
                     $targetUser = User::find($value);
                     if (!$targetUser || (int) $targetUser->status !== 1) {
@@ -41,16 +41,16 @@ class UserRolRequest extends FormRequest
                     }
 
                     $rolesEnviados = $this->input('roles', []);
-                    $adminRol = Rol::where('slug_rol', 'admin')->first();
+                    $adminRol = Rol::where('clave_rol', 'admin')->first();
                     $adminRolId = $adminRol?->id_rol;
 
                     if ($targetUser->hasRole('admin') && (!is_array($rolesEnviados) || !in_array($adminRolId, array_map('intval', $rolesEnviados), true))) {
                         $otrosAdminsActivos = User::where('status', 1)
-                            ->where('id', '!=', $targetUser->id)
+                            ->where('id_user', '!=', $targetUser->id_user)
                             ->whereHas('roles', function ($q) {
                                 $q->where('rol.status', 1)
-                                  ->where('rol_usuario.status', 1)
-                                  ->where('slug_rol', 'admin');
+                                  ->where('detalle_rol.status', 1)
+                                  ->where('clave_rol', 'admin');
                             })
                             ->count();
 

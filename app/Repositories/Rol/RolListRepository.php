@@ -15,7 +15,7 @@ class RolListRepository
         $status = isset($filters['status']) && $filters['status'] !== '' ? (int) $filters['status'] : null;
 
         return Rol::withCount(['permisos' => function ($q) {
-                $q->where('permiso.status', 1)->where('permiso_rol.status', 1);
+                $q->where('permiso.status', 1)->where('detalle_permiso.status', 1);
             }])
             ->search($search)
             ->byStatus($status)

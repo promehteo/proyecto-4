@@ -19,9 +19,21 @@
 
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
-                <x-input-label for="name" :value="__('Name')" />
-                <x-text-input id="name" name="name" type="text" class="mt-1 block w-full" :value="old('name', $user->name)" required autofocus autocomplete="name" />
-                <x-input-error class="mt-2" :messages="$errors->get('name')" />
+                <x-input-label for="nombre" :value="__('Nombre')" />
+                <x-text-input id="nombre" name="nombre" type="text" class="mt-1 block w-full" :value="old('nombre', $user->nombre)" required autofocus autocomplete="given-name" />
+                <x-input-error class="mt-2" :messages="$errors->get('nombre')" />
+            </div>
+
+            <div>
+                <x-input-label for="apellido" :value="__('Apellido')" />
+                <x-text-input id="apellido" name="apellido" type="text" class="mt-1 block w-full" :value="old('apellido', $user->apellido)" required autocomplete="family-name" />
+                <x-input-error class="mt-2" :messages="$errors->get('apellido')" />
+            </div>
+
+            <div>
+                <x-input-label for="cedula" :value="__('Cédula')" />
+                <x-text-input id="cedula" name="cedula" type="number" class="mt-1 block w-full" :value="old('cedula', $user->cedula)" autocomplete="off" />
+                <x-input-error class="mt-2" :messages="$errors->get('cedula')" />
             </div>
 
             <div>

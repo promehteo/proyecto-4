@@ -45,11 +45,11 @@ class UserIndexController extends Controller
             accion: 'inactivación de usuario',
             valoresAnteriores: $valoresAnteriores,
             valoresNuevos: $usuarioInactivado->toArray(),
-            descripcion: "Usuario '{$usuarioInactivado->name}' inactivado."
+            descripcion: "Usuario '{$usuarioInactivado->nombre} {$usuarioInactivado->apellido}' inactivado."
         );
 
         return redirect()->route('usuarios.index')
-            ->with('success', "El usuario '{$usuarioInactivado->name}' ha sido inactivado.");
+            ->with('success', "El usuario '{$usuarioInactivado->nombre} {$usuarioInactivado->apellido}' ha sido inactivado.");
     }
 
     public function activar(UserIndexRequest $request, User $usuario): RedirectResponse
@@ -62,11 +62,11 @@ class UserIndexController extends Controller
             accion: 'activación de usuario',
             valoresAnteriores: $valoresAnteriores,
             valoresNuevos: $usuarioActivado->toArray(),
-            descripcion: "Usuario '{$usuarioActivado->name}' activado."
+            descripcion: "Usuario '{$usuarioActivado->nombre} {$usuarioActivado->apellido}' activado."
         );
 
         return redirect()->route('usuarios.index')
-            ->with('success', "El usuario '{$usuarioActivado->name}' ha sido activado.");
+            ->with('success', "El usuario '{$usuarioActivado->nombre} {$usuarioActivado->apellido}' ha sido activado.");
     }
 
     public function show(User $usuario): View

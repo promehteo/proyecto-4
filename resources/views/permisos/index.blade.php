@@ -38,7 +38,7 @@
                             type="text" 
                             name="search" 
                             value="{{ $search }}" 
-                            placeholder="Buscar por nombre, slug o módulo..." 
+                            placeholder="Buscar por nombre, clave o módulo..." 
                             @input.debounce.500ms="$refs.filterForm.submit()"
                             class="text-sm py-1.5 w-full"
                         />
@@ -70,12 +70,12 @@
                     @endcan
                 </div>
 
-                <x-data-table :paginator="$permisos" :headers="['ID', 'NOMBRE', 'SLUG', 'MÓDULO', 'ESTADO', 'ACCIONES']">
+                <x-data-table :paginator="$permisos" :headers="['ID', 'NOMBRE', 'CLAVE', 'MÓDULO', 'ESTADO', 'ACCIONES']">
                     @forelse($permisos as $p)
                         <tr>
                             <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-slate-900 dark:text-slate-100">#{{ $p->id_permiso }}</td>
                             <td class="px-6 py-4 whitespace-nowrap text-sm font-semibold text-slate-900 dark:text-slate-100">{{ $p->nombre_permiso }}</td>
-                            <td class="px-6 py-4 whitespace-nowrap text-xs font-mono text-indigo-600 dark:text-indigo-400 font-semibold">{{ $p->slug_permiso }}</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-xs font-mono text-indigo-600 dark:text-indigo-400 font-semibold">{{ $p->clave_permiso }}</td>
                             <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-slate-900 dark:text-slate-100">
                                 <span class="px-2.5 py-1 bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-md text-xs">{{ $p->modulo_permiso }}</span>
                             </td>

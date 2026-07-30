@@ -52,24 +52,24 @@
                                 @endif
                             </div>
 
-                            {{-- Slug --}}
+                            {{-- Clave --}}
                             <div>
-                                <x-input-label for="slug_rol" :value="__('Slug del Rol')" />
+                                <x-input-label for="clave_rol" :value="__('Clave del Rol')" />
                                 <x-text-input
-                                    id="slug_rol"
-                                    name="slug_rol"
+                                    id="clave_rol"
+                                    name="clave_rol"
                                     type="text"
-                                    x-model="form.slug_rol"
-                                    @input="markDirty('slug_rol')"
-                                    @blur="markDirty('slug_rol')"
+                                    x-model="form.clave_rol"
+                                    @input="markDirty('clave_rol')"
+                                    @blur="markDirty('clave_rol')"
                                     class="mt-1 block w-full font-mono text-sm"
                                     required />
-                                <template x-if="errors['slug_rol']">
-                                    <p class="text-sm text-red-600 dark:text-red-400 mt-2" x-text="errors['slug_rol'][0]"></p>
+                                <template x-if="errors['clave_rol']">
+                                    <p class="text-sm text-red-600 dark:text-red-400 mt-2" x-text="errors['clave_rol'][0]"></p>
                                 </template>
-                                @if($errors->has('slug_rol'))
-                                    <template x-if="!dirtyFields.has('slug_rol')">
-                                        <x-input-error class="mt-2" :messages="$errors->get('slug_rol')" />
+                                @if($errors->has('clave_rol'))
+                                    <template x-if="!dirtyFields.has('clave_rol')">
+                                        <x-input-error class="mt-2" :messages="$errors->get('clave_rol')" />
                                     </template>
                                 @endif
                             </div>
@@ -97,34 +97,6 @@
                             </div>
                         </div>
 
-                        {{-- Descripción --}}
-                        <div class="mb-6">
-                            <div class="flex items-baseline justify-between gap-3">
-                                <x-input-label for="descripcion_rol" :value="__('Descripción')" />
-                                <span
-                                    x-text="(form.descripcion_rol || '').length + ' / 255'"
-                                    :class="(form.descripcion_rol || '').length >= 255 ? 'text-rose-500' : 'text-slate-400 dark:text-slate-500'"
-                                    class="text-xs tabular-nums"></span>
-                            </div>
-                            <x-textarea
-                                id="descripcion_rol"
-                                name="descripcion_rol"
-                                rows="3"
-                                maxlength="255"
-                                x-model="form.descripcion_rol"
-                                @input="markDirty('descripcion_rol')"
-                                @blur="markDirty('descripcion_rol')"
-                                class="mt-1 block w-full">{{ old('descripcion_rol', $rol->descripcion_rol) }}</x-textarea>
-                            <template x-if="errors['descripcion_rol']">
-                                <p class="text-sm text-red-600 dark:text-red-400 mt-2" x-text="errors['descripcion_rol'][0]"></p>
-                            </template>
-                            @if($errors->has('descripcion_rol'))
-                                <template x-if="!dirtyFields.has('descripcion_rol')">
-                                    <x-input-error class="mt-2" :messages="$errors->get('descripcion_rol')" />
-                                </template>
-                            @endif
-                        </div>
-
                         <!-- Botones de Acción -->
                         <div class="mt-6 flex flex-col-reverse sm:flex-row justify-end gap-3">
                             <a href="{{ route('roles.index') }}"
@@ -147,8 +119,7 @@
             return {
                 form: {
                     nombre_rol: @js(old('nombre_rol', $rol->nombre_rol)),
-                    slug_rol: @js(old('slug_rol', $rol->slug_rol)),
-                    descripcion_rol: @js(old('descripcion_rol', $rol->descripcion_rol ?? '')),
+                    clave_rol: @js(old('clave_rol', $rol->clave_rol)),
                     status: @js(old('status', (string)$rol->status))
                 },
                 errors: {},
@@ -205,9 +176,8 @@
 
                 async submitForm(e) {
                     this.dirtyFields.add('nombre_rol');
-                    this.dirtyFields.add('slug_rol');
+                    this.dirtyFields.add('clave_rol');
                     this.dirtyFields.add('status');
-                    this.dirtyFields.add('descripcion_rol');
                     
                     await this.validateForm();
                     

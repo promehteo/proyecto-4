@@ -18,8 +18,20 @@
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                     <!-- Nombre -->
                     <div>
-                        <x-input-label :value="__('Nombre Completo')" />
-                        <p class="text-slate-800 dark:text-slate-200 font-semibold text-lg mt-1">{{ $usuario->name }}</p>
+                        <x-input-label :value="__('Nombre')" />
+                        <p class="text-slate-800 dark:text-slate-200 font-semibold text-lg mt-1">{{ $usuario->nombre }}</p>
+                    </div>
+
+                    <!-- Apellido -->
+                    <div>
+                        <x-input-label :value="__('Apellido')" />
+                        <p class="text-slate-800 dark:text-slate-200 font-semibold text-lg mt-1">{{ $usuario->apellido }}</p>
+                    </div>
+
+                    <!-- Cédula -->
+                    <div>
+                        <x-input-label :value="__('Cédula')" />
+                        <p class="text-slate-800 dark:text-slate-200 font-semibold text-lg mt-1">{{ $usuario->cedula ?? 'N/A' }}</p>
                     </div>
 
                     <!-- Email -->

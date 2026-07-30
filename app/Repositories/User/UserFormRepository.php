@@ -5,9 +5,9 @@ declare(strict_types=1);
 namespace App\Repositories\User;
 
 use App\Models\Rol;
-use App\Models\RolUsuario;
 use App\Models\User;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\DB;
 
 class UserFormRepository
 {
@@ -41,37 +41,48 @@ class UserFormRepository
 
     public function getAssignedRoleIds(int $userId): array
     {
-        return RolUsuario::where('id_usuario_rol_usuario', $userId)
+        return DB::table('detalle_rol')
+            ->where('id_usuario', $userId)
             ->where('status', 1)
-            ->pluck('id_rol_rol_usuario')
+            ->pluck('id_rol')
             ->toArray();
     }
 
     public function getPivotState(int $userId): array
     {
-        return RolUsuario::where('id_usuario_rol_usuario', $userId)
+        return DB::table('detalle_rol')
+            ->where('id_usuario', $userId)
             ->get()
             ->toArray();
     }
 
     public function syncRoles(User $user, array $roleIds): array
     {
-        RolUsuario::where('id_usuario_rol_usuario', $user->id)
-            ->whereNotIn('id_rol_rol_usuario', $roleIds)
+        DB::table('detalle_rol')
+            ->where('id_usuario', $user->id_user)
+            ->whereNotIn('id_rol', $roleIds)
             ->update(['status' => 2]);
 
         foreach ($roleIds as $rolId) {
-            RolUsuario::updateOrCreate(
-                [
-                    'id_usuario_rol_usuario' => $user->id,
-                    'id_rol_rol_usuario' => $rolId,
-                ],
-                [
+            $exists = DB::table('detalle_rol')
+                ->where('id_usuario', $user->id_user)
+                ->where('id_rol', $rolId)
+                ->exists();
+
+            if ($exists) {
+                DB::table('detalle_rol')
+                    ->where('id_usuario', $user->id_user)
+                    ->where('id_rol', $rolId)
+                    ->update(['status' => 1]);
+            } else {
+                DB::table('detalle_rol')->insert([
+                    'id_usuario' => $user->id_user,
+                    'id_rol' => $rolId,
                     'status' => 1,
-                ]
-            );
+                ]);
+            }
         }
 
-        return $this->getPivotState($user->id);
+        return $this->getPivotState($user->id_user);
     }
 }

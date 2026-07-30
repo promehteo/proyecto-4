@@ -50,13 +50,13 @@ class RolIndexRequest extends FormRequest
                     function ($attribute, $value, $fail) {
                         $rol = Rol::find($value);
                         if ($rol) {
-                            if ($rol->usuarios()->where('users.status', 1)->where('rol_usuario.status', 1)->exists()) {
+                            if ($rol->usuarios()->where('user.status', 1)->where('detalle_rol.status', 1)->exists()) {
                                 $fail('No se puede inactivar el rol porque tiene usuarios activos asignados.');
                                 return;
                             }
 
-                            if ($rol->slug_rol === 'admin') {
-                                $otrosAdminActivos = Rol::where('slug_rol', 'admin')
+                            if ($rol->clave_rol === 'admin') {
+                                $otrosAdminActivos = Rol::where('clave_rol', 'admin')
                                     ->where('status', 1)
                                     ->where('id_rol', '!=', $rol->id_rol)
                                     ->exists();

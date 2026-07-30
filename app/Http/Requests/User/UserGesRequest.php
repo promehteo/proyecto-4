@@ -27,7 +27,7 @@ class UserGesRequest extends FormRequest
     {
         /** @var User|null $usuario */
         $usuario = $this->route('usuario');
-        $userId = $usuario ? $usuario->id : null;
+        $userId = $usuario ? $usuario->id_user : null;
 
         if (!$userId && ($this->input('usuario_id') || $this->input('_model_id'))) {
             $userId = (int) ($this->input('usuario_id') ?: $this->input('_model_id'));
@@ -36,8 +36,10 @@ class UserGesRequest extends FormRequest
         $passwordRule = $userId ? ['nullable', 'string', 'min:8', 'confirmed'] : ['required', 'string', 'min:8', 'confirmed'];
 
         return [
-            'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'email', 'max:255', "unique:users,email,{$userId},id"],
+            'nombre' => ['required', 'string', 'max:255'],
+            'apellido' => ['required', 'string', 'max:255'],
+            'cedula' => ['nullable', 'integer', 'digits_between:1,8', "unique:user,cedula,{$userId},id_user"],
+            'email' => ['required', 'email', 'max:255', "unique:user,email,{$userId},id_user"],
             'password' => $passwordRule,
             'status' => ['required', 'integer', 'in:1,2'],
         ];
@@ -46,7 +48,11 @@ class UserGesRequest extends FormRequest
     public function messages(): array
     {
         return [
-            'name.required' => 'El nombre del usuario es obligatorio.',
+            'nombre.required' => 'El nombre del usuario es obligatorio.',
+            'apellido.required' => 'El apellido del usuario es obligatorio.',
+            'cedula.integer' => 'La cédula debe ser un número entero.',
+            'cedula.digits_between' => 'La cédula debe tener un máximo de 8 dígitos.',
+            'cedula.unique' => 'Esta cédula ya se encuentra registrada.',
             'email.required' => 'El correo electrónico es obligatorio.',
             'email.email' => 'Ingrese una dirección de correo válida.',
             'email.unique' => 'El correo electrónico ya se encuentra registrado.',

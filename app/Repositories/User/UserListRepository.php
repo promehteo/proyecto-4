@@ -15,11 +15,11 @@ class UserListRepository
         $status = isset($filters['status']) && $filters['status'] !== '' ? (int) $filters['status'] : null;
 
         return User::with(['roles' => function ($q) {
-                $q->where('rol.status', 1)->where('rol_usuario.status', 1);
+                $q->where('rol.status', 1)->where('detalle_rol.status', 1);
             }])
             ->search($search)
             ->when($status, fn ($q) => $q->where('status', $status))
-            ->orderBy('name')
+            ->orderBy('nombre')
             ->paginate($perPage)
             ->withQueryString();
     }

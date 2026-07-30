@@ -16,8 +16,7 @@ class Rol extends Model
 
     protected $fillable = [
         'nombre_rol',
-        'slug_rol',
-        'descripcion_rol',
+        'clave_rol',
         'status',
     ];
 
@@ -32,20 +31,20 @@ class Rol extends Model
     {
         return $this->belongsToMany(
             Permiso::class,
-            'permiso_rol',
-            'id_rol_permiso_rol',
-            'id_permiso_permiso_rol'
-        )->withPivot('status', 'id_permiso_rol');
+            'detalle_permiso',
+            'id_rol',
+            'id_permiso'
+        )->withPivot('status', 'id_detalle_permiso');
     }
 
     public function usuarios(): BelongsToMany
     {
         return $this->belongsToMany(
             User::class,
-            'rol_usuario',
-            'id_rol_rol_usuario',
-            'id_usuario_rol_usuario'
-        )->withPivot('status', 'id_rol_usuario');
+            'detalle_rol',
+            'id_rol',
+            'id_usuario'
+        )->withPivot('status', 'id_detalle_rol');
     }
 
     public function scopeActive(Builder $query): Builder
@@ -71,8 +70,7 @@ class Rol extends Model
 
         return $query->where(function (Builder $q) use ($term) {
             $q->where('nombre_rol', 'like', "%{$term}%")
-              ->orWhere('slug_rol', 'like', "%{$term}%")
-              ->orWhere('descripcion_rol', 'like', "%{$term}%");
+              ->orWhere('clave_rol', 'like', "%{$term}%");
         });
     }
 }
