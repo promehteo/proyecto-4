@@ -13,12 +13,19 @@ class RolFormRepository
 {
     public function create(array $data): Rol
     {
-        return Rol::create($data);
+        return Rol::create([
+            'nombre_rol' => $data['nombre_rol'],
+            'clave_rol' => $data['clave_rol'],
+            'status' => 1,
+        ]);
     }
 
     public function update(Rol $rol, array $data): Rol
     {
-        $rol->update($data);
+        $rol->update([
+            'nombre_rol' => $data['nombre_rol'],
+            'clave_rol' => $data['clave_rol'],
+        ]);
         return $rol->fresh();
     }
 

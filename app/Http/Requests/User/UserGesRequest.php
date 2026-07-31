@@ -41,7 +41,6 @@ class UserGesRequest extends FormRequest
             'cedula' => ['nullable', 'integer', 'digits_between:1,8', "unique:user,cedula,{$userId},id_user"],
             'email' => ['required', 'email', 'max:255', "unique:user,email,{$userId},id_user"],
             'password' => $passwordRule,
-            'status' => ['required', 'integer', 'in:1,2'],
         ];
     }
 
@@ -49,7 +48,9 @@ class UserGesRequest extends FormRequest
     {
         return [
             'nombre.required' => 'El nombre del usuario es obligatorio.',
+            'nombre.max' => 'El nombre no debe superar los 255 caracteres.',
             'apellido.required' => 'El apellido del usuario es obligatorio.',
+            'apellido.max' => 'El apellido no debe superar los 255 caracteres.',
             'cedula.integer' => 'La cédula debe ser un número entero.',
             'cedula.digits_between' => 'La cédula debe tener un máximo de 8 dígitos.',
             'cedula.unique' => 'Esta cédula ya se encuentra registrada.',
@@ -59,8 +60,6 @@ class UserGesRequest extends FormRequest
             'password.required' => 'La contraseña es obligatoria.',
             'password.min' => 'La contraseña debe tener al menos 8 caracteres.',
             'password.confirmed' => 'La confirmación de la contraseña no coincide.',
-            'status.required' => 'El estado es obligatorio.',
-            'status.in' => 'El estado debe ser activo (1) o inactivo (2).',
         ];
     }
 }

@@ -10,12 +10,21 @@ class PermisoFormRepository
 {
     public function create(array $data): Permiso
     {
-        return Permiso::create($data);
+        return Permiso::create([
+            'nombre_permiso' => $data['nombre_permiso'],
+            'clave_permiso' => $data['clave_permiso'],
+            'modulo_permiso' => $data['modulo_permiso'],
+            'status' => 1,
+        ]);
     }
 
     public function update(Permiso $permiso, array $data): Permiso
     {
-        $permiso->update($data);
+        $permiso->update([
+            'nombre_permiso' => $data['nombre_permiso'],
+            'clave_permiso' => $data['clave_permiso'],
+            'modulo_permiso' => $data['modulo_permiso'],
+        ]);
         return $permiso->fresh();
     }
 

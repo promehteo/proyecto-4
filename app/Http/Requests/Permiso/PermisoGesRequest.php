@@ -37,7 +37,6 @@ class PermisoGesRequest extends FormRequest
             'nombre_permiso' => ['required', 'string', 'max:120'],
             'clave_permiso' => ['required', 'string', 'max:150', "unique:permiso,clave_permiso,{$permisoId},id_permiso", 'regex:/^[a-z0-9._-]+$/'],
             'modulo_permiso' => ['required', 'string', 'max:100'],
-            'status' => ['required', 'integer', 'in:1,2'],
         ];
     }
 
@@ -51,8 +50,6 @@ class PermisoGesRequest extends FormRequest
             'clave_permiso.regex' => 'La clave solo puede contener letras minúsculas, números, puntos, guiones y guiones bajos.',
             'modulo_permiso.required' => 'El módulo del permiso es obligatorio.',
             'modulo_permiso.max' => 'El módulo no debe exceder 100 caracteres.',
-            'status.required' => 'El estado es obligatorio.',
-            'status.in' => 'El estado debe ser activo (1) o inactivo (2).',
         ];
     }
 }

@@ -13,12 +13,30 @@ class UserFormRepository
 {
     public function create(array $data): User
     {
-        return User::create($data);
+        return User::create([
+            'nombre' => $data['nombre'],
+            'apellido' => $data['apellido'],
+            'cedula' => $data['cedula'] ?? null,
+            'email' => $data['email'],
+            'password' => $data['password'],
+            'status' => 1,
+        ]);
     }
 
     public function update(User $user, array $data): User
     {
-        $user->update($data);
+        $updateData = [
+            'nombre' => $data['nombre'],
+            'apellido' => $data['apellido'],
+            'cedula' => $data['cedula'] ?? null,
+            'email' => $data['email'],
+        ];
+
+        if (isset($data['password'])) {
+            $updateData['password'] = $data['password'];
+        }
+
+        $user->update($updateData);
         return $user->fresh();
     }
 

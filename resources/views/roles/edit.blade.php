@@ -28,7 +28,7 @@
                         @csrf
                         @method('PUT')
 
-                        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
                             {{-- Nombre --}}
                             <div>
                                 <x-input-label for="nombre_rol" :value="__('Nombre del Rol')" />
@@ -73,28 +73,6 @@
                                     </template>
                                 @endif
                             </div>
-
-                            {{-- Estado --}}
-                            <div>
-                                <x-input-label for="status" :value="__('Estado')" />
-                                <x-select
-                                    id="status"
-                                    name="status"
-                                    x-model="form.status"
-                                    @change="markDirty('status')"
-                                    class="mt-1 block w-full">
-                                    <option value="1">Activo</option>
-                                    <option value="2">Inactivo</option>
-                                </x-select>
-                                <template x-if="errors['status']">
-                                    <p class="text-sm text-red-600 dark:text-red-400 mt-2" x-text="errors['status'][0]"></p>
-                                </template>
-                                @if($errors->has('status'))
-                                    <template x-if="!dirtyFields.has('status')">
-                                        <x-input-error class="mt-2" :messages="$errors->get('status')" />
-                                    </template>
-                                @endif
-                            </div>
                         </div>
 
                         <!-- Botones de Acción -->
@@ -119,8 +97,7 @@
             return {
                 form: {
                     nombre_rol: @js(old('nombre_rol', $rol->nombre_rol)),
-                    clave_rol: @js(old('clave_rol', $rol->clave_rol)),
-                    status: @js(old('status', (string)$rol->status))
+                    clave_rol: @js(old('clave_rol', $rol->clave_rol))
                 },
                 errors: {},
                 dirtyFields: new Set(),
@@ -177,7 +154,6 @@
                 async submitForm(e) {
                     this.dirtyFields.add('nombre_rol');
                     this.dirtyFields.add('clave_rol');
-                    this.dirtyFields.add('status');
                     
                     await this.validateForm();
                     

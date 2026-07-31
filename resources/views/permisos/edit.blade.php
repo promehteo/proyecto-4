@@ -28,7 +28,7 @@
                         @csrf
                         @method('PUT')
 
-                        <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-6">
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
                             {{-- Nombre --}}
                             <div>
                                 <x-input-label for="nombre_permiso" :value="__('Nombre del Permiso')" />
@@ -95,28 +95,6 @@
                                     </template>
                                 @endif
                             </div>
-
-                            {{-- Estado --}}
-                            <div>
-                                <x-input-label for="status" :value="__('Estado')" />
-                                <x-select
-                                    id="status"
-                                    name="status"
-                                    x-model="form.status"
-                                    @change="markDirty('status')"
-                                    class="mt-1 block w-full">
-                                    <option value="1">Activo</option>
-                                    <option value="2">Inactivo</option>
-                                </x-select>
-                                <template x-if="errors['status']">
-                                    <p class="text-sm text-red-600 dark:text-red-400 mt-2" x-text="errors['status'][0]"></p>
-                                </template>
-                                @if($errors->has('status'))
-                                    <template x-if="!dirtyFields.has('status')">
-                                        <x-input-error class="mt-2" :messages="$errors->get('status')" />
-                                    </template>
-                                @endif
-                            </div>
                         </div>
 
                         <!-- Botones de Acción -->
@@ -142,8 +120,7 @@
                 form: {
                     nombre_permiso: @js(old('nombre_permiso', $permiso->nombre_permiso)),
                     clave_permiso: @js(old('clave_permiso', $permiso->clave_permiso)),
-                    modulo_permiso: @js(old('modulo_permiso', $permiso->modulo_permiso)),
-                    status: @js(old('status', (string)$permiso->status))
+                    modulo_permiso: @js(old('modulo_permiso', $permiso->modulo_permiso))
                 },
                 errors: {},
                 dirtyFields: new Set(),
@@ -201,7 +178,6 @@
                     this.dirtyFields.add('nombre_permiso');
                     this.dirtyFields.add('clave_permiso');
                     this.dirtyFields.add('modulo_permiso');
-                    this.dirtyFields.add('status');
                     
                     await this.validateForm();
                     

@@ -36,7 +36,6 @@ class RolGesRequest extends FormRequest
         return [
             'nombre_rol' => ['required', 'string', 'max:100'],
             'clave_rol' => ['required', 'string', 'max:120', "unique:rol,clave_rol,{$rolId},id_rol", 'regex:/^[a-z0-9._-]+$/'],
-            'status' => ['required', 'integer', 'in:1,2'],
         ];
     }
 
@@ -48,8 +47,6 @@ class RolGesRequest extends FormRequest
             'clave_rol.required' => 'La clave del rol es obligatoria.',
             'clave_rol.unique' => 'La clave ya se encuentra registrada.',
             'clave_rol.regex' => 'La clave solo puede contener letras minúsculas, números, puntos, guiones y guiones bajos.',
-            'status.required' => 'El estado es obligatorio.',
-            'status.in' => 'El estado debe ser activo (1) o inactivo (2).',
         ];
     }
 }

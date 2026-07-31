@@ -154,28 +154,6 @@
                                     <p class="text-sm text-red-600 dark:text-red-400 mt-2" x-text="errors['password_confirmation'][0]"></p>
                                 </template>
                             </div>
-
-                            {{-- Estado --}}
-                            <div class="md:col-span-2">
-                                <x-input-label for="status" :value="__('Estado')" />
-                                <x-select
-                                    id="status"
-                                    name="status"
-                                    x-model="form.status"
-                                    @change="markDirty('status')"
-                                    class="mt-1 block w-full md:w-1/2">
-                                    <option value="1">Activo</option>
-                                    <option value="2">Inactivo</option>
-                                </x-select>
-                                <template x-if="errors['status']">
-                                    <p class="text-sm text-red-600 dark:text-red-400 mt-2" x-text="errors['status'][0]"></p>
-                                </template>
-                                @if($errors->has('status'))
-                                    <template x-if="!dirtyFields.has('status')">
-                                        <x-input-error class="mt-2" :messages="$errors->get('status')" />
-                                    </template>
-                                @endif
-                            </div>
                         </div>
 
                         <!-- Botones de Acción -->
@@ -204,8 +182,7 @@
                     cedula: @js(old('cedula', $usuario->cedula)),
                     email: @js(old('email', $usuario->email)),
                     password: '',
-                    password_confirmation: '',
-                    status: @js(old('status', (string)$usuario->status))
+                    password_confirmation: ''
                 },
                 errors: {},
                 dirtyFields: new Set(),
@@ -268,7 +245,6 @@
                         this.dirtyFields.add('password');
                         this.dirtyFields.add('password_confirmation');
                     }
-                    this.dirtyFields.add('status');
                     
                     await this.validateForm();
                     

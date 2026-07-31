@@ -19,11 +19,10 @@ return new class extends Migration {
         Schema::create('rol', function (Blueprint $table) {
             $table->id('id_rol');
             $table->string('nombre_rol', 100);
-            $table->string('clave_rol', 120)->unique(); // Cambiado de slug_rol a clave_rol
+            $table->string('clave_rol', 120)->unique();
             $table->string('descripcion_rol', 255)->nullable();
             $table->unsignedTinyInteger('status')
                 ->default(1)
-                ->index()
                 ->comment('1=activo, 2=inactivo');
         });
 
@@ -33,12 +32,11 @@ return new class extends Migration {
         Schema::create('permiso', function (Blueprint $table) {
             $table->id('id_permiso');
             $table->string('nombre_permiso', 120);
-            $table->string('clave_permiso', 150)->unique(); // Cambiado de slug_permiso a clave_permiso
+            $table->string('clave_permiso', 150)->unique();
             $table->string('modulo_permiso', 100);
             $table->string('descripcion_permiso', 255)->nullable();
             $table->unsignedTinyInteger('status')
                 ->default(1)
-                ->index()
                 ->comment('1=activo, 2=inactivo');
         });
 
@@ -51,7 +49,6 @@ return new class extends Migration {
             $table->unsignedBigInteger('id_rol');
             $table->unsignedTinyInteger('status')
                 ->default(1)
-                ->index()
                 ->comment('1=activo, 2=inactivo');
 
             $table->unique(['id_usuario', 'id_rol'], 'uq_detalle_rol');
@@ -78,7 +75,6 @@ return new class extends Migration {
             $table->unsignedBigInteger('id_rol');
             $table->unsignedTinyInteger('status')
                 ->default(1)
-                ->index()
                 ->comment('1=activo, 2=inactivo');
 
             $table->unique(['id_permiso', 'id_rol'], 'uq_detalle_permiso');
@@ -103,24 +99,18 @@ return new class extends Migration {
             $table->id('id_bitacora');
             $table->unsignedBigInteger('id_usuario_bitacora')->nullable();
             $table->string('accion_bitacora', 80);
-            $table->string('modulo_bitacora', 190); // Cambiado de auditable_tipo_bitacora
-            $table->unsignedBigInteger('registro_id_bitacora'); // Cambiado de auditable_id_bitacora
+            $table->string('modulo_bitacora', 190);
+            $table->unsignedBigInteger('registro_id_bitacora');
             $table->json('valores_anteriores_bitacora')->nullable();
             $table->json('valores_nuevos_bitacora')->nullable();
             $table->string('ip_bitacora', 45)->nullable();
-            $table->string('navegador_bitacora', 255)->nullable(); // Cambiado de user_agent_bitacora
+            $table->string('navegador_bitacora', 255)->nullable();
             $table->string('url_bitacora', 255)->nullable();
             $table->string('metodo_bitacora', 10)->nullable();
             $table->timestamp('fecha_bitacora')->useCurrent();
             $table->unsignedTinyInteger('status')
                 ->default(1)
-                ->index()
                 ->comment('1=activo, 2=inactivo');
-
-            $table->index('id_usuario_bitacora', 'idx_usuario_bitacora');
-            $table->index(['modulo_bitacora', 'registro_id_bitacora'], 'idx_auditable_bitacora');
-            $table->index('accion_bitacora', 'idx_accion_bitacora');
-            $table->index('fecha_bitacora', 'idx_fecha_bitacora');
 
             $table->foreign('id_usuario_bitacora', 'fk_bitacora_user')
                 ->references('id_user')
