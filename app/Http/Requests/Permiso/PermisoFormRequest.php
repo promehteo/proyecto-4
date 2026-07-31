@@ -7,7 +7,7 @@ namespace App\Http\Requests\Permiso;
 use App\Models\Permiso;
 use Illuminate\Foundation\Http\FormRequest;
 
-class PermisoGesRequest extends FormRequest
+class PermisoFormRequest extends FormRequest
 {
     public function authorize(): bool
     {

@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Http\Controllers\Rol;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Rol\RolGesRequest;
+use App\Http\Requests\Rol\RolFormRequest;
 use App\Models\Rol;
 use App\Repositories\Rol\RolFormRepository;
 use App\Services\BitacoraService;
@@ -25,7 +25,7 @@ class RolFormController extends Controller
         return view('roles.create');
     }
 
-    public function store(RolGesRequest $request): RedirectResponse
+    public function store(RolFormRequest $request): RedirectResponse
     {
         $data = $request->validated();
         $rol = $this->formRepository->create($data);
@@ -49,7 +49,7 @@ class RolFormController extends Controller
         return view('roles.edit', compact('rol'));
     }
 
-    public function update(RolGesRequest $request, Rol $rol): RedirectResponse
+    public function update(RolFormRequest $request, Rol $rol): RedirectResponse
     {
         $valoresAnteriores = $rol->toArray();
         $data = $request->validated();

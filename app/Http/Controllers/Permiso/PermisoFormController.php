@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Http\Controllers\Permiso;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Permiso\PermisoGesRequest;
+use App\Http\Requests\Permiso\PermisoFormRequest;
 use App\Models\Permiso;
 use App\Repositories\Permiso\PermisoFormRepository;
 use App\Repositories\Permiso\PermisoListRepository;
@@ -29,7 +29,7 @@ class PermisoFormController extends Controller
         return view('permisos.create', compact('modulosExistentes'));
     }
 
-    public function store(PermisoGesRequest $request): RedirectResponse
+    public function store(PermisoFormRequest $request): RedirectResponse
     {
         $data = $request->validated();
         $permiso = $this->formRepository->create($data);
@@ -55,7 +55,7 @@ class PermisoFormController extends Controller
         return view('permisos.edit', compact('permiso', 'modulosExistentes'));
     }
 
-    public function update(PermisoGesRequest $request, Permiso $permiso): RedirectResponse
+    public function update(PermisoFormRequest $request, Permiso $permiso): RedirectResponse
     {
         $valoresAnteriores = $permiso->toArray();
         $data = $request->validated();

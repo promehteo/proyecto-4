@@ -7,7 +7,7 @@ namespace App\Http\Requests\Rol;
 use App\Models\Rol;
 use Illuminate\Foundation\Http\FormRequest;
 
-class RolGesRequest extends FormRequest
+class RolFormRequest extends FormRequest
 {
     public function authorize(): bool
     {

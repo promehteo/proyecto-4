@@ -168,7 +168,7 @@
                     this.isValidating = true;
 
                     try {
-                        const response = await fetch("{{ route('api.system.validate-partial', ['formRequest' => 'Permiso/PermisoGesRequest']) }}", {
+                        const response = await fetch("{{ route('api.system.validate-partial', ['formRequest' => 'Permiso/PermisoFormRequest']) }}", {
                             method: "POST",
                             headers: {
                                 "Content-Type": "application/json",

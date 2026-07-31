@@ -144,7 +144,7 @@
                     this.isValidating = true;
 
                     try {
-                        const response = await fetch("{{ route('api.system.validate-partial', ['formRequest' => 'Rol/RolGesRequest']) }}", {
+                        const response = await fetch("{{ route('api.system.validate-partial', ['formRequest' => 'Rol/RolFormRequest']) }}", {
                             method: "POST",
                             headers: {
                                 "Content-Type": "application/json",

@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Http\Controllers\User;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\User\UserGesRequest;
+use App\Http\Requests\User\UserFormRequest;
 use App\Models\User;
 use App\Repositories\User\UserFormRepository;
 use App\Services\BitacoraService;
@@ -26,7 +26,7 @@ class UserFormController extends Controller
         return view('usuarios.create');
     }
 
-    public function store(UserGesRequest $request): RedirectResponse
+    public function store(UserFormRequest $request): RedirectResponse
     {
         $data = $request->validated();
         $data['password'] = Hash::make($data['password']);
@@ -52,7 +52,7 @@ class UserFormController extends Controller
         return view('usuarios.edit', compact('usuario'));
     }
 
-    public function update(UserGesRequest $request, User $usuario): RedirectResponse
+    public function update(UserFormRequest $request, User $usuario): RedirectResponse
     {
         $valoresAnteriores = $usuario->toArray();
         $data = $request->validated();

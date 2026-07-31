@@ -18,7 +18,7 @@ class SystemValidationController extends Controller
         // 1. Seguridad: Forzar el namespace base de los FormRequests
         $baseNamespace = 'App\\Http\\Requests\\';
         
-        // Convertir slashes normales a backslashes (por si el frontend envía 'Categoria/CategoriaGesRequest')
+        // Convertir slashes normales a backslashes (por si el frontend envía 'Categoria/CategoriaFormRequest')
         $formRequest = str_replace('/', '\\', $formRequest);
         $class = $baseNamespace . $formRequest;
 

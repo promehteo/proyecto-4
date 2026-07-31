@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Http\Controllers\Categoria;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Categoria\CategoriaGesRequest;
+use App\Http\Requests\Categoria\CategoriaFormRequest;
 use App\Models\Categoria;
 use App\Repositories\Categoria\CategoriaFormRepository;
 use App\Repositories\Categoria\CategoriaListRepository;
@@ -29,7 +29,7 @@ class CategoriaFormController extends Controller
         return view('categorias.create', compact('categoriasPadre'));
     }
 
-    public function store(CategoriaGesRequest $request): RedirectResponse
+    public function store(CategoriaFormRequest $request): RedirectResponse
     {
         $data = $request->validated();
         $categoria = $this->formRepository->create($data);
@@ -55,7 +55,7 @@ class CategoriaFormController extends Controller
         return view('categorias.edit', compact('categoria', 'categoriasPadre'));
     }
 
-    public function update(CategoriaGesRequest $request, Categoria $categoria): RedirectResponse
+    public function update(CategoriaFormRequest $request, Categoria $categoria): RedirectResponse
     {
         $valoresAnteriores = $categoria->toArray();
         $data = $request->validated();

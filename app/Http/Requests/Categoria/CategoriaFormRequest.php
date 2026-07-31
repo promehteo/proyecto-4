@@ -7,7 +7,7 @@ namespace App\Http\Requests\Categoria;
 use App\Models\Categoria;
 use Illuminate\Foundation\Http\FormRequest;
 
-class CategoriaGesRequest extends FormRequest
+class CategoriaFormRequest extends FormRequest
 {
     public function authorize(): bool
     {
