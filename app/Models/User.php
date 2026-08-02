@@ -106,6 +106,39 @@ class User extends Authenticatable
             ->exists();
     }
 
+    protected ?array $permissionsCache = null;
+
+    /**
+     * Revisa si el usuario tiene un permiso activo usando type-safety y caché local.
+     */
+    public function hasPermission(\App\Enums\Permission $permission): bool
+    {
+        if ($this->status !== 1) {
+            return false;
+        }
+
+        if ($this->hasRole('admin')) {
+            return true;
+        }
+
+        if ($this->permissionsCache === null) {
+            $this->permissionsCache = $this->roles()
+                ->where('rol.status', 1)
+                ->where('detalle_rol.status', 1)
+                ->with(['permisos' => function ($query) {
+                    $query->where('permiso.status', 1)
+                          ->where('detalle_permiso.status', 1);
+                }])
+                ->get()
+                ->pluck('permisos')
+                ->collapse()
+                ->pluck('clave_permiso')
+                ->toArray();
+        }
+
+        return in_array($permission->value, $this->permissionsCache, true);
+    }
+
     /**
      * Revisa si el usuario tiene un permiso activo a través de sus roles activos.
      */

@@ -50,8 +50,8 @@ Route::middleware('auth')->group(function () {
     Route::put('/roles/{rol}', [RolFormController::class, 'update'])->name('roles.update');
     Route::patch('/roles/{rol}/inactivar', [RolIndexController::class, 'inactivar'])->name('roles.inactivar');
     Route::patch('/roles/{rol}/activar', [RolIndexController::class, 'activar'])->name('roles.activar');
-    Route::get('/roles/{rol}/permisos', [RolPermisoController::class, 'editPermisos'])->name('roles.permisos.edit');
-    Route::put('/roles/{rol}/permisos', [RolPermisoController::class, 'updatePermisos'])->name('roles.permisos.update');
+    Route::get('/roles/{rol}/permisos', [PermissionController::class, 'edit'])->name('roles.permisos.edit');
+    Route::put('/roles/{rol}/permisos', [PermissionController::class, 'update'])->name('roles.permisos.update');
     Route::get('/roles/{rol}', [RolIndexController::class, 'show'])->name('roles.show');
 
     // Módulo 3: Permisos
