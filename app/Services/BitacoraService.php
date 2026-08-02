@@ -30,8 +30,7 @@ class BitacoraService
         Model|string $auditable,
         string $accion,
         ?array $valoresAnteriores = null,
-        ?array $valoresNuevos = null,
-        ?string $descripcion = null
+        ?array $valoresNuevos = null
     ): Bitacora {
         $user = Auth::user();
 

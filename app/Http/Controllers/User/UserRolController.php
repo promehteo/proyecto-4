@@ -39,8 +39,7 @@ class UserRolController extends Controller
             auditable: $usuario,
             accion: 'asignación de roles a usuario',
             valoresAnteriores: ['roles_pivote' => $anterioresPivote],
-            valoresNuevos: ['roles_pivote' => $nuevosPivote],
-            descripcion: "Roles actualizados para el usuario '{$usuario->nombre} {$usuario->apellido}'."
+            valoresNuevos: ['roles_pivote' => $nuevosPivote]
         );
 
         return redirect()->route('usuarios.index')

@@ -34,8 +34,7 @@ class RolFormController extends Controller
             auditable: $rol,
             accion: 'registro de rol',
             valoresAnteriores: null,
-            valoresNuevos: $rol->toArray(),
-            descripcion: "Rol '{$rol->nombre_rol}' registrado exitosamente."
+            valoresNuevos: $rol->toArray()
         );
 
         return redirect()->route('roles.index')
@@ -60,8 +59,7 @@ class RolFormController extends Controller
             auditable: $rolActualizado,
             accion: 'edición de rol',
             valoresAnteriores: $valoresAnteriores,
-            valoresNuevos: $rolActualizado->toArray(),
-            descripcion: "Rol '{$rolActualizado->nombre_rol}' editado exitosamente."
+            valoresNuevos: $rolActualizado->toArray()
         );
 
         return redirect()->route('roles.index')

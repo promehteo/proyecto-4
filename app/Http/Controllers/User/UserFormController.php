@@ -37,8 +37,7 @@ class UserFormController extends Controller
             auditable: $usuario,
             accion: 'registro de usuario',
             valoresAnteriores: null,
-            valoresNuevos: $usuario->toArray(),
-            descripcion: "Usuario '{$usuario->nombre} {$usuario->apellido}' registrado exitosamente."
+            valoresNuevos: $usuario->toArray()
         );
 
         return redirect()->route('usuarios.index')
@@ -71,8 +70,7 @@ class UserFormController extends Controller
             auditable: $usuarioActualizado,
             accion: $cambioPassword ? 'cambio de contraseña' : 'edición de usuario',
             valoresAnteriores: $valoresAnteriores,
-            valoresNuevos: $usuarioActualizado->toArray(),
-            descripcion: "Usuario '{$usuarioActualizado->nombre} {$usuarioActualizado->apellido}' editado exitosamente."
+            valoresNuevos: $usuarioActualizado->toArray()
         );
 
         return redirect()->route('usuarios.index')

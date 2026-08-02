@@ -39,8 +39,7 @@ class RolPermisoController extends Controller
             auditable: $rol,
             accion: 'asignación de permisos a rol',
             valoresAnteriores: ['permisos_pivote' => $anterioresPivote],
-            valoresNuevos: ['permisos_pivote' => $nuevosPivote],
-            descripcion: "Permisos actualizados para el rol '{$rol->nombre_rol}'."
+            valoresNuevos: ['permisos_pivote' => $nuevosPivote]
         );
 
         return redirect()->route('roles.index')

@@ -38,8 +38,7 @@ class CategoriaFormController extends Controller
             auditable: $categoria,
             accion: 'registro de categoría',
             valoresAnteriores: null,
-            valoresNuevos: $categoria->toArray(),
-            descripcion: "Categoría '{$categoria->nombre_categoria}' registrada exitosamente."
+            valoresNuevos: $categoria->toArray()
         );
 
         return redirect()->route('categorias.index')
@@ -66,8 +65,7 @@ class CategoriaFormController extends Controller
             auditable: $categoriaActualizada,
             accion: 'edición de categoría',
             valoresAnteriores: $valoresAnteriores,
-            valoresNuevos: $categoriaActualizada->toArray(),
-            descripcion: "Categoría '{$categoriaActualizada->nombre_categoria}' editada exitosamente."
+            valoresNuevos: $categoriaActualizada->toArray()
         );
 
         return redirect()->route('categorias.index')

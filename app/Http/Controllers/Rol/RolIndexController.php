@@ -44,8 +44,7 @@ class RolIndexController extends Controller
             auditable: $rolInactivado,
             accion: 'inactivación de rol',
             valoresAnteriores: $valoresAnteriores,
-            valoresNuevos: $rolInactivado->toArray(),
-            descripcion: "Rol '{$rolInactivado->nombre_rol}' inactivado."
+            valoresNuevos: $rolInactivado->toArray()
         );
 
         return redirect()->route('roles.index')
@@ -61,8 +60,7 @@ class RolIndexController extends Controller
             auditable: $rolActivado,
             accion: 'activación de rol',
             valoresAnteriores: $valoresAnteriores,
-            valoresNuevos: $rolActivado->toArray(),
-            descripcion: "Rol '{$rolActivado->nombre_rol}' activado."
+            valoresNuevos: $rolActivado->toArray()
         );
 
         return redirect()->route('roles.index')

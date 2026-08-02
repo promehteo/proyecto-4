@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace App\Http\Controllers\Bitacora;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Bitacora\BitacoraShowRequest;
 use App\Models\Bitacora;
 use App\Repositories\Bitacora\BitacoraDetailRepository;
 use Illuminate\View\View;
@@ -16,7 +15,7 @@ class BitacoraShowController extends Controller
         protected BitacoraDetailRepository $detailRepository
     ) {}
 
-    public function show(BitacoraShowRequest $request, Bitacora $bitacora): View
+    public function show(Bitacora $bitacora): View
     {
         $this->authorize('view', $bitacora);
 

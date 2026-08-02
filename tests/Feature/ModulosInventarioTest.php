@@ -330,8 +330,7 @@ test('no permitir editar ni eliminar bitácora', function () {
         auditable: 'Prueba',
         accion: 'test',
         valoresAnteriores: null,
-        valoresNuevos: null,
-        descripcion: 'Prueba'
+        valoresNuevos: null
     );
 
     $this->actingAs($this->adminUser)

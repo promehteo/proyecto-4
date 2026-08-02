@@ -55,12 +55,13 @@
                             @php 
                                 $moduloSlug = Str::slug($modulo); 
                                 $moduloIds = $permisosGroup->pluck('id_permiso')->values();
+                                $moduloIdsJs = \Illuminate\Support\Js::from($moduloIds->all());
                             @endphp
                             <div class="border border-slate-200 dark:border-slate-800 rounded-xl p-5 bg-slate-50 dark:bg-slate-950">
                                 <div class="flex justify-between items-center mb-4 border-b border-slate-200 dark:border-slate-800 pb-3">
                                     <label class="flex items-center gap-3 cursor-pointer select-none">
-                                        <x-checkbox :checked="moduloMarcado(@js($moduloIds))"
-                                                    @change="toggleModulo(@js($moduloIds), $event.target.checked)" />
+                                        <x-checkbox x-bind:checked="moduloMarcado({{ $moduloIdsJs }})"
+                                                    @change="toggleModulo({{ $moduloIdsJs }}, $event.target.checked)" />
                                         <h4 class="text-sm font-bold text-slate-900 dark:text-slate-100 uppercase tracking-wider">
                                             Módulo: {{ $modulo }}
                                         </h4>

@@ -44,8 +44,7 @@ class UserIndexController extends Controller
             auditable: $usuarioInactivado,
             accion: 'inactivación de usuario',
             valoresAnteriores: $valoresAnteriores,
-            valoresNuevos: $usuarioInactivado->toArray(),
-            descripcion: "Usuario '{$usuarioInactivado->nombre} {$usuarioInactivado->apellido}' inactivado."
+            valoresNuevos: $usuarioInactivado->toArray()
         );
 
         return redirect()->route('usuarios.index')
@@ -61,8 +60,7 @@ class UserIndexController extends Controller
             auditable: $usuarioActivado,
             accion: 'activación de usuario',
             valoresAnteriores: $valoresAnteriores,
-            valoresNuevos: $usuarioActivado->toArray(),
-            descripcion: "Usuario '{$usuarioActivado->nombre} {$usuarioActivado->apellido}' activado."
+            valoresNuevos: $usuarioActivado->toArray()
         );
 
         return redirect()->route('usuarios.index')

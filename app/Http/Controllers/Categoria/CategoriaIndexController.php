@@ -53,8 +53,7 @@ class CategoriaIndexController extends Controller
             auditable: $categoriaInactivada,
             accion: 'inactivación de categoría',
             valoresAnteriores: $valoresAnteriores,
-            valoresNuevos: $categoriaInactivada->toArray(),
-            descripcion: "Categoría '{$categoriaInactivada->nombre_categoria}' inactivada."
+            valoresNuevos: $categoriaInactivada->toArray()
         );
 
         return redirect()->route('categorias.index')
@@ -70,8 +69,7 @@ class CategoriaIndexController extends Controller
             auditable: $categoriaActivada,
             accion: 'activación de categoría',
             valoresAnteriores: $valoresAnteriores,
-            valoresNuevos: $categoriaActivada->toArray(),
-            descripcion: "Categoría '{$categoriaActivada->nombre_categoria}' activada."
+            valoresNuevos: $categoriaActivada->toArray()
         );
 
         return redirect()->route('categorias.index')

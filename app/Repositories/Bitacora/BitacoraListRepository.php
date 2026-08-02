@@ -11,7 +11,7 @@ use Illuminate\Support\Collection;
 
 class BitacoraListRepository
 {
-    public function paginate(array $filters = [], int $perPage = 20): LengthAwarePaginator
+    public function paginate(array $filters = [], int $perPage = 15): LengthAwarePaginator
     {
         $search = $filters['search'] ?? null;
         $usuarioId = isset($filters['usuario_id']) && $filters['usuario_id'] !== '' ? (int) $filters['usuario_id'] : null;
@@ -43,6 +43,10 @@ class BitacoraListRepository
 
     public function getDistinctAcciones(): Collection
     {
-        return Bitacora::distinct()->pluck('accion_bitacora')->filter()->values();
+        return Bitacora::distinct()
+            ->orderBy('accion_bitacora')
+            ->pluck('accion_bitacora')
+            ->filter()
+            ->values();
     }
 }
