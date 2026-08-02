@@ -5,20 +5,22 @@ declare(strict_types=1);
 namespace App\Http\Controllers;
 
 use App\Enums\Permission;
-use App\Models\Bitacora;
 use App\Models\Permiso;
 use App\Models\Rol;
+use App\Services\BitacoraService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Request as RequestFacade;
 use Illuminate\View\View;
 
 class PermissionController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('permission:' . Permission::ASIGNAR_PERMISOS->value);
+    }
+
     public function edit(Rol $rol): View
     {
-        $this->authorize('assignPermissions', $rol);
-
         $permisosAgrupados = Permiso::active()
             ->orderBy('modulo_permiso')
             ->orderBy('nombre_permiso')
@@ -35,8 +37,6 @@ class PermissionController extends Controller
 
     public function update(Request $request, Rol $rol): RedirectResponse
     {
-        $this->authorize('assignPermissions', $rol);
-
         $request->validate([
             'permisos' => ['nullable', 'array'],
             'permisos.*' => ['integer', 'exists:permiso,id_permiso'],
@@ -59,21 +59,13 @@ class PermissionController extends Controller
             ->pluck('clave_permiso', 'id_permiso')
             ->toArray();
 
-        // Registrar en bitácora
-        Bitacora::create([
-            'id_usuario_bitacora' => $request->user()?->id_user,
-            'accion_bitacora' => 'Actualización de permisos',
-            'modulo_bitacora' => 'Roles',
-            'registro_id_bitacora' => $rol->id_rol,
-            'valores_anteriores_bitacora' => json_encode($permisosActuales),
-            'valores_nuevos_bitacora' => json_encode($nuevosPermisosMapeados),
-            'ip_bitacora' => RequestFacade::ip(),
-            'navegador_bitacora' => RequestFacade::userAgent(),
-            'url_bitacora' => RequestFacade::fullUrl(),
-            'metodo_bitacora' => RequestFacade::method(),
-            'fecha_bitacora' => now(),
-            'status' => 1,
-        ]);
+        // Registrar en bitácora usando el servicio estándar
+        BitacoraService::registrar(
+            auditable: $rol,
+            accion: 'Actualización de permisos',
+            valoresAnteriores: $permisosActuales,
+            valoresNuevos: $nuevosPermisosMapeados
+        );
 
         // Sincronizar permisos en detalle_permiso actualizando status
         \Illuminate\Support\Facades\DB::table('detalle_permiso')

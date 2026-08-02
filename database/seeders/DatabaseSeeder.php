@@ -99,5 +99,8 @@ class DatabaseSeeder extends Seeder
         $adminUser->roles()->syncWithoutDetaching([
             $rolAdmin->id_rol => ['status' => 1]
         ]);
+
+        // Sincronizar automáticamente los permisos del Enum con la base de datos
+        \Illuminate\Support\Facades\Artisan::call('permissions:sync');
     }
 }
