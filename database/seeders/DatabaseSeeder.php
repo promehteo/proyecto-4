@@ -57,13 +57,6 @@ class DatabaseSeeder extends Seeder
             ['nombre' => 'Activar Roles', 'slug' => 'roles.activar', 'modulo' => 'roles'],
             ['nombre' => 'Asignar Permisos a Roles', 'slug' => 'roles.asignar_permisos', 'modulo' => 'roles'],
 
-            // Módulo permisos
-            ['nombre' => 'Ver Permisos', 'slug' => 'permisos.ver', 'modulo' => 'permisos'],
-            ['nombre' => 'Crear Permisos', 'slug' => 'permisos.crear', 'modulo' => 'permisos'],
-            ['nombre' => 'Editar Permisos', 'slug' => 'permisos.editar', 'modulo' => 'permisos'],
-            ['nombre' => 'Inactivar Permisos', 'slug' => 'permisos.inactivar', 'modulo' => 'permisos'],
-            ['nombre' => 'Activar Permisos', 'slug' => 'permisos.activar', 'modulo' => 'permisos'],
-
             // Módulo categorías
             ['nombre' => 'Ver Categorías', 'slug' => 'categorias.ver', 'modulo' => 'categorias'],
             ['nombre' => 'Crear Categorías', 'slug' => 'categorias.crear', 'modulo' => 'categorias'],

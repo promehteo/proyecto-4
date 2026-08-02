@@ -98,16 +98,6 @@
                         </a>
                     @endcan
 
-                    @can('viewAny', App\Models\Permiso::class)
-                        <a href="{{ route('permisos.index') }}"
-                            class="flex items-center px-3 py-2.5 rounded-xl text-sm font-medium transition-all duration-200 group {{ request()->routeIs('permisos.*') ? 'bg-blue-800 text-white shadow-inner' : 'text-white hover:bg-blue-700' }}">
-                            <svg class="h-5 w-5 mr-3 flex-shrink-0 text-white transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15 7a2 2 0 012 2m-2-2a2 2 0 00-2 2m2-2V5a2 2 0 10-4 0v2m4 0h3a2 2 0 012 2v7a2 2 0 01-2 2H5a2 2 0 01-2-2V9a2 2 0 012-2h3m3 4h3m-6 4h6" />
-                            </svg>
-                            <span>{{ __('Permisos') }}</span>
-                        </a>
-                    @endcan
-
                     @can('viewAny', App\Models\User::class)
                         <a href="{{ route('usuarios.index') }}"
                             class="flex items-center px-3 py-2.5 rounded-xl text-sm font-medium transition-all duration-200 group {{ request()->routeIs('usuarios.*') ? 'bg-blue-800 text-white shadow-inner' : 'text-white hover:bg-blue-700' }}">

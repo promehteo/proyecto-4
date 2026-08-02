@@ -22,13 +22,6 @@ enum Permission: string
     case ACTIVAR_ROLES = 'roles.activar';
     case ASIGNAR_PERMISOS = 'roles.asignar_permisos';
 
-    // Permisos
-    case VER_PERMISOS = 'permisos.ver';
-    case CREAR_PERMISOS = 'permisos.crear';
-    case EDITAR_PERMISOS = 'permisos.editar';
-    case INACTIVAR_PERMISOS = 'permisos.inactivar';
-    case ACTIVAR_PERMISOS = 'permisos.activar';
-
     // Bitácora
     case VER_BITACORA = 'bitacora.ver';
 
@@ -38,11 +31,6 @@ enum Permission: string
     case EDITAR_CATEGORIAS = 'categorias.editar';
     case INACTIVAR_CATEGORIAS = 'categorias.inactivar';
     case ACTIVAR_CATEGORIAS = 'categorias.activar';
-
-    // Gestión híbrida base
-    case GESTIONAR_USUARIOS = 'sistema.gestionar_usuarios';
-    case GESTIONAR_ROLES = 'sistema.gestionar_roles';
-    case GESTIONAR_PERMISOS = 'sistema.gestionar_permisos';
 
     public function nombre(): string
     {
@@ -61,12 +49,6 @@ enum Permission: string
             self::ACTIVAR_ROLES => 'Activar Roles',
             self::ASIGNAR_PERMISOS => 'Asignar Permisos a Roles',
 
-            self::VER_PERMISOS => 'Ver Permisos',
-            self::CREAR_PERMISOS => 'Crear Permisos',
-            self::EDITAR_PERMISOS => 'Editar Permisos',
-            self::INACTIVAR_PERMISOS => 'Inactivar Permisos',
-            self::ACTIVAR_PERMISOS => 'Activar Permisos',
-
             self::VER_BITACORA => 'Ver Bitácora',
 
             self::VER_CATEGORIAS => 'Ver Categorías',
@@ -74,10 +56,6 @@ enum Permission: string
             self::EDITAR_CATEGORIAS => 'Editar Categorías',
             self::INACTIVAR_CATEGORIAS => 'Inactivar Categorías',
             self::ACTIVAR_CATEGORIAS => 'Activar Categorías',
-
-            self::GESTIONAR_USUARIOS => 'Gestionar Usuarios (Sistema)',
-            self::GESTIONAR_ROLES => 'Gestionar Roles (Sistema)',
-            self::GESTIONAR_PERMISOS => 'Gestionar Permisos (Sistema)',
         };
     }
 
@@ -98,12 +76,6 @@ enum Permission: string
             self::ACTIVAR_ROLES,
             self::ASIGNAR_PERMISOS => 'roles',
 
-            self::VER_PERMISOS,
-            self::CREAR_PERMISOS,
-            self::EDITAR_PERMISOS,
-            self::INACTIVAR_PERMISOS,
-            self::ACTIVAR_PERMISOS => 'permisos',
-
             self::VER_BITACORA => 'bitacora',
 
             self::VER_CATEGORIAS,
@@ -111,10 +83,6 @@ enum Permission: string
             self::EDITAR_CATEGORIAS,
             self::INACTIVAR_CATEGORIAS,
             self::ACTIVAR_CATEGORIAS => 'categorias',
-
-            self::GESTIONAR_USUARIOS,
-            self::GESTIONAR_ROLES,
-            self::GESTIONAR_PERMISOS => 'sistema',
         };
     }
 }

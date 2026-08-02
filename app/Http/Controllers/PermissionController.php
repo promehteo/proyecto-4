@@ -15,13 +15,10 @@ use Illuminate\View\View;
 
 class PermissionController extends Controller
 {
-    public function __construct()
-    {
-        $this->middleware('permission:' . Permission::GESTIONAR_PERMISOS->value);
-    }
-
     public function edit(Rol $rol): View
     {
+        $this->authorize('assignPermissions', $rol);
+
         $permisosAgrupados = Permiso::active()
             ->orderBy('modulo_permiso')
             ->orderBy('nombre_permiso')
@@ -38,6 +35,8 @@ class PermissionController extends Controller
 
     public function update(Request $request, Rol $rol): RedirectResponse
     {
+        $this->authorize('assignPermissions', $rol);
+
         $request->validate([
             'permisos' => ['nullable', 'array'],
             'permisos.*' => ['integer', 'exists:permiso,id_permiso'],

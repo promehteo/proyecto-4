@@ -39,7 +39,6 @@ test('usuario no autenticado no puede acceder a módulos', function () {
     $this->get(route('categorias.index'))->assertRedirect(route('login'));
     $this->get(route('bitacora.index'))->assertRedirect(route('login'));
     $this->get(route('roles.index'))->assertRedirect(route('login'));
-    $this->get(route('permisos.index'))->assertRedirect(route('login'));
     $this->get(route('usuarios.index'))->assertRedirect(route('login'));
 });
 
@@ -130,42 +129,6 @@ test('usuario sin permiso no puede asignar permisos a roles', function () {
         ->put(route('roles.permisos.update', $rol), [
             'permisos' => [],
         ])
-        ->assertForbidden();
-});
-
-test('usuario sin permiso no puede ver permisos', function () {
-    $this->actingAs($this->userSinPermiso)
-        ->get(route('permisos.index'))
-        ->assertForbidden();
-});
-
-test('usuario sin permiso no puede crear permisos', function () {
-    $this->actingAs($this->userSinPermiso)
-        ->post(route('permisos.store'), [
-            'nombre_permiso' => 'Nuevo Permiso',
-            'clave_permiso' => 'nuevo.permiso',
-            'modulo_permiso' => 'modulo',
-            'status' => 1,
-        ])
-        ->assertForbidden();
-});
-
-test('usuario sin permiso no puede editar permisos', function () {
-    $permiso = Permiso::first();
-    $this->actingAs($this->userSinPermiso)
-        ->put(route('permisos.update', $permiso), [
-            'nombre_permiso' => 'Edit Permiso',
-            'clave_permiso' => $permiso->clave_permiso,
-            'modulo_permiso' => $permiso->modulo_permiso,
-            'status' => 1,
-        ])
-        ->assertForbidden();
-});
-
-test('usuario sin permiso no puede inactivar permisos', function () {
-    $permiso = Permiso::first();
-    $this->actingAs($this->userSinPermiso)
-        ->patch(route('permisos.inactivar', $permiso))
         ->assertForbidden();
 });
 
@@ -442,65 +405,6 @@ test('registrar bitácora al crear, editar, inactivar y activar rol', function (
     ]);
 });
 
-test('registrar bitácora al crear, editar, inactivar y activar permiso', function () {
-    // 1. Crear
-    $this->actingAs($this->adminUser)
-        ->post(route('permisos.store'), [
-            'nombre_permiso' => 'Exportar Reportes',
-            'clave_permiso' => 'reportes.exportar',
-            'modulo_permiso' => 'reportes',
-            'status' => 1,
-        ]);
-
-    $permiso = Permiso::where('clave_permiso', 'reportes.exportar')->first();
-    $this->assertDatabaseHas('bitacora', [
-        'accion_bitacora' => 'creación de permiso',
-        'registro_id_bitacora' => $permiso->id_permiso,
-    ]);
-
-    // 2. Editar
-    $this->actingAs($this->adminUser)
-        ->put(route('permisos.update', $permiso), [
-            'nombre_permiso' => 'Exportar Todo',
-            'clave_permiso' => 'reportes.exportar',
-            'modulo_permiso' => 'reportes',
-            'status' => 1,
-        ]);
-
-    $this->assertDatabaseHas('bitacora', [
-        'accion_bitacora' => 'edición de permiso',
-        'registro_id_bitacora' => $permiso->id_permiso,
-    ]);
-
-    // 3. Inactivar
-    $this->actingAs($this->adminUser)
-        ->patch(route('permisos.inactivar', $permiso));
-
-    $this->assertDatabaseHas('permiso', [
-        'id_permiso' => $permiso->id_permiso,
-        'status' => 2,
-    ]);
-
-    $this->assertDatabaseHas('bitacora', [
-        'accion_bitacora' => 'inactivación de permiso',
-        'registro_id_bitacora' => $permiso->id_permiso,
-    ]);
-
-    // 4. Activar
-    $this->actingAs($this->adminUser)
-        ->patch(route('permisos.activar', $permiso));
-
-    $this->assertDatabaseHas('permiso', [
-        'id_permiso' => $permiso->id_permiso,
-        'status' => 1,
-    ]);
-
-    $this->assertDatabaseHas('bitacora', [
-        'accion_bitacora' => 'activación de permiso',
-        'registro_id_bitacora' => $permiso->id_permiso,
-    ]);
-});
-
 test('registrar bitácora al cambiar permisos de rol sin eliminación física pivote', function () {
     $rol = Rol::create(['nombre_rol' => 'Tester', 'clave_rol' => 'tester', 'status' => 1]);
     $permiso1 = Permiso::first();
@@ -532,7 +436,7 @@ test('registrar bitácora al cambiar permisos de rol sin eliminación física pi
     ]);
 
     $this->assertDatabaseHas('bitacora', [
-        'accion_bitacora' => 'asignación de permisos a rol',
+        'accion_bitacora' => 'Actualización de permisos',
         'registro_id_bitacora' => $rol->id_rol,
     ]);
 });
@@ -580,11 +484,9 @@ test('registrar bitácora al cambiar roles de usuario sin eliminación física p
     ]);
 });
 
-test('no permitir eliminación física de rol, permiso o usuario', function () {
+test('no permitir eliminación física de rol o usuario', function () {
     $rol = Rol::first();
-    $permiso = Permiso::first();
 
     $this->actingAs($this->adminUser)->delete("/roles/{$rol->id_rol}")->assertStatus(405);
-    $this->actingAs($this->adminUser)->delete("/permisos/{$permiso->id_permiso}")->assertStatus(405);
     $this->actingAs($this->adminUser)->delete("/usuarios/{$this->userSinPermiso->id_user}")->assertStatus(405);
 });

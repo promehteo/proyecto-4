@@ -4,12 +4,10 @@ use App\Http\Controllers\Bitacora\BitacoraIndexController;
 use App\Http\Controllers\Bitacora\BitacoraShowController;
 use App\Http\Controllers\Categoria\CategoriaFormController;
 use App\Http\Controllers\Categoria\CategoriaIndexController;
-use App\Http\Controllers\Permiso\PermisoFormController;
-use App\Http\Controllers\Permiso\PermisoIndexController;
+use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Rol\RolFormController;
 use App\Http\Controllers\Rol\RolIndexController;
-use App\Http\Controllers\Rol\RolPermisoController;
 use App\Http\Controllers\User\UserFormController;
 use App\Http\Controllers\User\UserIndexController;
 use App\Http\Controllers\User\UserRolController;
@@ -53,16 +51,6 @@ Route::middleware('auth')->group(function () {
     Route::get('/roles/{rol}/permisos', [PermissionController::class, 'edit'])->name('roles.permisos.edit');
     Route::put('/roles/{rol}/permisos', [PermissionController::class, 'update'])->name('roles.permisos.update');
     Route::get('/roles/{rol}', [RolIndexController::class, 'show'])->name('roles.show');
-
-    // Módulo 3: Permisos
-    Route::get('/permisos', [PermisoIndexController::class, 'index'])->name('permisos.index');
-    Route::get('/permisos/registrar', [PermisoFormController::class, 'create'])->name('permisos.create');
-    Route::post('/permisos', [PermisoFormController::class, 'store'])->name('permisos.store');
-    Route::get('/permisos/{permiso}/editar', [PermisoFormController::class, 'edit'])->name('permisos.edit');
-    Route::put('/permisos/{permiso}', [PermisoFormController::class, 'update'])->name('permisos.update');
-    Route::patch('/permisos/{permiso}/inactivar', [PermisoIndexController::class, 'inactivar'])->name('permisos.inactivar');
-    Route::patch('/permisos/{permiso}/activar', [PermisoIndexController::class, 'activar'])->name('permisos.activar');
-    Route::get('/permisos/{permiso}', [PermisoIndexController::class, 'show'])->name('permisos.show');
 
     // Módulo 3: Gestión de Usuarios y Roles
     Route::get('/usuarios', [UserIndexController::class, 'index'])->name('usuarios.index');
