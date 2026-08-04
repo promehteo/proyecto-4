@@ -1,0 +1,141 @@
+===========================================================
+MAPEO DE ESTRUCTURAS JSON POR TIPO DE ACTIVO
+Sistema de Inventario - La Casa El Rapidito
+===========================================================
+
+A continuación se detalla qué atributos debe contener el campo JSON 
+(atributos_activo) según la categoría del activo 
+definida en la relación jerárquica (categoria -> fabricante -> tipo -> modelo).
+
+
+------------------------------------------------------------
+1. COMPUTADORA (PCs, Laptops, Servidores físicos)
+------------------------------------------------------------
+Atributos: sistema_operativo, ultimo_inventory_update, ultimo_arranque
+{
+  "sistema_operativo": "Windows 11 Pro",
+  "ultimo_inventory_update": "2026-05-02 03:58:29",
+  "ultimo_arranque": "2026-05-01 19:14:38"
+}
+
+
+------------------------------------------------------------
+2. PERIFÉRICO (Teclados, Ratones, Escáneres, Webcams)
+------------------------------------------------------------
+Atributos: marca_alt, modelo_alt, es_global
+{
+  "marca_alt": "Logitech",
+  "modelo_alt": "B100",
+  "es_global": 0
+}
+
+
+------------------------------------------------------------
+3. MONITOR (Pantallas)
+------------------------------------------------------------
+Atributos: tamano, tiene_micro, tiene_altavoz, tiene_subd, tiene_bnc, tiene_dvi, tiene_pivot, tiene_hdmi, tiene_displayport, es_global
+{
+  "tamano": 24.00,
+  "tiene_micro": 0,
+  "tiene_altavoz": 1,
+  "tiene_subd": 1,
+  "tiene_bnc": 0,
+  "tiene_dvi": 1,
+  "tiene_pivot": 1,
+  "tiene_hdmi": 1,
+  "tiene_displayport": 0,
+  "es_global": 0
+}
+
+
+------------------------------------------------------------
+4. EQUIPO DE RED (Switches, Routers, Firewalls, APs)
+------------------------------------------------------------
+Atributos: ram, cpu, tiempo_actividad
+{
+  "ram": 512,
+  "cpu": 4,
+  "tiempo_actividad": "12 days, 04:22:10"
+}
+
+
+------------------------------------------------------------
+5. IMPRESORA (Impresoras y Multifuncionales)
+------------------------------------------------------------
+Atributos: memoria, tiene_serial, tiene_paralelo, tiene_usb, tiene_wifi, tiene_ethernet, contador_paginas_inicial, contador_paginas_actual
+{
+  "memoria": "512MB",
+  "tiene_serial": 0,
+  "tiene_paralelo": 0,
+  "tiene_usb": 1,
+  "tiene_wifi": 1,
+  "tiene_ethernet": 1,
+  "contador_paginas_inicial": 0,
+  "contador_paginas_actual": 1540
+}
+
+
+------------------------------------------------------------
+6. PDU (Unidad de Distribución de Energía)
+------------------------------------------------------------
+Atributos: numero_tomas, potencia_maxima
+{
+  "numero_tomas": 12,
+  "potencia_maxima": 3500
+}
+
+
+------------------------------------------------------------
+7. EQUIPO PASIVO DE DATACENTER (Patch panels, organizadores)
+------------------------------------------------------------
+Atributos: Ninguno (JSON Vacío)
+{
+  {}
+}
+
+
+------------------------------------------------------------
+8. MÁQUINA VIRTUAL (VMs)
+------------------------------------------------------------
+Atributos: estado_maquina_virtual, vcpu_maquina_virtual, ram_maquina_virtual, tipo_sistema_maquina_virtual
+{
+  "estado_maquina_virtual": "running",
+  "vcpu_maquina_virtual": 2,
+  "ram_maquina_virtual": 4096,
+  "tipo_sistema_maquina_virtual": "esx"
+}
+
+
+------------------------------------------------------------
+9. DISPOSITIVO NO ADMINISTRADO (Equipos descubiertos en red)
+------------------------------------------------------------
+Atributos: ip, mac, tipo_descubierto
+{
+  "ip": "192.168.1.50",
+  "mac": "00:1A:2B:3C:4D:5E",
+  "tipo_descubierto": "Networking"
+}
+
+
+------------------------------------------------------------
+10. CLUSTER (Agrupaciones lógicas de alta disponibilidad)
+------------------------------------------------------------
+Atributos: uuid_cluster
+{
+  "uuid_cluster": "a1b2c3d4-e5f6-7890-abcd-ef1234567890"
+}
+
+
+===========================================================
+NOTA DE IMPLEMENTACIÓN EN LARAVEL:
+===========================================================
+Para saber cuál de estos JSON aplicar al momento de guardar o validar 
+un registro en la tabla unificada `activo`, el sistema 
+debe consultar el nombre de la `categoria` heredada a través de la 
+relación del `id_modelo`:
+
+ $activo->modelo->tipo->fabricante->categoria->nombre_categoria
+
+Dependiendo de ese valor (ej. "COMPUTADORA", "MONITOR", "IMPRESORA"), el controlador 
+aplicará las reglas de validación correspondientes para el JSON entrante en el 
+campo `atributos_activo`.

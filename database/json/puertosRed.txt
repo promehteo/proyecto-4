@@ -1,0 +1,69 @@
+============================================================
+MAPEO DE ESTRUCTURAS JSON PARA PUERTOS DE RED (puerto_red)
+Sistema de Inventario - La Casa El Rapidito
+============================================================
+
+A continuación se detalla qué atributos debe contener el campo JSON 
+(atributos_puerto_red) según el valor de la columna tipo_puerto_red.
+
+
+------------------------------------------------------------
+1. ETHERNET (Puerto de Cobre)
+------------------------------------------------------------
+Atributos: velocidad, tipo_cable, duplex
+{
+  "velocidad": 1000,
+  "tipo_cable": "T",
+  "duplex": "Full"
+}
+
+
+------------------------------------------------------------
+2. WIFI (Tarjeta Inalámbrica)
+------------------------------------------------------------
+Atributos: ssid, modo, version
+{
+  "ssid": "Red-Corporativa",
+  "modo": "Managed",
+  "version": "ax"
+}
+
+
+------------------------------------------------------------
+3. FIBRA (Puerto de Fibra Óptica)
+------------------------------------------------------------
+Atributos: velocidad, tipo_conector, tipo_fibra
+{
+  "velocidad": 10000,
+  "tipo_conector": "LC",
+  "tipo_fibra": "Monomodo"
+}
+
+
+------------------------------------------------------------
+4. AGREGADO (Bonding/Teaming de enlaces)
+------------------------------------------------------------
+Atributos: tipo_agregacion
+{
+  "tipo_agregacion": "LACP"
+}
+
+
+===========================================================
+NOTA DE IMPLEMENTACIÓN EN LARAVEL:
+===========================================================
+Al unificar las tablas de puertos, el sistema sabrá qué validación 
+aplicar al JSON entrante revisando el valor del campo tipo_puerto_red. 
+En el controlador de Laravel, la lógica para guardar sería algo así:
+
+ $tipo = $request->tipo_puerto_red;
+
+ $reglasJSON = match($tipo) {
+    'ethernet' => ['atributos.velocidad' => 'required|integer', 'atributos.duplex' => 'required|string'],
+    'wifi'     => ['atributos.ssid' => 'required|string', 'atributos.version' => 'required|string'],
+    'fibra'    => ['atributos.velocidad' => 'required|integer', 'atributos.tipo_fibra' => 'required|string'],
+    'agregado' => ['atributos.tipo_agregacion' => 'required|string'],
+    default => abort(400, 'Tipo de puerto no válido')
+};
+
+ $request->validate($reglasJSON);

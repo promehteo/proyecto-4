@@ -1,0 +1,181 @@
+===========================================================
+MAPEO DE ESTRUCTURAS JSON POR TIPO DE COMPONENTE
+Sistema de Inventario - La Casa El Rapidito
+================================================-----------
+
+A continuación se detalla qué atributos debe contener el campo JSON 
+(atributos_catalogo_componente) según la categoría del componente 
+definida en la relación jerárquica (categoria -> fabricante -> tipo -> modelo).
+
+
+------------------------------------------------------------
+1. CONSUMIBLE (Tóner, Tinta, Cartuchos, etc.)
+------------------------------------------------------------
+Atributos: ref, otroserial, umbral_alerta, stock_target, imagenes
+{
+  "ref": "HP-85A",
+  "otroserial": "CE285A",
+  "umbral_alerta": 5,
+  "stock_target": 20,
+  "imagenes": ["img1.jpg", "img2.jpg"]
+}
+
+
+------------------------------------------------------------
+2. PROCESADOR
+------------------------------------------------------------
+Atributos: frecuencia, nucleos, hilos
+{
+  "frecuencia": 3600,
+  "nucleos": 12,
+  "hilos": 20
+}
+
+
+------------------------------------------------------------
+3. MEMORIA RAM
+------------------------------------------------------------
+Atributos: frecuencia, capacidad_default
+{
+  "frecuencia": 3200,
+  "capacidad_default": 16384
+}
+
+
+------------------------------------------------------------
+4. DISCO DURO
+------------------------------------------------------------
+Atributos: rpm, cache, capacidad_default
+{
+  "rpm": 7200,
+  "cache": 256,
+  "capacidad_default": 1048576
+}
+
+
+------------------------------------------------------------
+5. TARJETA DE VIDEO
+------------------------------------------------------------
+Atributos: chipset, memoria_default, interfaz
+{
+  "chipset": "RTX 3060",
+  "memoria_default": 12288,
+  "interfaz": "PCIe x16 4.0"
+}
+
+
+------------------------------------------------------------
+6. PLACA BASE
+------------------------------------------------------------
+Atributos: chipset, formato, ranuras_ram
+{
+  "chipset": "B660",
+  "formato": "ATX",
+  "ranuras_ram": 4
+}
+
+
+------------------------------------------------------------
+7. FUENTE DE PODER
+------------------------------------------------------------
+Atributos: potencia, certificacion, modular
+{
+  "potencia": 750,
+  "certificacion": "80 Plus Gold",
+  "modular": 1
+}
+
+
+------------------------------------------------------------
+8. TARJETA DE RED
+------------------------------------------------------------
+Atributos: Ninguno (JSON Vacío)
+{
+  {}
+}
+
+
+------------------------------------------------------------
+9. TARJETA DE SONIDO
+------------------------------------------------------------
+Atributos: Ninguno (JSON Vacío)
+{
+  {}
+}
+
+
+------------------------------------------------------------
+10. GABINETE
+------------------------------------------------------------
+Atributos: Ninguno (JSON Vacío)
+{
+  {}
+}
+
+
+------------------------------------------------------------
+11. UNIDAD ÓPTICA
+------------------------------------------------------------
+Atributos: Ninguno (JSON Vacío)
+{
+  {}
+}
+
+
+------------------------------------------------------------
+12. DISPOSITIVO PCI
+------------------------------------------------------------
+Atributos: Ninguno (JSON Vacío)
+{
+  {}
+}
+
+
+------------------------------------------------------------
+13. SENSOR
+------------------------------------------------------------
+Atributos: Ninguno (JSON Vacío)
+{
+  {}
+}
+
+
+------------------------------------------------------------
+14. CÁMARA
+------------------------------------------------------------
+Atributos: Ninguno (JSON Vacío)
+{
+  {}
+}
+
+
+------------------------------------------------------------
+15. DISPOSITIVO GENÉRICO
+------------------------------------------------------------
+Atributos: Ninguno (JSON Vacío)
+{
+  {}
+}
+
+
+------------------------------------------------------------
+16. BATERÍA
+------------------------------------------------------------
+Atributos: Ninguno (JSON Vacío)
+{
+  {}
+}
+
+
+===========================================================
+NOTA DE IMPLEMENTACIÓN EN LARAVEL:
+===========================================================
+Para saber cuál de estos JSON aplicar al momento de guardar o validar 
+un registro en la tabla unificada `catalogo_componente`, el sistema 
+debe consultar el nombre de la `categoria` heredada a través de la 
+relación del `id_modelo`:
+
+ $modelo->tipo->fabricante->categoria->nombre_categoria
+
+Dependiendo de ese valor, el controlador aplicará las reglas de 
+validación correspondientes para el JSON entrante.

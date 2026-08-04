@@ -1,0 +1,167 @@
+============================================================
+MAPEO DE ESTRUCTURAS JSON PARA INSTANCIAS FÍSICAS (item_componente)
+Sistema de Inventario - La Casa El Rapidito
+============================================================
+
+A continuación se detalla qué atributos debe contener el campo JSON 
+(atributos_item_componente) según el tipo de componente físico que se 
+esté registrando.
+
+A diferencia de la tabla de catálogo (que guarda especificaciones 
+teóricas del modelo), esta tabla guarda los valores REALES de la 
+pieza física instalada, reportados por el Sistema Operativo o el 
+Agente de inventario.
+
+
+------------------------------------------------------------
+1. PROCESADOR (item_procesador)
+------------------------------------------------------------
+Atributos: busid, frecuencia
+{
+  "busid": "0000:00:1f.1",
+  "frecuencia": 3600
+}
+
+
+------------------------------------------------------------
+2. MEMORIA RAM (item_memoria)
+------------------------------------------------------------
+Atributos: busid, capacidad, frecuencia
+{
+  "busid": "0000:00:1f.2",
+  "capacidad": 8192,
+  "frecuencia": 3200
+}
+
+
+------------------------------------------------------------
+3. DISCO DURO (item_disco_duro)
+------------------------------------------------------------
+Atributos: capacidad
+{
+  "capacidad": 512000
+}
+
+
+------------------------------------------------------------
+4. TARJETA DE VIDEO (item_tarjeta_video)
+------------------------------------------------------------
+Atributos: busid, memoria
+{
+  "busid": "0000:01:00.0",
+  "memoria": 8192
+}
+
+
+------------------------------------------------------------
+5. PLACA BASE (item_placa_base)
+------------------------------------------------------------
+Atributos: Ninguno (JSON Vacío)
+{
+  {}
+}
+
+
+------------------------------------------------------------
+6. FUENTE DE PODER (item_fuente_poder)
+------------------------------------------------------------
+Atributos: Ninguno (JSON Vacío)
+{
+  {}
+}
+
+
+------------------------------------------------------------
+7. TARJETA DE RED (item_tarjeta_red)
+------------------------------------------------------------
+Atributos: busid, mac
+{
+  "busid": "0000:00:1f.6",
+  "mac": "00:1A:2B:3C:4D:5E"
+}
+
+
+------------------------------------------------------------
+8. TARJETA DE SONIDO (item_tarjeta_sonido)
+------------------------------------------------------------
+Atributos: Ninguno (JSON Vacío)
+{
+  {}
+}
+
+
+------------------------------------------------------------
+9. GABINETE (item_gabinete)
+------------------------------------------------------------
+Atributos: Ninguno (JSON Vacío)
+{
+  {}
+}
+
+
+------------------------------------------------------------
+10. UNIDAD ÓPTICA (item_unidad_optica)
+------------------------------------------------------------
+Atributos: Ninguno (JSON Vacío)
+{
+  {}
+}
+
+
+------------------------------------------------------------
+11. DISPOSITIVO PCI (item_dispositivo_pci)
+------------------------------------------------------------
+Atributos: Ninguno (JSON Vacío)
+{
+  {}
+}
+
+
+------------------------------------------------------------
+12. SENSOR (item_sensor)
+------------------------------------------------------------
+Atributos: Ninguno (JSON Vacío)
+{
+  {}
+}
+
+
+------------------------------------------------------------
+13. CÁMARA (item_camara)
+------------------------------------------------------------
+Atributos: Ninguno (JSON Vacío)
+{
+  {}
+}
+
+
+------------------------------------------------------------
+14. DISPOSITIVO GENÉRICO (item_dispositivo_generico)
+------------------------------------------------------------
+Atributos: Ninguno (JSON Vacío)
+{
+  {}
+}
+
+
+------------------------------------------------------------
+15. BATERÍA (item_bateria)
+------------------------------------------------------------
+Atributos: Ninguno (JSON Vacío)
+{
+  {}
+}
+
+
+===========================================================
+NOTA DE IMPLEMENTACIÓN EN LARAVEL:
+===========================================================
+Al igual que en el catálogo, para saber qué validación aplicar al 
+JSON entrante en la tabla unificada `item_componente`, el sistema 
+debe obtener el nombre de la `categoria` heredada a través de la 
+relación:
+
+ $itemComponente->catalogoComponente->modelo->tipo->fabricante->categoria->nombre_categoria
+
+Dependiendo de ese valor, el controlador aplicará las reglas de 
+validación correspondientes para el JSON de la instancia física.
